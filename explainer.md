@@ -56,10 +56,11 @@ This should be no more than 1-2 paragraphs.]
 ## Goals
 - Allow web applications to evict partitions of data
 - Allow web developers to specify eviction ordering
-- Allow web developers to remove a service workers without clearing data for the entire origin
+- Allow web applications to easily evict service workers without clearing data for the entire domain
 - Allow web developers to reserve quota
 - Allow web developers to express performance, durability and other trade-off decisions on partitions of data
 - Ensure privacy across accounts on shared devices
+- Allow users to have control over which data to evict, and prevent important data from being deleted
 
 ## Non-goals
 
