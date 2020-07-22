@@ -20,8 +20,9 @@
 
 - [Introduction](#introduction)
 - [Background](#background)
-- [Motivating use cases](#motivating-use-cases)
+- [Goals](#goals)
 - [Non-goals](#non-goals)
+- [Use Cases](#use-cases)
 - [Proposed API](#proposed-api)
 - [Considered alternatives](#considered-alternatives)
   - [Event naming](#event-naming)
@@ -52,10 +53,13 @@ goals of the project are, and a brief overview of how the solution works.
 This should be no more than 1-2 paragraphs.]
 
 
-## Goals [or Motivating use cases, or Scenarios]
-
-[What is the end-user need which this project aims to address?]
-
+## Goals
+- Allow web applications to evict partitions of data
+- Allow web developers to specify eviction ordering
+- Allow web developers to remove a service workers without clearing data for the entire origin
+- Allow web developers sites to reserve quota
+- Allow web developers to express performance, durability and other trade-off decisions on partitions of data
+- Ensure privacy across accounts on shared devices
 
 ## Non-goals
 
@@ -63,6 +67,8 @@ This should be no more than 1-2 paragraphs.]
 enumerate them here. This section may be fleshed out as your design
 progresses and you encounter necessary technical and other trade-offs.]
 
+## Use Cases
+[Motivating use cases, or scenarios]
 
 ## [API 1]
 
