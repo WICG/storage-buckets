@@ -57,7 +57,7 @@ This should be no more than 1-2 paragraphs.]
 - Allow web applications to evict partitions of data
 - Allow web developers to specify eviction ordering
 - Allow web developers to remove a service workers without clearing data for the entire origin
-- Allow web developers sites to reserve quota
+- Allow web developers to reserve quota
 - Allow web developers to express performance, durability and other trade-off decisions on partitions of data
 - Ensure privacy across accounts on shared devices
 
