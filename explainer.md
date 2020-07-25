@@ -3,6 +3,7 @@
 
 ## Authors:
 
+* Ayu Ishii
 * Victor Costan
 
 
@@ -87,10 +88,10 @@ const draftBucket = await navigator.storageBuckets.openOrCreate("mail/drafts", {
   title: "Email Drafts",
   durability: "strict",
   persist: true,
-  encrypt: "s3cr3t",  
+  encrypt: "s3cr3t",
   maxQuota: 128 * 1024,  // Explicitly reserve 128 KB of quota.
   ...
-}); 
+});
 ```
 
 Creating a bucket with lower importance.
@@ -147,7 +148,7 @@ const reg = await navigator.serviceWorker.register(
 Clear-Site-Data: "storage:app"
 ```
 
-### 
+###
 [For each related element of the proposed solution - be it an additional JS
 method, a new object, a new element, a new concept etc., create a section
 which briefly describes it.]
