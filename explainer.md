@@ -23,7 +23,8 @@
 - [Goals](#goals)
 - [Non-goals](#non-goals)
 - [Use Cases](#use-cases)
-- [Proposed API](#proposed-api)
+- [API Design](#api-design)
+- [Key Scenarios](#key-scenarios)
 - [Considered alternatives](#considered-alternatives)
   - [Event naming](#event-naming)
   - [Event target](#event-target)
@@ -71,8 +72,82 @@ progresses and you encounter necessary technical and other trade-offs.]
 ## Use Cases
 [Motivating use cases, or scenarios]
 
-## [API 1]
+## API Design
 
+### Create a Bucket
+
+Simple bucket creation.
+```javascript
+const draftBucket = await navigator.storageBuckets.openOrCreate("mail/drafts");
+```
+
+Here we create a bucket of high importance where durablity, encryption and reserved quota is specified.
+```javascript
+const draftBucket = await navigator.storageBuckets.openOrCreate("mail/drafts", {
+  title: "Email Drafts",
+  durability: "strict",
+  persist: true,
+  encrypt: "s3cr3t",  
+  maxQuota: 128 * 1024,  // Explicitly reserve 128 KB of quota.
+  ...
+}); 
+```
+
+Creating a bucket with lower importance.
+```javascript
+const cacheBucket = await navigator.storageBuckets.openOrCreate(
+  "cache",
+  {
+    title: "Recently Seen Stuff",
+    durability: "relaxed",
+    persist: false,
+  });
+```
+
+### Opening Buckets
+```javascript
+const cache = await draftsBucket.caches.open("images");
+
+const idb = await new Promise((resolve) => {
+  const req = draftsBucket.indexedDB.open("drafts-folder", 1);
+  req.onupgradeneeded = { /*…*/ };
+  req.onsuccess = (evt) => { resolve(evt.target.result); };
+});
+```
+
+### Reserving Quota
+```javascript
+const autosaveBucket = await navigator.storageBuckets.open(
+  "autosave",
+  {
+    title: "Autosaved Form Data",
+    durability: "strict",
+  });
+await autosaveBucket.reserve(20 * 1024 * 1024);  // 20 MB
+```
+
+### Estimate Usage
+```javascript
+const draftsUsage = await draftsBucket.estimate();
+```
+
+### Delete a Bucket
+```javascript
+await navigator.storageBuckets.delete(draftsBucket.name);
+```
+
+### Buckets in Service Workers
+```javascript
+const appBucket = await navigator.storageBuckets.open("app");
+const reg = await appBucket.serviceWorker.register("sw.js");
+// OR
+const reg = await navigator.serviceWorker.register(
+    "sw.js", { bucket: appBucket });
+// THEN MAYBE
+Clear-Site-Data: "storage:app"
+```
+
+### 
 [For each related element of the proposed solution - be it an additional JS
 method, a new object, a new element, a new concept etc., create a section
 which briefly describes it.]
@@ -98,11 +173,7 @@ appendix in this document, and provide an internal link where appropriate.]
 [If spec work is in progress, link to the PR or draft of the spec.]
 
 
-## [API 2]
-[etc.]
-
-
-## Key scenarios
+## Key Scenarios
 
 [If there are a suite of interacting APIs, show how they work together to
 solve the key scenarios described.]
