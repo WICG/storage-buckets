@@ -80,7 +80,9 @@ APIs. In the simplest form, this looks as follows.
 
 ```javascript
 // Create a bucket for emails that are synchronized with the server.
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
+  title: "Inbox",  // User agents may display this in storage management UI.
+});
 
 // Open the "messages" database inside the "inbox" bucket.
 const inboxDb = await new Promise(resolve => {
@@ -100,6 +102,7 @@ described in future sections.
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   durability: "strict",
   persisted: true,
+  title: "Drafts",
 });
 
 // The "messages" inside the "drafts" bucket is different from the "messages"
@@ -118,9 +121,9 @@ Creating a bucket with lower importance.
 const cacheBucket = await navigator.storageBuckets.openOrCreate(
   "cache",
   {
-    title: "Recently Seen Stuff",
     durability: "relaxed",
     persisted: false,
+    title: "Recently Seen Stuff",
   });
 ```
 
@@ -142,9 +145,9 @@ The default bucket is created with the following options.
 
 ```js
 await navigator.storageBuckets.openOrCreate("default", {
-  title: "",
   durability: "strict",
   persist: false,
+  title: "",
 });
 ```
 
@@ -236,6 +239,37 @@ solve the key scenarios described.]
 
 ## Detailed design discussion
 
+### Bucket names
+
+TODO: `/` intended for tree display in UI.
+
+TODO: Discussion around allowable characters.
+
+
+### Bucket titles
+
+Buckets are expected to be named using programmer-friendly identifiers, simiarly
+to variable names. By contrast, bucket titles are user-friendly descriptions.
+Titles are intended to support user agents that want to offer the ability to
+delete individual buckets in their storage management UI. These user agents may
+display bucket titles when showing buckets to their users.
+
+`title` was chosen for consistency with the
+[HTML title element](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element).
+
+Bucket titles present some subtleties for applications that support multiple
+languages. Specifically, a bucket's title will presumably reflect the
+users' preferred language at the time the bucket is created. The current API
+surface does not allow changing a bucket's description, so already-created
+buckets will not reflect language preference changes.
+
+Including application strings in user agent UI has non-trivial security and
+privacy implications, which may deter some user agents from using the `title` as
+intended. For example, user agents that intend to incorporate the `title` need
+to mitigate against misleading values such as
+`"You have a virus! Go to www.evil.com for a cleanup"`.
+
+
 ### Storage policy naming
 
 Here are the considerations used for storage policy naming.
@@ -276,10 +310,38 @@ architectural decisions down to alternative naming choices.]
 
 [Describe an alternative which was considered, and why you decided against it.]
 
-### [Alternative 2]
+### Alternative name for bucket `title`
 
-[etc.]
+The `title` properties could be named `description` instead. This would be
+consistent with the
+[Web App Manifest description](https://w3c.github.io/manifest/#description-member).
 
+We preferred `title` to `description` because we think that `title` invites
+developers to be brief (1-3 words) whereas the latter appears to ask for a
+full sentence. We expect that short strings will be better suited for inclusion
+in user management UIs.
+
+
+### Language maps for bucket titles
+
+The bucket `title` property could allow a dictionary instead of a string, where
+the keys are valid values for the
+[lang attribute in the HTML specification](https://html.spec.whatwg.org/#the-lang-and-xml:lang-attributes),
+and values are localized user-facing strings.
+
+TODO: The translations and codes need to be checked.
+
+```js
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+  durability: "strict",
+  persisted: true,
+  title: {
+    en: "Drafts",
+    es: "Borradoers",
+    jp: "下書き",
+  }
+});
+```
 
 ## Stakeholder Feedback / Opposition
 
