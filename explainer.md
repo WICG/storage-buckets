@@ -73,10 +73,15 @@ progresses and you encounter necessary technical and other trade-offs.]
 ## Use Cases
 [Motivating use cases, or scenarios]
 
-## Bucket creation
+## Setting up buckets
 
-Applications are expected to deliberately set up buckets before using storage
-APIs. In the simplest form, this looks as follows.
+[The Storage Standard](https://storage.spec.whatwg.org/) already
+[introduces buckets](https://storage.spec.whatwg.org/#buckets), but does not
+have an API for explicitly managing buckets.
+
+This explainer introduces the `navigator.storageBuckets.openOrCreate()` method.
+Applications are expected to use this method to deliberately set up buckets
+before using storage APIs. In the simplest form, usage looks as follows.
 
 ```javascript
 // Create a bucket for emails that are synchronized with the server.
@@ -84,13 +89,6 @@ const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
   title: "Inbox",  // User agents may display this in storage management UI.
 });
 
-// Open the "messages" database inside the "inbox" bucket.
-const inboxDb = await new Promise(resolve => {
-  const request = inboxBucket.indexedDB.open("messages");
-  request.onupgradeneeded = () => { /* migration code */ };
-  request.onsuccess = () => resolve(request.result);
-  request.onerror = () => reject(request.error);
-});
 ```
 
 Buckets can be assigned different storage policies at creation time. The example
@@ -105,9 +103,58 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   title: "Drafts",
 });
 
-// The "messages" inside the "drafts" bucket is different from the "messages"
-// database in the "inbox" bucket. The two databases follow different storage
-// policies.
+```
+
+
+## Getting the storage policies associated with a bucket
+
+The storage policies passed to `openOrCreate()` are advisory. User agents may
+create buckets whose policies don't match the requests. In most cases, the
+deviations only result in different performance characteristics. Applications
+can check a bucket's policies and take appropriate action when a vital policy
+does not match the desired value.
+
+```javascript
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+  durability: "strict",
+  persisted: true,
+  title: "Drafts",
+});
+
+if (draftsBucket.durability !== "strict") {
+  displayWarningButterBar("Your drafts may be deleted while you're offline!");
+}
+```
+
+Each `optionOrCreate()` option that indicates a storage policy has a
+corresponding property on the bucket object. Examples for all policy-related
+properties will be shown in future sections.
+
+
+## Accessing storage APIs from buckets
+
+Each storage bucket has an entry point to the
+[Cache storage API](https://w3c.github.io/ServiceWorker/#cache-objects). The
+entry point matches `WindowOrWorkerGlobalScope.caches` in
+[the Service Worker spec](https://w3c.github.io/ServiceWorker/#self-caches).
+
+```javascript
+const inboxCache = await draftsBucket.caches.open("attachments");
+const draftsCache = await draftsBucket.caches.open("attachments");
+```
+
+Each storage bucket also has an entry point to the
+[IndexedDB API](https://w3c.github.io/IndexedDB/). The entry point matches
+`WindowOrWorkerGlobalScope.indexedDB` in
+[the IndexedDB spec](https://w3c.github.io/IndexedDB/#factory-interface).
+
+```javascript
+const inboxDb = await new Promise(resolve => {
+  const request = inboxBucket.indexedDB.open("messages");
+  request.onupgradeneeded = () => { /* migration code */ };
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
 const draftsDb = await new Promise(resolve => {
   const request = draftsBucket.indexedDB.open("messages");
   request.onupgradeneeded = () => { /* migration code */ };
@@ -116,16 +163,36 @@ const draftsDb = await new Promise(resolve => {
 });
 ```
 
-Creating a bucket with lower importance.
+Each storage bucket also has an entry point to the origin-private file system
+in the [Native File System API](https://wicg.github.io/native-file-system/).
+The entry point matches `WindowOrWorkerGlobalScope.getOriginPrivateDirectory()`
+in [the Native File System spec](https://wicg.github.io/native-file-system/#sandboxed-filesystem).
+
 ```javascript
-const cacheBucket = await navigator.storageBuckets.openOrCreate(
-  "cache",
-  {
-    durability: "relaxed",
-    persisted: false,
-    title: "Recently Seen Stuff",
-  });
+const draftsTestDir = await draftsBucket.getOriginPrivateDirectory();
+const inboxTestDir = await inboxBucket.getOriginPrivateDirectory();
 ```
+
+TODO: Update the text here with the resolution of
+https://github.com/WICG/native-file-system/issues/210.
+
+
+## Storage policies
+
+This explainer introduces parameters for the following policies.
+
+* `persisted` was chosen for consistency with
+[StorageManager.persisted()](https://storage.spec.whatwg.org/#dom-storagemanager-persisted)
+in the Storage specification. The true / false values are also consistent with
+the definitions in the Storage specification.
+
+`durability` was chosen for consistency with
+[IDBTransaction.durability](https://w3c.github.io/IndexedDB/#dom-idbtransaction-durability)
+in IndexedDB. The values `"strict"` and `"relaxed"` have the same significance
+as the corresponding
+[IndexedDB transaction hints](https://w3c.github.io/IndexedDB/#transaction-durability-hint).
+
+
 
 ## The default bucket
 
@@ -137,7 +204,7 @@ the `default` bucket on-demand.
 * `WindowOrWorkerGlobalScope.caches` in
   [ServiceWorker](https://w3c.github.io/ServiceWorker/#self-caches)
 * `NavigatorStorage.storage` in
-  [the Storage standard](https://storage.spec.whatwg.org/#api)
+  [the Storage Standard](https://storage.spec.whatwg.org/#api)
 * `WindowOrWorkerGlobalScope.getOriginPrivateDirectory` in
   [Native File System](https://wicg.github.io/native-file-system/#sandboxed-filesystem)
 
@@ -151,16 +218,35 @@ await navigator.storageBuckets.openOrCreate("default", {
 });
 ```
 
-### Opening Buckets
-```javascript
-const cache = await draftsBucket.caches.open("images");
+## Storage buckets and service workers
 
-const idb = await new Promise((resolve) => {
-  const req = draftsBucket.indexedDB.open("drafts-folder", 1);
-  req.onupgradeneeded = { /*…*/ };
-  req.onsuccess = (evt) => { resolve(evt.target.result); };
-});
+TODO: Flesh out this section or move it into a separate explainer.
+
+Each storage bucket can store
+[service worker registrations](https://w3c.github.io/ServiceWorker/#dfn-service-worker-registration).
+When a storage bucket is deleted, all service worker registrations that it
+contains are also evicted.
+
+Applications are expected to associate a service worker registration with a
+storage bucket if the service worker would not be able to do its job without
+the data in the bucket. This way the user agent won't have to spend system
+resources on waking up a service worker, only to find out that the service
+worker cannot fulfill the request given to it.
+
+```javascript
+await draftsBucket.register("/drafts-sw.js", { scope: "/drafts" });
+await inboxBucket.register("/inbox-sw.js", { scope: "/inbox" });
 ```
+
+Storage buckets expose access to their service workers via the following subset
+of the
+[ServiceWorkerContainer](https://w3c.github.io/ServiceWorker/#serviceworkercontainer)
+methods.
+
+* [register](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-register)
+* [getRegistration](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistration)
+* [getRegistrations](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistrations)
+
 
 ### Reserving Quota
 ```javascript
@@ -310,7 +396,7 @@ architectural decisions down to alternative naming choices.]
 
 [Describe an alternative which was considered, and why you decided against it.]
 
-### Alternative name for bucket `title`
+### Alternative name for the bucket `title` property
 
 The `title` properties could be named `description` instead. This would be
 consistent with the
@@ -342,6 +428,8 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   }
 });
 ```
+
+##
 
 ## Stakeholder Feedback / Opposition
 
