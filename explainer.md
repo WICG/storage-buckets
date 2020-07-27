@@ -139,7 +139,7 @@ entry point matches `WindowOrWorkerGlobalScope.caches` in
 [the Service Worker spec](https://w3c.github.io/ServiceWorker/#self-caches).
 
 ```javascript
-const inboxCache = await draftsBucket.caches.open("attachments");
+const inboxCache = await inboxBucket.caches.open("attachments");
 const draftsCache = await draftsBucket.caches.open("attachments");
 ```
 
@@ -163,14 +163,32 @@ const draftsDb = await new Promise(resolve => {
 });
 ```
 
+Each storage bucket also has an entry point to
+[the File API](https://w3c.github.io/FileAPI/). The entry points are
+asynchronous versions of
+[the Blob constructor](https://w3c.github.io/FileAPI/#dom-blob-blob) and
+[the File constructor](https://w3c.github.io/FileAPI/#dom-file-file). File API
+object created in a bucket are charged against the bucket's quota.
+
+```javascript
+const draftBlob = await draftsBucket.createBlob(
+    ["Message text."], { type: "text/plain" });
+const draftFile = await draftsBucket.createFile(
+    ["Attachment data"], "attachment.txt",
+    { type: "text/plain", lastModified: Date.now() });
+```
+
+TODO: Update the text here with the resolution of
+https://github.com/w3c/FileAPI/issues/157.
+
 Each storage bucket also has an entry point to the origin-private file system
 in the [Native File System API](https://wicg.github.io/native-file-system/).
 The entry point matches `WindowOrWorkerGlobalScope.getOriginPrivateDirectory()`
 in [the Native File System spec](https://wicg.github.io/native-file-system/#sandboxed-filesystem).
 
 ```javascript
-const draftsTestDir = await draftsBucket.getOriginPrivateDirectory();
 const inboxTestDir = await inboxBucket.getOriginPrivateDirectory();
+const draftsTestDir = await draftsBucket.getOriginPrivateDirectory();
 ```
 
 TODO: Update the text here with the resolution of
@@ -392,9 +410,33 @@ discussion threads.]
 [This should include as many alternatives as you can, from high level
 architectural decisions down to alternative naming choices.]
 
-### [Alternative 1]
+### Bucket designations for each storage API
 
-[Describe an alternative which was considered, and why you decided against it.]
+Instead of exposing entry points for each API on the bucket object, we could add
+integration points for buckets to each storage API. Examples below.
+
+```javascript
+
+const inboxCache = caches.open("attachments", { bucket: "inbox" });
+
+const inboxDb = await new Promise(resolve => {
+  const request = inboxBucket.indexedDB.open("messages", { bucket: "inbox" });
+  request.onupgradeneeded = () => { /* migration code */ };
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+
+const draftBlob = new Blob(
+    ["Message text."], { type: "text/plain", bucket: "drafts" });
+const draftFile = new File(
+    ["Attachment data"], "attachment.txt",
+    { type: "text/plain", lastModified: Date.now(), bucket: "drafts" });
+
+const inboxTestDir = await self.getOriginPrivateDirectory({ bucket: "inbox" });
+```
+
+TODO: Explain why this is worse than the main decision.
+
 
 ### Alternative name for the bucket `title` property
 
