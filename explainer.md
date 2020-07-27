@@ -20,18 +20,31 @@
 
 
 - [Introduction](#introduction)
-- [Background](#background)
 - [Goals](#goals)
 - [Non-goals](#non-goals)
 - [Use Cases](#use-cases)
-- [API Design](#api-design)
+- [Setting up buckets](#setting-up-buckets)
+- [Getting the storage policies associated with a bucket](#getting-the-storage-policies-associated-with-a-bucket)
+- [Accessing storage APIs from buckets](#accessing-storage-apis-from-buckets)
+- [Deleting buckets](#deleting-buckets)
+- [Storage policies](#storage-policies)
+- [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
+- [Reserving quota for a bucket](#reserving-quota-for-a-bucket)
+- [The default bucket](#the-default-bucket)
+- [Storage buckets and service workers](#storage-buckets-and-service-workers)
+- [Storage buckets and the Clear-Site-Data](#storage-buckets-and-the-clear-site-data)
 - [Key Scenarios](#key-scenarios)
+  - [Scenario 1](#scenario-1)
+  - [Scenario 2](#scenario-2)
+- [Detailed design discussion](#detailed-design-discussion)
+  - [Bucket names](#bucket-names)
+  - [Bucket titles](#bucket-titles)
+  - [Storage policy naming](#storage-policy-naming)
+  - [[Tricky design choice 2]](#tricky-design-choice-2)
 - [Considered alternatives](#considered-alternatives)
-  - [Event naming](#event-naming)
-  - [Event target](#event-target)
-  - [Service worker availability](#service-worker-availability)
-  - [Event dispatch logic](#event-dispatch-logic)
-  - [Storage space reservation](#storage-space-reservation)
+  - [Bucket designations for each storage API](#bucket-designations-for-each-storage-api)
+  - [Alternative name for the bucket `title` property](#alternative-name-for-the-bucket-title-property)
+  - [Language maps for bucket titles](#language-maps-for-bucket-titles)
 - [Stakeholder Feedback / Opposition](#stakeholder-feedback--opposition)
 - [References & acknowledgements](#references--acknowledgements)
 
@@ -88,7 +101,6 @@ before using storage APIs. In the simplest form, usage looks as follows.
 const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
   title: "Inbox",  // User agents may display this in storage management UI.
 });
-
 ```
 
 Buckets can be assigned different storage policies at creation time. The example
@@ -102,7 +114,6 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   persisted: true,
   title: "Drafts",
 });
-
 ```
 
 
@@ -126,7 +137,7 @@ if (draftsBucket.durability !== "strict") {
 }
 ```
 
-Each `optionOrCreate()` option that indicates a storage policy has a
+Each `openOrCreate()` option that indicates a storage policy has a
 corresponding property on the bucket object. Examples for all policy-related
 properties will be shown in future sections.
 
@@ -195,6 +206,18 @@ TODO: Update the text here with the resolution of
 https://github.com/WICG/native-file-system/issues/210.
 
 
+## Deleting buckets
+
+Storage buckets can be deleted. For example, the code below could be used to
+delete all the data stored on the device when the user logs out.
+
+
+```javascript
+await navigator.storageBuckets.delete("inbox");
+await navigator.storageBuckets.delete("drafts");
+```
+
+
 ## Storage policies
 
 This explainer introduces parameters for the following policies.
@@ -210,6 +233,34 @@ in IndexedDB. The values `"strict"` and `"relaxed"` have the same significance
 as the corresponding
 [IndexedDB transaction hints](https://w3c.github.io/IndexedDB/#transaction-durability-hint).
 
+
+## Getting a bucket's quota usage
+
+In order to support eviction at bucket granularity, user agents are expected to
+track quota usage for the data associated with each bucket. Applications can get
+this information using an API similar to
+[StorageManager.estimate()](https://storage.spec.whatwg.org/#dom-storagemanager-estimate).
+
+```javascript
+const inboxEstimate = await inboxBucket.estimate();
+if (inboxEstimate.usage >= inboxEstimate.quota * 0.95) {
+  displayWarningButterBar("Go to settings and sync fewer days of email");
+}
+```
+
+## Reserving quota for a bucket
+
+TODO: Flesh out this section or move it into a separate explainer.
+
+```javascript
+const autosaveBucket = await navigator.storageBuckets.open(
+  "autosave",
+  {
+    title: "Autosaved Form Data",
+    durability: "strict",
+  });
+await autosaveBucket.reserve(20 * 1024 * 1024);  // 20 MB
+```
 
 
 ## The default bucket
@@ -252,8 +303,10 @@ resources on waking up a service worker, only to find out that the service
 worker cannot fulfill the request given to it.
 
 ```javascript
-await draftsBucket.register("/drafts-sw.js", { scope: "/drafts" });
-await inboxBucket.register("/inbox-sw.js", { scope: "/inbox" });
+const inboxRegistration = await inboxBucket.serviceWorker.register(
+    "/inbox-sw.js", { scope: "/inbox" });
+const draftsRegistration = await draftsBucket.serviceWorker.register(
+    "/drafts-sw.js", { scope: "/drafts" });
 ```
 
 Storage buckets expose access to their service workers via the following subset
@@ -266,62 +319,21 @@ methods.
 * [getRegistrations](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistrations)
 
 
-### Reserving Quota
-```javascript
-const autosaveBucket = await navigator.storageBuckets.open(
-  "autosave",
-  {
-    title: "Autosaved Form Data",
-    durability: "strict",
-  });
-await autosaveBucket.reserve(20 * 1024 * 1024);  // 20 MB
+## Storage buckets and the Clear-Site-Data
+
+TODO: Flesh out this section or move it into a separate explainer.
+
+[Clear-Site-Data](https://w3c.github.io/webappsec-clear-site-data/) currently
+supports deleting all DOM-accessible storage via the `storage` type. We propose
+adding the ability to clear individual buckets using a family of types looking
+like `storage:bucket-name`.
+
+For example, receiving an HTTP response with the following header would cause
+the `inbox` bucket to be deleted.
+
 ```
-
-### Estimate Usage
-```javascript
-const draftsUsage = await draftsBucket.estimate();
+Clear-Site-Data: "storage:inbox"
 ```
-
-### Delete a Bucket
-```javascript
-await navigator.storageBuckets.delete(draftsBucket.name);
-```
-
-### Buckets in Service Workers
-```javascript
-const appBucket = await navigator.storageBuckets.open("app");
-const reg = await appBucket.serviceWorker.register("sw.js");
-// OR
-const reg = await navigator.serviceWorker.register(
-    "sw.js", { bucket: appBucket });
-// THEN MAYBE
-Clear-Site-Data: "storage:app"
-```
-
-###
-[For each related element of the proposed solution - be it an additional JS
-method, a new object, a new element, a new concept etc., create a section
-which briefly describes it.]
-
-
-```javascript
-// Provide example code - not IDL - demonstrating the design of the feature.
-
-// If this API can be used on its own to address a user need,
-// link it back to one of the scenarios in the goals section.
-
-// If you need to show how to get the feature set up
-// (initialized, or using permissions, etc.), include that too.
-```
-
-[Where necessary, provide links to longer explanations of the relevant
-pre-existing concepts and API. If there is no suitable external
-documentation, you might like to provide supplementary information as an
-appendix in this document, and provide an internal link where appropriate.]
-
-[If this is already specced, link to the relevant section of the spec.]
-
-[If spec work is in progress, link to the PR or draft of the spec.]
 
 
 ## Key Scenarios
@@ -347,7 +359,8 @@ solve the key scenarios described.]
 
 TODO: `/` intended for tree display in UI.
 
-TODO: Discussion around allowable characters.
+TODO: Discussion around allowable characters. The set should make it easy to
+specify buckets in Clear-Site-Data.
 
 
 ### Bucket titles
@@ -433,6 +446,9 @@ const draftFile = new File(
     { type: "text/plain", lastModified: Date.now(), bucket: "drafts" });
 
 const inboxTestDir = await self.getOriginPrivateDirectory({ bucket: "inbox" });
+
+const inboxRegistration = await navigator.serviceWorker.register(
+    "/inbox-sw.js", { scope: "/inbox", bucket: "inbox" });
 ```
 
 TODO: Explain why this is worse than the main decision.
@@ -470,8 +486,6 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   }
 });
 ```
-
-##
 
 ## Stakeholder Feedback / Opposition
 
