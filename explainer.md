@@ -132,8 +132,8 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   title: "Drafts",
 });
 
-if (draftsBucket.durability !== "strict") {
-  displayWarningButterBar("Your drafts may be deleted while you're offline!");
+if (draftsBucket.persisted !== "strict") {
+  displayWarningButterBar("Your drafts may be lost if the computer loses power!");
 }
 ```
 
@@ -218,7 +218,7 @@ await navigator.storageBuckets.delete("drafts");
 ```
 
 
-## Storage policies
+## Storage policy: Persistence
 
 This explainer introduces parameters for the following policies.
 
@@ -226,6 +226,9 @@ This explainer introduces parameters for the following policies.
 [StorageManager.persisted()](https://storage.spec.whatwg.org/#dom-storagemanager-persisted)
 in the Storage specification. The true / false values are also consistent with
 the definitions in the Storage specification.
+
+
+## Storage policy: Durability
 
 `durability` was chosen for consistency with
 [IDBTransaction.durability](https://w3c.github.io/IndexedDB/#dom-idbtransaction-durability)
@@ -253,7 +256,7 @@ if (inboxEstimate.usage >= inboxEstimate.quota * 0.95) {
 TODO: Flesh out this section or move it into a separate explainer.
 
 ```javascript
-const autosaveBucket = await navigator.storageBuckets.open(
+const autosaveBucket = await navigator.storageBuckets.openOrCreate(
   "autosave",
   {
     title: "Autosaved Form Data",
@@ -402,26 +405,178 @@ in IndexedDB. The values `"strict"` and `"relaxed"` have the same significance
 as the corresponding
 [IndexedDB transaction hints](https://w3c.github.io/IndexedDB/#transaction-durability-hint).
 
-[Talk through the tradeoffs in coming to the specific design point you want
-to make.]
 
-```javascript
-// Illustrated with example code.
-```
+### Durability guarantees
 
-[This may be an open question, in which case you should link to any active
-discussion threads.]
+Data "written" by a storage API conceptually goes through the following four
+stages.
 
+1) The data starts out cached in an application-level buffer. If the current tab
+   or the entire user agent crashes (due to a bug or resource exhaustion), the
+   data is lost.
 
-### [Tricky design choice 2]
+2) The data is flushed to an OS-level (usually kernel) buffer. At this point,
+   the data will survive a tab or user agent crash. However, the data is lost
+   if the entire operating system crashes ([blue screen of
+   death](https://en.wikipedia.org/wiki/Blue_screen_of_death) on Windows,
+   [kernel panic](https://en.wikipedia.org/wiki/Kernel_panic) on UNIX
+   systems).
 
-[etc.]
+3) The data is flushed to a storage device (HDD / SSD) buffer. At this point,
+   the data will survive an OS crash. However, if the computer experiences a
+   power failure, the data may be lost. Some storage devices have batteries with
+   sufficient capacity to write the data in the buffers in case of power
+   failure, but this is not generally guaranteed.
+
+4) The data is persisted to the storage medium (disk platters for HDDs,
+   non-volatile memory cells for SSDs). At this point, the data will surive a
+   computer power failure.
+
+Storage systems may differ in how they handle a write operation, such as
+commiting an
+[IndexedDB transaction](https://w3c.github.io/IndexedDB/#transaction-construct),
+along the following axes.
+
+1) The stage at which the system reports that the write has completed. For
+   example, many database systems offer the option of considering that a
+   transaction has committed when the data is flushed to OS-level buffers.
+
+2) The stage to which the data is pushed after the write has completed. In the
+   example above, after a database system considers a transaction to have
+   completed, it may ask the OS to flush the data to the storage
+   device, or it can let the data stay in OS-level buffers until the OS decides
+   to evict the data to the storage device.
+
+Combining the stage at which a write is reported as completed with the stage to
+which the data is pushed results in 12 possibile behaviors for storing data. The
+behaviors with a higher risk of data loss result in better performance along a
+few axes such as write speed, battery usage, and storage medium wear.
+
+The storage buckets API narrows down this complex space to only two options,
+which are packaged as possible values for the `durability` policy.
+
+* The `strict` durability policy requires that the data is persisted to the
+  storage medium before writes are considered to have completed. This policy
+  results in lower performance, but guarantees that data will survive power
+  losses. Therefore, this policy is  the right choice for user data that cannot
+  be recovered from an alternative source in the event of a power failure.
+
+* The `relaxed` durability policy requires that the data is flushed to OS-level
+  buffers below writes are considered to have completed, and allows the data to
+  remain in OS-level buffers for an indefinite amount of time. This policy
+  results in better performance, at the cost of risking data loss. For this
+  reason, this policy is intended for data that can be easily obtained from an
+  alternative source, such as cached versions of data stored on the
+  application's server.
+
+TODO: Explain that the oher options were ignored as a result of trading off
+better control (which might result in better performance) against presenting
+developers with a simple model (writing guidance for more options would be
+significantly more complex) and against cross-system consistency. We consider
+that the performance difference between application-level buffers OS-level
+buffers is not significant (comparable to IPC in a multi-process browser). The
+ability to flush to storage device buffers is not available on all operating
+systems.
+
+TODO: Explain that `relaxed` is the default because applications need to design
+explicitly for being able to recover from power failures. The durability
+guarantees apply to individual writes, but applications need to handle
+inconsistencies across storage APIs (Cache Storage and IndexedDB). We don't
+offer two-phase commit across storage APIs.
 
 
 ## Considered alternatives
 
 [This should include as many alternatives as you can, from high level
 architectural decisions down to alternative naming choices.]
+
+### Expose the API off of navigator.storage.buckets
+
+Instead of exposing the storage buckets API off of `navigator.storageBuckets`,
+we have exposed it off of `navigator.storage.buckets`. The examples below
+illustrate this alternative.
+
+```javascript
+const inboxBucket = await navigator.storage.buckets.openOrCreate("inbox", {
+  title: "Inbox",
+});
+const draftsBucket = await navigator.storage.buckets.openOrCreate("drafts", {
+  durability: "strict",
+  persisted: true,
+  title: "Drafts",
+});
+
+await inboxBucket.close();
+await draftsBucket.close();
+
+await navigator.storage.buckets.delete("inbox");
+await navigator.storage.buckets.delete("drafts");
+```
+
+`navigator.storage.buckets` was rejected to avoid developer confusion around
+nesting and the default bucket. Specifically, some `navigator.storage` methods
+(`estimate()`, `persist()` and `persisted()`) operate on the default bucket, so
+`navigator.storage` seems connected to the default bucket.
+`navigator.storage.buckets` is a property on `navigator.storage`, and it may be
+confusing that it refers to all the origin's buckets, not to the default bucket.
+
+
+### Separate intents for creating a bucket and opening an existing bucket
+
+`navigator.storageBuckets.openOrCreate()` always attempts to create a bucket
+with the given name if it does not exist. This is different from storage APIs on
+most systems, where developers can express the three separate intents below.
+
+1) Open the named bucket if it exists, create it if it does not exist.
+2) Open the named bucket if it exists, fail if it does not exist.
+3) Fail if the named bucket exists, create it if it does not exist.
+
+Allowing all three intents to be expressed could have been accomplished by
+having separate methods (`openOrCreate()`, `open()`, `create()`), as
+illustrated in the example below.
+
+```javascript
+// Creates the "inbox" bucket if does not already exist.
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
+  title: "Inbox",
+});
+
+// Fails if the "inbox" bucket does not already exist.
+const inboxBucket = await navigator.storageBuckets.open("inbox", {
+  title: "Inbox",
+});
+
+// Fails if the "inbox" bucket already exists.
+const inboxBucket = await navigator.storageBuckets.create("inbox", {
+  title: "Inbox",
+});
+```
+
+Alternatively, we could have settled for one `open()` method with options, as
+shown below.
+
+```javascript
+// By default, creates the "inbox" bucket if does not already exist.
+const inboxBucket = await navigator.storageBuckets.open("inbox", {
+  title: "Inbox",
+});
+
+// Fails if the "inbox" bucket does not already exist.
+const inboxBucket = await navigator.storageBuckets.open("inbox", {
+  title: "Inbox", failIfNotExist: true,
+});
+
+// Fails if the "inbox" bucket already exists.
+const inboxBucket = await navigator.storageBuckets.open("inbox", {
+  title: "Inbox", failIfExists: true,
+});
+```
+
+We think that only exposing the `openOrCreate()` option is the best way to
+support the model where each bucket can be evicted by the browser independently
+of other buckets. We want applications to be written assuming that each time
+they attempt to open a bucket, they may be creating the bucket from scratch.
+
 
 ### Bucket designations for each storage API
 
