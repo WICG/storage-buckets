@@ -110,10 +110,7 @@ described in future sections.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict",
-  persisted: true,
-  title: "Drafts",
-});
+  durability: "strict", persisted: true, title: "Drafts" });
 ```
 
 
@@ -127,13 +124,11 @@ does not match the desired value.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict",
-  persisted: true,
-  title: "Drafts",
-});
+  durability: "strict", persisted: true, title: "Drafts" });
 
 if (draftsBucket.persisted !== "strict") {
-  displayWarningButterBar("Your drafts may be lost if the computer loses power!");
+  displayWarningButterBar(
+      "Your drafts may be lost if the computer loses power!");
 }
 ```
 
@@ -284,10 +279,7 @@ The default bucket is created with the following options.
 
 ```js
 await navigator.storageBuckets.openOrCreate("default", {
-  durability: "strict",
-  persist: false,
-  title: "",
-});
+  durability: "strict", persist: false, title: "" });
 ```
 
 ## Storage buckets and service workers
@@ -426,7 +418,10 @@ stages.
    the data will survive an OS crash. However, if the computer experiences a
    power failure, the data may be lost. Some storage devices have batteries with
    sufficient capacity to write the data in the buffers in case of power
-   failure, but this is not generally guaranteed.
+   failure, but this is not generally guaranteed. Furthermore, most modern
+   portable computers (laptops, tablets, mobile phones) have firmware / OS logic
+   that mitigates power failures by suspending the computer's activity and
+   writing all the data in volatile buffers.
 
 4) The data is persisted to the storage medium (disk platters for HDDs,
    non-volatile memory cells for SSDs). At this point, the data will surive a
@@ -469,21 +464,6 @@ which are packaged as possible values for the `durability` policy.
   alternative source, such as cached versions of data stored on the
   application's server.
 
-TODO: Explain that the oher options were ignored as a result of trading off
-better control (which might result in better performance) against presenting
-developers with a simple model (writing guidance for more options would be
-significantly more complex) and against cross-system consistency. We consider
-that the performance difference between application-level buffers OS-level
-buffers is not significant (comparable to IPC in a multi-process browser). The
-ability to flush to storage device buffers is not available on all operating
-systems.
-
-TODO: Explain that `relaxed` is the default because applications need to design
-explicitly for being able to recover from power failures. The durability
-guarantees apply to individual writes, but applications need to handle
-inconsistencies across storage APIs (Cache Storage and IndexedDB). We don't
-offer two-phase commit across storage APIs.
-
 
 ## Considered alternatives
 
@@ -501,10 +481,7 @@ const inboxBucket = await navigator.storage.buckets.openOrCreate("inbox", {
   title: "Inbox",
 });
 const draftsBucket = await navigator.storage.buckets.openOrCreate("drafts", {
-  durability: "strict",
-  persisted: true,
-  title: "Drafts",
-});
+  durability: "strict", persisted: true, title: "Drafts" });
 
 await inboxBucket.close();
 await draftsBucket.close();
@@ -538,18 +515,15 @@ illustrated in the example below.
 ```javascript
 // Creates the "inbox" bucket if does not already exist.
 const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
-  title: "Inbox",
-});
+  title: "Inbox" });
 
 // Fails if the "inbox" bucket does not already exist.
 const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox",
-});
+  title: "Inbox" });
 
 // Fails if the "inbox" bucket already exists.
 const inboxBucket = await navigator.storageBuckets.create("inbox", {
-  title: "Inbox",
-});
+  title: "Inbox" });
 ```
 
 Alternatively, we could have settled for one `open()` method with options, as
@@ -558,18 +532,15 @@ shown below.
 ```javascript
 // By default, creates the "inbox" bucket if does not already exist.
 const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox",
-});
+  title: "Inbox" });
 
 // Fails if the "inbox" bucket does not already exist.
 const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox", failIfNotExist: true,
-});
+  title: "Inbox", failIfNotExist: true });
 
 // Fails if the "inbox" bucket already exists.
 const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox", failIfExists: true,
-});
+  title: "Inbox", failIfExists: true });
 ```
 
 We think that only exposing the `openOrCreate()` option is the best way to
@@ -632,15 +603,204 @@ TODO: The translations and codes need to be checked.
 
 ```js
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict",
-  persisted: true,
-  title: {
-    en: "Drafts",
-    es: "Borradoers",
-    jp: "下書き",
-  }
-});
+  durability: "strict", persisted: true,
+  title: { en: "Drafts", es: "Borradoers", jp: "下書き" }});
 ```
+
+### Separate durability options for flushing to the storage device vs media
+
+The `durability` bucket property currently supports the storage policies
+`"relaxed"` and `"strict"`. Instead of the `"strict"` policy, we could have
+provided separate policies for flushing the data to storage device buffers
+(`"device"`) and for flushing the data to storage media (`"media"`).
+
+Under this alternative, advanced applications would take advantage of the
+extra flexibility for increased performance, while simpler applications would
+use `"media"`, which is equivalent to `"strict"`. The example below outlines
+the code needed to use the extra storage policy, and is suggestive of the
+additional complexity introduced by this alternative.
+
+```javascript
+// Writes to this bucket are flushed to the storage device. The data here may be
+// lost in case of power failure.
+//
+// Each change (keystroke) in a draft is saved here.
+const immediateDraftsBucket = await navigator.storage.buckets.openOrCreate(
+    "device-drafts",
+    { durability: "device", persisted: true, title: "Drafts Cache" });
+const immediateDraftsDb = await new Promise(resolve => {
+  const request = inboxBucket.indexedDB.open("messages", { bucket: "inbox" });
+  request.onupgradeneeded = () => { /* migration code */ };
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+
+// Writes to this bucket are flushed to the storage media. The data here will
+// not be lost on power failure.
+//
+// Draft changes are batched every minute and saved here. Writing to this bucket
+// on every keystroke is too much of a battery drain.
+const draftsBucket = await navigator.storage.buckets.openOrCreate(
+    "media-drafts", { durability: "media", persisted: true, title: "Drafts" });
+const draftsDb = await new Promise(resolve => {
+  const request = inboxBucket.indexedDB.open("messages", { bucket: "inbox" });
+  request.onupgradeneeded = () => { /* migration code */ };
+  request.onsuccess = () => resolve(request.result);
+  request.onerror = () => reject(request.error);
+});
+
+// Accumulates changes that have been stored in immediateDraftsDb but not in
+// draftsDb.
+const batchedDrafts = [];
+
+// Called on every draft change, which may happen on every user key stroke or
+// mouse click.
+async function saveDraft(draft) {
+  batchedDrafts.push(draft);
+
+  const transaction = immediateDraftsDb.transaction("messages", "readwrite");
+  const messageStore = transaction.objectStore("messages");
+  await new Promise((resolve, reject) => {
+    objectStore.put(draft);
+    transaction.commit();
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+// Called every minute to write new draft changes to the persistent database.
+async function flushDrafts() {
+  if (batchedDrafts.length === 0)
+    return;
+
+  // Swap the drafts queue to avoid double flushing.
+  const drafts = batchedDrafts;
+  batchedDrafts = [];
+
+  // TODO: Eliminate redundant draft changes.
+
+  const transaction = db.transaction("messages", "readwrite");
+  const messageStore = transaction.objectStore("messages");
+  await new Promise((resolve, reject) => {
+    for (let draft of drafts)
+      objectStore.put(draft);
+    transaction.commit();
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+setInterval(flushDrafts, 60 * 1000);
+```
+
+The alternative was rejected because we considered that the extra complexity is
+not worth the performance benefits. Specifically, buckets using the `"media"`
+policy would allow the storage device to batch the writes its internal buffers.
+Under our proposed design, buckets that would have used the `"media"` policy
+will be indistinguishable from buckets that would have used the `"device'`
+policy, the writes to these buckets will be flushed directly to storage media.
+We are foregoing the following advantages.
+
+* Writes that must go straight to the storage media reduce the flexibility of
+  the on-device I/O scheduler. This may impact the performance of seemingly
+  unrelated I/O requests.
+
+* Writing to the storage media more often will wear out the media, reducing the
+  life span of the storage device. This effect may be more significant in the
+  lower end of the market, where devices have lower endurance specifications.
+
+* Writing to the storage media more often will consume extra battery power on
+  mobile computers.
+
+We were also influenced by the fact that most operating systems that are
+currently popular do not support the distinction between the two storage
+policies. The points below outline the current state of OS support.
+
+* On Linux-based systems, which include Android and ChromeOS,
+  [fdatasync()](https://linux.die.net/man/2/fdatasync) flushes all the changes
+  in a file from OS-level buffers to to the storage device media, which is
+  consistent with the `"media"` storage policy.
+  [fsync()](https://man7.org/linux/man-pages/man2/fsync.2.html) also flushes
+  file metadata that is not strictly needed to read the data, such as file
+  modification and access times.
+
+* On Windows, the `CreateFile()` flag
+  [FILE_FLAG_WRITE_THROUGH](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea#:~:text=FILE_FLAG_WRITE_THROUGH)
+  is fairly similar to the `"strict"` durability policy, as it requires that all
+  writes are flushed to the storage device.
+  [FlushFileBuffers()](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers)
+  flushes a file's changes to the storage device. The function
+  [flushes to media in Windows 8+](https://devblogs.microsoft.com/oldnewthing/20170510-00/?p=95505),
+  which is consistent with the `"media"` policy. However, on Windows 7 and
+  below, variations in device drivers may cause the function to only flush to
+  storage device buffers, which is consistent with the `"device"` policy.
+
+* On Darwin-based systems, which include macOS and iOS,
+  [fsync()](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/fsync.2.html)
+  flushes a file's changes to the storage device buffers, which is consistent
+  with the `"device"` storage policy. This behavior is compliant with the
+  [POSIX 2018 specification for fsync()](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fsync.html),
+  which only demands that the data be "transferred to the storage device".
+  Flushing changes to the storage media platters, required by the `"media"`
+  policy, is accomplished by passing the
+  [F_FULLFSYNC](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/fcntl.2.html#:~:text=F_FULLFSYNC)
+  flag to `fcntl()`.
+
+
+### Separate durability option for application-level buffers
+
+The `durability` bucket property currently supports the storage policies
+`"relaxed"` and `"strict"`. Instead of the `"relaxed"` policy, we could have
+provided separate policies for completing the write while the data is in
+application-level buffers (`"app"`) and for flushing the data to OS-level
+buffers (`"kernel"`).
+
+At a high level, this alternative is about a tradeoff between offering
+applications more flexibility, in the name of performance, and offering a
+simpler storage model. So, the analysis here should be similar to the discussion
+around durability options for flushing to the storage device vs media, covered
+in the section above. However, this section is significantly shorter, because
+the performance benefits are much less significant.
+
+This section does not have sample code, because we could not find any use case
+that would benefit from the separation proposed here. Instead, we'll discuss the
+performance benefits offered by such a separation, and their relevance.
+
+Writes to buckets with the `"app"` storage policy would be considered complete
+as soon as the data has been serialized in an application-level buffer inside
+the user agent. Not having to wait for the data to be flushed to OS-level
+buffers has the following advantages.
+
+* Flushing the data to the OS involves system calls, which perform CPU context
+  switches. The context switches have non-trivial costs.
+
+* Flushing the data to the OS may require copying the data buffers, which can be
+  expensive when writing large amounts of data.
+
+This alternative was rejected because these advantages above are considered to
+be mostly theoretic, for the following reasons.
+
+* All usage of storage APIs may require system calls. Modern user agents have
+  multi-process architectures. Most storage API features, such as transactions,
+  require [IPC](https://en.wikipedia.org/wiki/Inter-process_communication)
+  between a process running the site's JavaScript and a coordinating process.
+  IPC requires system calls.
+
+* Data buffer copies may be avoided. All modern operating systems have shared
+  memory features for avoiding large data copies during IPC. Modern operating
+  systems also have direct I/O features that either allow the user agent to
+  serialize data directly into an OS-level buffer, or allow applications to
+  surrender ownership of buffers to the OS.
+
+
+### Default to strict durability
+
+TODO: Explain that `relaxed` is the default because applications need to design
+explicitly for being able to recover from power failures. The durability
+guarantees apply to individual writes, but applications need to handle
+inconsistencies across storage APIs (Cache Storage and IndexedDB). We don't
+offer two-phase commit across storage APIs.
+
 
 ## Stakeholder Feedback / Opposition
 
