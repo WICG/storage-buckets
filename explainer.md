@@ -798,14 +798,50 @@ be mostly theoretic, for the following reasons.
   serialize data directly into an OS-level buffer, or allow applications to
   surrender ownership of buffers to the OS.
 
+This decision was influenced the fact that application-level buffers are not
+used in the built-in [SQLite VFS](https://www.sqlite.org/vfs.html)
+implementations, in the built-in
+[LevelDB Env](https://github.com/google/leveldb/blob/master/include/leveldb/env.h)
+implementations, or in
+[Chrome's file abstraction](https://source.chromium.org/chromium/chromium/src/+/master:base/files/file.h).
+The main reason this option was consisdered is that
+[fopen()](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fopen.html)
+in the POSIX standard is specified to use an application-level buffer, which
+may be flushed to an OS-level buffer using
+[fflush()](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fflush.html).
+
 
 ### Default to strict durability
 
-TODO: Explain that `relaxed` is the default because applications need to design
-explicitly for being able to recover from power failures. The durability
-guarantees apply to individual writes, but applications need to handle
-inconsistencies across storage APIs (Cache Storage and IndexedDB). We don't
-offer two-phase commit across storage APIs.
+Newly created buckets receive the `"relaxed"` storage policy, unless a different
+`durability` option is passed to `openOrCreate()`. The default storage policy
+could have been `"strict"`. This alternative was rejected for two reasons,
+outlined below.
+
+First, we expect that Web applications will mostly use client-side storage to
+cache data, where the authoritative copy is stored on the application server.
+This use case is best served by the `"relaxed"` policy. The example below shows
+that this alternative leads to more bulky code for expressing the common case.
+
+```javascript
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
+  title: "Inbox", durability: "relaxed" });
+
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+  persisted: true, title: "Drafts" });
+```
+
+Second, we think that the current proposal will make it easier to reaason about
+correctness in a code review. Reviewers can assume that code that explicitly
+mentions `durability: "strict"` is operating on data that must survive power
+outages, and can focus on recovery logic for this code. If we followed the
+alternative, reviewers that encounter a bucket without a `durability` option
+would have to check if the author forgot to specify `durability: "relaxed"`,
+if the bucket stores  data that cannot be recovered from another source.
+
+TODO: Explain that durability guarantees apply to individual writes, but
+applications need to handle inconsistencies across storage APIs (Cache
+Storage and IndexedDB). We don't offer two-phase commit across storage APIs.
 
 
 ## Stakeholder Feedback / Opposition
