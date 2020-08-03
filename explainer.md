@@ -470,6 +470,30 @@ which are packaged as possible values for the `durability` policy.
   alternative source, such as cached versions of data stored on the
   application's server.
 
+We drew inspiration from [SQLite](https://www.sqlite.org/) and
+[LevelDB](https://github.com/google/leveldb), which are the two libraries used
+by the browsers that are popular at the time of this writing. The following
+facts were considered by our decision process.
+
+* SQLite allows choosing between flushing data to the operating system
+  (similarly to the `relaxed` policy), and flushing it to the storage device or
+  media (similarly to the `strict` policy) via the
+  [synchronous PRAGMA](https://www.sqlite.org/pragma.html#pragma_synchronous).
+  This setting's behavior is closely connected to whether a database uses
+  [Write-Ahead Logging (WAL)](https://www.sqlite.org/wal.html) or not, which
+  must be decided when the database is open via the
+  [journal_mode PRAGMA](https://www.sqlite.org/pragma.html#pragma_journal_mode).
+
+* SQLite allows choosing between flushing to the storage device and flushing to
+  the media via the
+  [fullfsync PRAGMA](https://www.sqlite.org/pragma.html#pragma_fullfsync) and
+  the
+  [checkpoint_fullfsync PRAGMA](https://www.sqlite.org/pragma.html#pragma_checkpoint_fullfsync).
+
+* LevelDB allows choosing between the `relaxed` policy and the `strict` policy
+  at transaction level via the
+  [WriteOptions.sync option](https://github.com/google/leveldb/blob/master/doc/index.md#synchronous-writes).
+
 
 ## Considered alternatives
 
@@ -571,11 +595,11 @@ const inboxDb = await new Promise(resolve => {
   request.onerror = () => reject(request.error);
 });
 
-const draftBlob = new Blob(
-    ["Message text."], { type: "text/plain", bucket: "drafts" });
-const draftFile = new File(
+const inboxBlob = new Blob(
+    ["Message text."], { type: "text/plain", bucket: "inbox" });
+const inboxFile = new File(
     ["Attachment data"], "attachment.txt",
-    { type: "text/plain", lastModified: Date.now(), bucket: "drafts" });
+    { type: "text/plain", lastModified: Date.now(), bucket: "inbox" });
 
 const inboxTestDir = await self.getOriginPrivateDirectory({ bucket: "inbox" });
 
@@ -842,6 +866,97 @@ if the bucket stores  data that cannot be recovered from another source.
 TODO: Explain that durability guarantees apply to individual writes, but
 applications need to handle inconsistencies across storage APIs (Cache
 Storage and IndexedDB). We don't offer two-phase commit across storage APIs.
+
+
+### Support changing a bucket's durability policy
+
+Once a bucket is created, the value of its `durability` policy is fixed. This is
+inconsistent with the `persisted` policy, which can be changed after the bucket
+is created via the `persist()` method.
+
+If storage buckets allowed changing the `durability` policy, applications could
+switch policies based on dynamically changing conditions. The email client in
+our example might want to allow the user to switch between storing email drafts
+with `"strict"` durability and storing the drafts with `"relaxed"` durability.
+
+```javascript
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+  durability: "strict", persisted: true, title: "Drafts" });
+
+// Called when the user switches a "drafts" durability toggle.
+async function setDraftsDurability(durability) {
+  // If durability can change, it definitely needs to be exposed using an async
+  // function.
+  const currentDurability = await draftsBucket.durability();
+  if (currentDurability === durability)
+    return;
+
+  await draftsBucket.setDurability(durability);
+}
+```
+
+In the world proposed by this explainer, the email client could offer the same
+flexibility to the user at the cost of extra complexity. The email client would
+create two buckets, write drafts to the bucket that reflects the user's current
+preferences, and read drafts from both buckets.
+
+```javascript
+const draftsBuckets = {};
+draftsBuckets.strict = await navigator.storageBuckets.openOrCreate("drafts", {
+  durability: "strict", persisted: true, title: "Drafts (Durable)" });
+draftsBuckets.relxaed = await navigator.storageBuckets.openOrCreate("drafts", {
+  durability: "relaxed", persisted: true, title: "Drafts (Fast)" });
+
+
+const draftsDb = {};
+for (let durability of ["relaxed", "strict"]) {
+  draftsDb[druability] = await new Promise(resolve => {
+    const request = draftsBucket[durability].indexedDB.open("messages");
+    request.onupgradeneeded = () => { /* migration code */ };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Called on every draft change, which may happen on every user key stroke or
+// mouse click.
+async function saveDraft(draft) {
+  batchedDrafts.push(draft);
+
+  const transaction = immediateDraftsDb.transaction("messages", "readwrite");
+  const messageStore = transaction.objectStore("messages");
+  await new Promise((resolve, reject) => {
+    objectStore.put(draft);
+    transaction.commit();
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+// TODO: Code that reads drafts should operate on both databases.
+```
+
+This alternative was rejected because of concerns that it would significantly
+reduce the degrees of freedom of user agent implementations, which could result
+in reduced performance for all applications.
+
+For example, let's consider a user agent that only targets Linux-based
+systems and relies on SQLite to implement storage APIs. This user-agent could
+implement `"strict"` buckets using SQLite databases (or one consolidated
+database per origin) with
+[PRAGMA synchronous](https://www.sqlite.org/pragma.html#pragma_synchronous) set
+to `FULL` and
+[PRAGMA journal_mode](https://www.sqlite.org/pragma.html#pragma_journal_mode)
+set to `DELETE`, in order to take advantage of
+[SQLite's F2FS fast path](https://www.sqlite.org/compile.html#enable_batch_atomic_write).
+`"relaxed"` buckets use SQLite databases with PRAGMA synchronous set to `DELETE`
+and PRAGMA journal_mode set to `WAL`, which would take advantage of
+[WAL mode](https://www.sqlite.org/wal.html).
+
+The example above illustrates that user agents may be able to obtain better
+performance if they can place data with different `durability` policies in
+entirely different underlying stores. The ability to change a bucket's
+`durability` policy would significantly undermine this flexibility.
 
 
 ## Stakeholder Feedback / Opposition
