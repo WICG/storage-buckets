@@ -51,6 +51,7 @@
   - [Separate durability options for flushing to the storage device vs media](#separate-durability-options-for-flushing-to-the-storage-device-vs-media)
   - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
   - [Default to strict durability](#default-to-strict-durability)
+  - [Support changing a bucket's durability policy](#support-changing-a-buckets-durability-policy)
 - [Stakeholder Feedback / Opposition](#stakeholder-feedback--opposition)
 - [References & acknowledgements](#references--acknowledgements)
 
@@ -105,7 +106,7 @@ before using storage APIs. In the simplest form, usage looks as follows.
 ```javascript
 // Create a bucket for emails that are synchronized with the server.
 const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
-  title: "Inbox",  // User agents may display this in storage management UI.
+  title: "Inbox",  // User agents may display titles in storage management UI.
 });
 ```
 
@@ -116,7 +117,7 @@ described in future sections.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict", persisted: true, title: "Drafts" });
+    durability: "strict", persisted: true, title: "Drafts" });
 ```
 
 
@@ -130,7 +131,7 @@ does not match the desired value.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict", persisted: true, title: "Drafts" });
+    durability: "strict", persisted: true, title: "Drafts" });
 
 if (draftsBucket.persisted !== "strict") {
   displayWarningButterBar(
@@ -221,12 +222,48 @@ await navigator.storageBuckets.delete("drafts");
 
 ## Storage policy: Persistence
 
-This explainer introduces parameters for the following policies.
+The storage specification currently endows each bucket with a
+[mode](https://storage.spec.whatwg.org/#bucket-mode), which can be `persistent`
+or `best-effort`. A persistent bucket will not be evicted without user notice
+when the user agent experiences
+[storage pressure](https://storage.spec.whatwg.org/#persistence). User agents
+may also distinguish persistent buckets in their storage management UIs. For
+example, Chrome presents an additional warning when a user chooses to delete
+persistent storage.
 
-* `persisted` was chosen for consistency with
-[StorageManager.persisted()](https://storage.spec.whatwg.org/#dom-storagemanager-persisted)
-in the Storage specification. The true / false values are also consistent with
-the definitions in the Storage specification.
+This explainer proposes replacing the internal mode concept with a persistence
+policy, in the interest of arriving at a uniform model for bucket behaviors. We
+also propose the following API for operating on a bucket's persistence policy.
+
+A bucket's persistence policy is specified at bucket creation time.
+
+```javascript
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+    persisted: true, title: "Drafts" });
+```
+
+The persistence policy can be queried at any time.
+
+```javascript
+if (await draftsBucket.persisted() !== true) {
+  showButterBar("Your email drafts may be lost if you run out of disk space");
+}
+```
+
+The application can attempt to make a bucket persistent.
+
+```javascript
+if (await draftsBucket.persisted() !== true) {
+  const butterBar = showButterBar(
+      "Your email drafts may be lost if you run out of disk space. Fix?");
+  butterBar.onFixClicked = () => {
+    if (await draftsBucket.persist() === true) {
+      butterBar.hide();
+      showButterBar("Your drafts are now safe! \o/");
+    }
+  }
+}
+```
 
 
 ## Storage policy: Durability
@@ -512,9 +549,6 @@ const inboxBucket = await navigator.storage.buckets.openOrCreate("inbox", {
 });
 const draftsBucket = await navigator.storage.buckets.openOrCreate("drafts", {
   durability: "strict", persisted: true, title: "Drafts" });
-
-await inboxBucket.close();
-await draftsBucket.close();
 
 await navigator.storage.buckets.delete("inbox");
 await navigator.storage.buckets.delete("drafts");
