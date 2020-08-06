@@ -52,6 +52,8 @@
   - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
   - [Default to strict durability](#default-to-strict-durability)
   - [Support changing a bucket's durability policy](#support-changing-a-buckets-durability-policy)
+  - [Synchronous access to a bucket's storage policies](#synchronous-access-to-a-buckets-storage-policies)
+  - [Keep deleted buckets alive while there are references to them](#keep-deleted-buckets-alive-while-there-are-references-to-them)
 - [Stakeholder Feedback / Opposition](#stakeholder-feedback--opposition)
 - [References & acknowledgements](#references--acknowledgements)
 
@@ -217,6 +219,10 @@ delete all the data stored on the device when the user logs out.
 await navigator.storageBuckets.delete("inbox");
 await navigator.storageBuckets.delete("drafts");
 ```
+
+A bucket's data becomes inacessible by the time the deletion operation
+completes. For example, when deleting a bucket, all its IndexedDB databases will
+be force-closed.
 
 
 ## Storage policy: Persistence
@@ -1027,6 +1033,39 @@ The example above illustrates that user agents may be able to obtain better
 performance if they can place data with different `durability` policies in
 entirely different underlying stores. The ability to change a bucket's
 `durability` policy would significantly undermine this flexibility.
+
+
+### Synchronous access to a bucket's storage policies
+
+Bucket storage policies are currently accessible using methods that return
+Promises. This information could have been exposed using (synchronous)
+properties instead.
+
+```javascript
+if (draftsBucket.persisted !== true) {
+  showButterBar("Your email drafts may be lost if you run out of disk space");
+}
+if (draftsBucket.durability !== "strict") {
+  showButterBar("Your email drafts may be lost if you run out of power");
+}
+```
+
+Exposing synchronous access to the persistence policy was rejected due to
+complications stemming from the ability to change a bucket's persistence policy
+after the bucket is created. Our options for handling changes would be to
+either say that a bucket's `persisted` property reflects the policy at the time
+the bucket is opened, or say that the `persisted` property magically changes
+when the policy changes. Both options seem confusing for developers.
+
+Exposing synchronous access to the durability policy was rejected in the
+interest of maxmizing the consistency of the API across storage policies.
+
+
+### Keep deleted buckets alive while there are references to them
+
+TODO: Explain that this is bad for predictability. We want the data to be gone
+when we say "logout completed", and we want to return quota when a bucket is
+deleted.
 
 
 ## Stakeholder Feedback / Opposition
