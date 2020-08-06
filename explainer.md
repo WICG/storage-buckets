@@ -133,9 +133,8 @@ does not match the desired value.
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
     durability: "strict", persisted: true, title: "Drafts" });
 
-if (draftsBucket.persisted !== "strict") {
-  displayWarningButterBar(
-      "Your drafts may be lost if the computer loses power!");
+if (await draftsBucket.persisted() !== true) {
+  showWarningButterBar("Your drafts may be lost if you run out of disk space!");
 }
 ```
 
@@ -242,7 +241,8 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
     persisted: true, title: "Drafts" });
 ```
 
-The persistence policy can be queried at any time.
+The persistence policy can be queried at any time. The user agent may decline a
+`persisted: true` policy requested by `openOrCreate()`.
 
 ```javascript
 if (await draftsBucket.persisted() !== true) {
@@ -250,7 +250,8 @@ if (await draftsBucket.persisted() !== true) {
 }
 ```
 
-The application can attempt to make a bucket persistent.
+The application can attempt to make a bucket persistent. The user agent may
+decline the request.
 
 ```javascript
 if (await draftsBucket.persisted() !== true) {
@@ -268,11 +269,46 @@ if (await draftsBucket.persisted() !== true) {
 
 ## Storage policy: Durability
 
-`durability` was chosen for consistency with
-[IDBTransaction.durability](https://w3c.github.io/IndexedDB/#dom-idbtransaction-durability)
-in IndexedDB. The values `"strict"` and `"relaxed"` have the same significance
-as the corresponding
-[IndexedDB transaction hints](https://w3c.github.io/IndexedDB/#transaction-durability-hint).
+A bucket's durability policy is a hint that helps the user agent trade off
+write performance against a reduced risk of data loss in the event of power
+failures.
+
+The policy has the following values.
+
+* `"strict"` buckets attempt to minimize the risk of data loss on power failure.
+  This may come at the cost of reduced performance, meaning that writes may take
+  longer to complete, might impact overall system performance, may consume more
+  battery power, and may wear out the storage device faster.
+
+* `"relaxed"` buckets may "forget" writes that were completed in the last few
+  seconds, when a power loss occurs. In return, writing data to these buckets
+  may have better performance characteristics, and may allow a battery charge
+  to last longer, and may result in longer storage device lifetime. Also,
+  power failures will *not* lead to data corruption at a higher rate than for
+  `"strict"` buckets.
+
+In general, `"strict"` buckets are intended to store data created by the user
+that has not been synchronized with the application's server. In this case, the
+application would not be able to recover from power loss. By contrast,
+`"relaxed"` buckets are most suitable for caches that can be repopulated easily.
+
+A bucket's durability policy is specified at bucket creation time.
+
+```javascript
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+    durability: "strict", title: "Drafts" });
+```
+
+The durability policy can be queried at any time. The user agent may not
+honor the policy requested by the `openOrCreate()` call.
+
+```javascript
+if (await draftsBucket.durability() !== "strict") {
+  showButterBar("Your email drafts may be lost if you run out of power");
+}
+```
+
+A bucket's durability policy cannot be changed once the bucket is created.
 
 
 ## Getting a bucket's quota usage
