@@ -931,7 +931,7 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   persisted: true, title: "Drafts" });
 ```
 
-Second, we think that the current proposal will make it easier to reaason about
+Second, we think that the current proposal will make it easier to reason about
 correctness in a code review. Reviewers can assume that code that explicitly
 mentions `durability: "strict"` is operating on data that must survive power
 outages, and can focus on recovery logic for this code. If we followed the
