@@ -437,10 +437,40 @@ solve the key scenarios described.]
 
 ### Bucket names
 
-TODO: `/` intended for tree display in UI.
+We propose restricting developer-facing bucket names to strings made up of a
+very small set of characters.
 
-TODO: Discussion around allowable characters. The set should make it easy to
-specify buckets in Clear-Site-Data.
+Here are the characters we propose allowing.
+
+* lowercase Latin letters `a` - `z`
+* digits `0` - `9`
+* the special characters `-` and `_` can be used in the middle of the name, but
+  not at the beginning
+
+The restrictions were chosen with two goals in mind.
+
+1. Avoid gotchas when including a bucket name in a Clear-Site-Data header.
+   Embedded unrestricted strings in HTTP headers requires escaping. Developers
+   unaware of the limitations (or pressed by deadlines) may use simple string
+   interpolation instead of proper escaping. Errors may not be caught early
+   on, if initial bucket names happen to be safe to include in headers.
+
+2. Give browsers the option to integrate bucket names in file names on the
+   computer's file system. This may help user agents avoid a database lookup in
+   their `createOrOpen()` implementations. We expect that opening buckets will
+   end up on the critical path for loading modern sites, and want to allow sites
+
+The `_` character in bucket names is designated for conveying hierarchical
+structure. The user agent may choose to display this structure in its storage
+management UI.
+
+For example, assume three buckets with names `user123456`, `user123456_inbox`
+and `user123456_drafts`, and titles `pwnall@chromium.org`, `Inbox` and `Drafts`.
+These buckets may be displayed in the UI as follows.
+
+* pwnall@chromium.org
+  * Inbox
+  * Drafts
 
 
 ### Bucket titles
@@ -684,6 +714,13 @@ const inboxRegistration = await navigator.serviceWorker.register(
 ```
 
 TODO: Explain why this is worse than the main decision.
+
+
+### Allow all safe characters for HTTP headers in bucket names
+
+TODO: Explain that the current setup puts users above developers, but the
+performance benefit is pretty weak. Summarize safe transformation scheme that
+does not require a database lookup.
 
 
 ### Alternative name for the bucket `title` property
@@ -1068,6 +1105,12 @@ when we say "logout completed", and we want to return quota when a bucket is
 deleted.
 
 
+### Integrate storage buckets with DOM Storage
+
+TODO: Explain why we chose not to integrate `localStorage`.
+
+
+
 ## Stakeholder Feedback / Opposition
 
 * Chrome : Positive, authoring this explainer
@@ -1088,3 +1131,8 @@ Many thanks for valuable feedback and advice from:
 * Joshua Bell
 * Marijn Kruisselbrink
 * Staphany Park
+
+This proposal is based on the
+[Storage Buckets presentation at TPAC 2019](https://docs.google.com/presentation/d/143w70xtfqculs5x-bPgTOwu6GZO6uTOYeBjnN63pzs8/)
+and the
+[Storage Buckets meeting discussion](https://docs.google.com/document/d/1eBWhY91nUfdT2mys3GaNKX4fKPei79Wk-KlWHYffbAA/).
