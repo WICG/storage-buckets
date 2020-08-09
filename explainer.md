@@ -225,6 +225,19 @@ completes. For example, when deleting a bucket, all its IndexedDB databases will
 be force-closed.
 
 
+## Enumeraing buckets
+
+An origin can get a list of all its storage buckets.
+
+```javascript
+const bucketNames = await navigator.storageBuckets.keys();
+console.log(bucketNames);  // [ "drafts", "inbox" ]
+```
+
+This function is provided for debugging / logging purposes, and may have
+significant performance implications.
+
+
 ## Storage policy: Persistence
 
 The storage specification currently endows each bucket with a
@@ -367,6 +380,7 @@ await navigator.storageBuckets.openOrCreate("default", {
   durability: "strict", persist: false, title: "" });
 ```
 
+
 ## Storage buckets and service workers
 
 TODO: Flesh out this section or move it into a separate explainer.
@@ -458,7 +472,20 @@ The restrictions were chosen with two goals in mind.
 2. Give browsers the option to integrate bucket names in file names on the
    computer's file system. This may help user agents avoid a database lookup in
    their `createOrOpen()` implementations. We expect that opening buckets will
-   end up on the critical path for loading modern sites, and want to allow sites
+   end up on the critical path for loading modern sites, so we consider that
+   giving user agents maximum freedom in the name of efficiency serves users,
+   which outweighs developer convenience.
+
+The desire for direct integration into file system names significantly
+constrains the character set. The constraints we are aware of are listed below.
+
+* Characters outside the ASCII set may cause encoding-related problems.
+* Non-printable characters may be disallowed by some file systems.
+* Allowing both uppercase and lowercase characters would cause problems on
+  case-insensitive file systems.
+* Many non-alphanumeric characters have special meaning on some file systems.
+  For example, `.` separates file names from extensions, and files ending in
+  `.exe` are executable on Windows.
 
 The `_` character in bucket names is designated for conveying hierarchical
 structure. The user agent may choose to display this structure in its storage
@@ -471,6 +498,10 @@ These buckets may be displayed in the UI as follows.
 * pwnall@chromium.org
   * Inbox
   * Drafts
+
+Bucket names are limited to 64 characters. This supports implementations that
+would directly integrate bucket names into file names, and makes it easy to
+reason about bucket lookup performance.
 
 
 ### Bucket titles
@@ -691,7 +722,6 @@ Instead of exposing entry points for each API on the bucket object, we could add
 integration points for buckets to each storage API. Examples below.
 
 ```javascript
-
 const inboxCache = caches.open("attachments", { bucket: "inbox" });
 
 const inboxDb = await new Promise(resolve => {
@@ -723,6 +753,74 @@ performance benefit is pretty weak. Summarize safe transformation scheme that
 does not require a database lookup.
 
 
+### No length restriction for bucket names
+
+Bucket names are currently limited to 64 characters. We could remove this
+limitation, and rely on the ecosystem to evolve its own rules. User agents would
+most likely provide some guidance that would evolve based on developer needs.
+
+The alternative of not having any length restriction at all was rejected
+because our previous experience strongly suggests the need for guardrails.
+
+IndexedDB does not (at the time of this writing) have limitations on key
+sizes, and some developers did try using very large (multi-megabyte) keys.
+IndexedDB implementations use these keys as primary keys in a database, and
+large primary keys have lead to out-of-memory crashes and performance cliffs.
+
+In summary, in the absence of immediate feedback at the prototyping stage,
+developers will use very large identifiers, even if that may result in a bad
+user experience.
+
+
+### Relaxed length restrictions for bucket names
+
+Bucket names are currently limited to 64 characters. This restriction may
+inconvenience developers, especially if deep hierarchies are in use. For
+example, `user123456789_inbox_label123456789` has 34 characters, which uses more
+than 50% of the length budget. Relaxing the name lenth limit to 1024 characters
+would remove developer concerns.
+
+This alternative was rejected in the interest of avoiding unnecessary
+complexity. We are aware of implementation techniques for handling
+1024-character bucket names efficiently, at the cost of some extra complexity in
+the user agent. This extra complexity still costs the user battery power (more
+code is being fetched and executed), as well as data transfer and storage
+(increased binary size). It will be far easier to increase the length limit
+(64 -> 1024) down the line than it would be reduce it (1024 -> 64), so we are
+proposing the stricter limit until we see concrete developer needs.
+
+When reasoning about the potential increase in complexity, we considered the
+following implementation alternatives.
+
+1. Rely on the underlying storage to handle the 1024-character keys. All major
+   underlying systems we know (file system, SQLite, LevelDB) work better with
+   small names. SQLite, LevelDB, and some file systems can handle 1024-character
+   names.
+
+2. Use a fast string hash, such as
+   [murmur3](TODO)
+   (TODO: look up new developments; murmur3 is probably old)
+   to map potentially long bucket names to very short hashed names. The hashed
+   names are guaranteed to be very short, for example murmur3 produces 8-byte
+   hashes. However, fast string hashes may produce collisions, and allowing
+   collisions will result in more complex storage code.
+
+3. Use a strong cryptographic hash, such as
+   [SHA-256](TODO).
+   Compared to fast string hashes, strong cryptographic hashes are larger
+   (SHA-256 produces 32-byte outputs) and significantly slower. In return,
+   cryptographic hashes guarantee vanishingly small collision rates, so the
+   implementation does not need to handle collisions. We expect this to be the
+   preferred alternative for handling long bucket names, because the overheads
+   are small compared to the reduced complexity. Modern computers (both desktop
+   and mobile) have hardware accelerators for computing cyptographic hashes, and
+   hash output sizes are within the range of key sizes that yield good database
+   performance.
+
+Relaxing the length to 1024 characters makes it less likely that bucket names
+can be
+
+
 ### Alternative name for the bucket `title` property
 
 The `title` properties could be named `description` instead. This would be
@@ -744,11 +842,32 @@ and values are localized user-facing strings.
 
 TODO: The translations and codes need to be checked.
 
-```js
+```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
   durability: "strict", persisted: true,
   title: { en: "Drafts", es: "Borradoers", jp: "下書き" }});
 ```
+
+### Enumerate all buckets using an async iterator
+
+The function used to enumerate buckets returns a sorted array of bucket names.
+It could have been specified to return an asynchronous iterator.
+
+```javascript
+const bucketNames = [];
+for await (let name of navigator.storage.buckets.keys())
+  bucketNames.push(name);
+
+console.log(bucketNames);  // [ "drafts", "inbox" ]
+```
+
+The main benefit of using an asynchronous iterator would be the ability to scale
+to a very large number of buckets.
+
+This alternative was rejected because we expect that the number of buckets
+created by origins will not be large enough to run into memory limitations. In
+order to support per-bucket eviction, user agents will likely need
+
 
 ### Separate durability options for flushing to the storage device vs media
 
@@ -1107,8 +1226,22 @@ deleted.
 
 ### Integrate storage buckets with DOM Storage
 
-TODO: Explain why we chose not to integrate `localStorage`.
+The integration points listed in this explainer intentionally exclude the
+[DOM Storage API](TODO). We could have included it on the list of APIs that we'd
+integrate with.
 
+```javascript
+const settingsBucket = await navigator.storageBuckets.openOrCreate("settings", {
+  title: "User Preferences",
+});
+
+const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
+```
+
+This alternative was rejected because we were concerned about the performance
+implications of supporintg multiple DOM Storage instances per origin.
+
+TODO: Explain why we chose not to integrate `localStorage`.
 
 
 ## Stakeholder Feedback / Opposition
