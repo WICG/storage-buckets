@@ -803,25 +803,23 @@ following implementation alternatives.
    small names. SQLite, LevelDB, and some file systems can handle 1024-character
    names.
 
-2. Use a fast string hash, such as
-   [murmur3](TODO)
-   (TODO: look up new developments; murmur3 is probably old)
+2. Use a fast string hash, such as [xxHash](https://github.com/Cyan4973/xxHash)
    to map potentially long bucket names to very short hashed names. The hashed
-   names are guaranteed to be very short, for example murmur3 produces 8-byte
+   names are guaranteed to be very short, for example xxHash produces 8/16-byte
    hashes. However, fast string hashes may produce collisions, and allowing
    collisions will result in more complex storage code.
 
 3. Use a strong cryptographic hash, such as
-   [SHA-256](TODO).
-   Compared to fast string hashes, strong cryptographic hashes are larger
-   (SHA-256 produces 32-byte outputs) and significantly slower. In return,
-   cryptographic hashes guarantee vanishingly small collision rates, so the
-   implementation does not need to handle collisions. We expect this to be the
-   preferred alternative for handling long bucket names, because the overheads
-   are small compared to the reduced complexity. Modern computers (both desktop
-   and mobile) have hardware accelerators for computing cyptographic hashes, and
-   hash output sizes are within the range of key sizes that yield good database
-   performance.
+   [SHA-256](https://en.wikipedia.org/wiki/SHA-2). Compared to fast string
+   hashes, strong cryptographic hashes are larger (SHA-256 produces 32-byte
+   outputs) and significantly slower. In return, cryptographic hashes
+   guarantee vanishingly small collision rates, so the implementation does
+   not need to handle collisions. We expect this to be the preferred
+   alternative for handling long bucket names, because the overheads are
+   small compared to the reduced complexity. Modern computers (both desktop
+   and mobile) have hardware accelerators for computing cyptographic hashes,
+   and hash output sizes are within the range of key sizes that yield good
+   database performance.
 
 Relaxing the length to 1024 characters makes it less likely that bucket names
 can be
@@ -1233,8 +1231,10 @@ deleted.
 ### Integrate storage buckets with DOM Storage
 
 The integration points listed in this explainer intentionally exclude the
-[DOM Storage API](TODO). We could have included it on the list of APIs that we'd
-integrate with.
+[Web Storage API](https://html.spec.whatwg.org/multipage/webstorage.html). We
+could have included
+[localStorage](https://html.spec.whatwg.org/multipage/webstorage.html#the-localstorage-attribute)
+on the list of APIs that buckets offer.
 
 ```javascript
 const settingsBucket = await navigator.storageBuckets.openOrCreate("settings", {
@@ -1245,7 +1245,10 @@ const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
 ```
 
 This alternative was rejected because we were concerned about the performance
-implications of supporintg multiple DOM Storage instances per origin.
+implications of supporintg multiple `localStorage` instances per origin.
+
+Due to the synchronous nature of the Web Storage API, user agents implement
+`localStorage` via a full in-memory cache.
 
 TODO: Explain why we chose not to integrate `localStorage`.
 
