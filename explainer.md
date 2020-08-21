@@ -85,13 +85,23 @@ storage policies at the bucket level avoids the need of introducing mechanisms
 for specifying the policies for each individual API.
 
 ## Goals
-- Allow web applications to evict partitions of data
-- Allow web developers to specify eviction ordering
-- Allow web applications to easily evict service workers without clearing data for the entire domain
-- Allow web developers to reserve quota
-- Allow web developers to express performance, durability and other trade-off decisions on partitions of data
-- Ensure privacy across accounts on shared devices
-- Allow users to have control over which data to evict, and prevent important data from being deleted
+
+* Allow web applications to evict partitions of data.
+
+* Allow web developers to specify eviction ordering.
+
+* Allow web applications to easily evict service workers without clearing data
+  for the entire domain.
+
+* Allow web developers to reserve quota
+
+* Allow web developers to express performance, durability and other trade-off
+  decisions on partitions of data.
+
+* Ensure privacy across accounts on shared devices
+
+* Allow users to have control over which data to evict, and prevent important
+  data from being deleted.
 
 ## Non-goals
 
@@ -100,13 +110,28 @@ enumerate them here. This section may be fleshed out as your design
 progresses and you encounter necessary technical and other trade-offs.]
 
 ## Use Cases
-*See [“Key Scenarios”](#key-scenarios) for more detail on use cases.*
 
-- **Storage eviction**: by allowing applications to have more control over prioritization and organization, it allows them to decide on storage trade-offs themselves upon storage eviction during low disk space instead of losing all data. 
-- **Storage partitioning**: allowing applications to group data. Applications can also choose to group data via buckets by user account on a shared device, or by time frame if an application would like to prioritize last accessed data. 
-- **Quota management**: applications can be smart with quota usage by keeping track of quota usage per bucket and reserving quota before a write, preventing errors when a user agent does not have enough disk space. Application can also proactively choose to reduce low priority writes or evict low priority buckets. 
+*See [Key Scenarios](#key-scenarios) for more detail on use cases.*
 
-These use cases aim to help with the following class of applications that store a lot of user data and aim to retrieve certain data without delay for a smooth user experience.
+- **Storage eviction**: by allowing applications to have more control over
+prioritization and organization, it allows them to decide on storage
+trade-offs themselves upon storage eviction during low disk space instead of
+losing all data.
+
+- **Storage partitioning**: allowing applications to group data. Applications
+can also choose to group data via buckets by user account on a shared device,
+or by time frame if an application would like to prioritize last accessed
+data.
+
+- **Quota management**: applications can be smart with quota usage by keeping
+track of quota usage per bucket and reserving quota before a write,
+preventing errors when a user agent does not have enough disk space.
+Application can also proactively choose to reduce low priority writes or
+evict low priority buckets.
+
+These use cases aim to help with the following class of applications that
+store a lot of user data and aim to retrieve certain data without delay for a
+smooth user experience.
 
 - Email clients
 - Video streaming services
@@ -451,60 +476,74 @@ Clear-Site-Data: "storage:inbox"
 
 ## Key Scenarios
 
-This is a list of scenarios which we hope buckets will help applications solve. 
+This is a list of scenarios which we hope buckets will help applications solve.
 
 ### Storage Eviction
 
-Currently during storage eviction, the browser will delete the entire origin’s data. This can cause a broken experience for users and does not allow for applications to best mitigate this poor experience. Buckets aims to give applications more control of prioritizing storage during eviction and decide on these tradeoffs themselves under storage pressure. 
+Currently during storage eviction, the browser will delete the entire
+origin’s data. This can cause a broken experience for users and does not
+allow for applications to best mitigate this poor experience. Buckets aims to
+give applications more control of prioritizing storage during eviction and
+decide on these tradeoffs themselves under storage pressure.
 
-In this example, a document client will use Buckets to set different priorities for different types of documents during storage pressure. **Bucket A** stores recently accessed documents that have already been uploaded to the server but have been cached locally for easy user access. **Bucket B** stores drafts of documents that have been made offline, which have not yet but uploaded to the server and are irrecoverable if lost. In this scenario **Bucket B** is created with `persisted: true` and `durability: “strict”` to specify that it should be evicted last upon storage pressure, and all data should survive power failures at the cost of more battery consumption. **Bucket A** will be first to be evicted because of its low priority since it contains data that can be recovered from the server. 
+In this example, a document client will use Buckets to set different
+priorities for different types of documents during storage pressure. The
+`recent` bucket stores recently accessed documents that have already been
+uploaded to the server but have been cached locally for easy user access. The
+`drafts` bucket stores drafts of documents that have been made offline, which
+have not yet but uploaded to the server and are irrecoverable if lost.
+
+In this scenario, the `drafts` bucket is created with `persisted: true` and
+`durability: "strict"` to specify that it should be evicted last upon storage
+pressure, and all data should survive power failures at the cost of more
+battery consumption. The `recent` bucket will be evicted first because of its
+low priority since it contains data that can be recovered from the server.
 
 TODO: Add image
 
 ```javascript
-// Bucket A
-const recentBucket = await navigator.storageBuckets.openOrCreate(
-                       "recent”, {
-                         durability: “relaxed”,
-                         persisted: false,
-                         title: “Recent” });
+const recentBucket = await navigator.storageBuckets.openOrCreate("recent",
+    { durability: "relaxed", persisted: false, title: "Recent" });
 
-// Bucket B
-const draftsBucket = await navigator.storageBuckets.openOrCreate(
-                       "drafts”, {
-                         durability: “strict”,
-                         persisted: true,
-                         title: “Drafts” });
+const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts",
+    { durability: "strict", persisted: true, title: "Drafts" });
 ```
 
 ### Partitioned Storage
 
-Currently there isn’t an option for granular partitioning of stored data making it hard for applications to evict all relevant low priority data at once. Buckets allow applications to partition data however they seem fit. 
+Currently there isn’t an option for granular partitioning of stored data
+making it hard for applications to evict all relevant low priority data at
+once. Buckets allow applications to partition data however they seem fit.
 
-In this example we will explore a scenario where an email client will partition storage using Buckets by user accounts on a shared device.  
+In this example we will explore a scenario where an email client will
+partition storage using Buckets by user accounts on a shared device.
 
 TODO: Add image
 
 ```javascript
 // Bucket creation per user account.
 const user1Bucket = await navigator.storageBuckets.openOrCreate(
-                       "user1_inbox”, {title: “User 1 Inbox” });
+    "userid111111_inbox", {title: "alice@email.com Inbox" });
 
 const user2Bucket = await navigator.storageBuckets.openOrCreate(
-                       "user2_inbox”, {title: “User 2 Inbox” });
+    "userid222222_inbox", {title: "bob@email.com Inbox" });
 
 ```
 
-Data can be stored for each user via Storage APIs per bucket without commingled user data.
+Data can be stored for each user via Storage APIs per bucket without
+commingled user data.
+
 ```javascript
 // Attachments for User 1
-const attachments = user1Bucket.caches.open(“attachments”);
+const attachments = user1Bucket.caches.open("attachments");
 // Messages for User 2
-const req = user2Bucket.indexedDB.open(“inbox”,1);
+const req = user2Bucket.indexedDB.open("inbox", 1);
 … // Retrieving cached inbox messages.
 ```
 
-When **User 2** does not login for 30 days on the device, an application can easily delete all storage associated with **User 2**, while keeping data from **User 1** undisrupted.
+When Bob does not login for 30 days on the device, an application can easily
+delete all storage associated with Bob, while keeping data from Alice
+undisrupted.
 
 ```javascript
 await navigator.storageBuckets.delete("user2_inbox");
@@ -513,29 +552,39 @@ await navigator.storageBuckets.delete("user2_inbox");
 
 ### Quota Management
 
-The following example shows how a video streaming service can use Buckets and its quota APIs to assign storage limits and reserve quota for individual buckets to better control their quota usage and reserve space for certain data. In this example, Bucket A will store videos users have explicitly downloaded onto their device for offline access. Bucket B will store data for user recommendations. The service can decide that they want to reserve the quota usage for Bucket B, saving more space for Bucket A.
+The following example shows how a video streaming service can use Buckets and
+its quota APIs to assign storage limits and reserve quota for individual
+buckets to better control their quota usage and reserve space for certain
+data.
+
+In this example, Bucket A will store videos users have explicitly downloaded
+onto their device for offline access. Bucket B will store data for user
+recommendations. The service can decide that they want to reserve the quota
+usage for Bucket B, saving more space for Bucket A.
 
 TODO: Add image and details on reserve quota.
 
 ```javascript
 const offlineVideosBucket = await navigator.storageBuckets.openOrCreate(
-                              "offline_videos”, {
-                                title: “Offline Videos”,
-                                durability: “strict”,
-                                persisted: false});
+    "offline_videos",
+    { title: "Offline Videos", durability: "strict", persisted: false });
 
 const recommendationBucket = await navigator.storageBuckets.openOrCreate(
-                              "recommendations”, {title: “Recommendations” });
+   "recommendations", {title: "Recommendations" });
 ```
+
 Reserve quota to ensure storage availability for recommended videos bucket.
+
 ```javascript
 await recommendationBucket.reserve(20 * 1024 * 1024);  // 20 MB
 ```
+
 Query quota usage to check if a user can download more videos.
+
 ```javascript
 const offlineVideosEstimate = await offlineVideosBucket.estimate();
 if (offlineVideosEstimate.usage >= offlineVideosEstimate.quota * 0.95) {
-  displayWarningButterBar(“Delete old downloaded videos to download more”);
+  displayWarningButterBar("Delete old downloaded videos to download more");
 }
 ```
 
