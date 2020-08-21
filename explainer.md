@@ -27,7 +27,7 @@
 - [Getting the storage policies associated with a bucket](#getting-the-storage-policies-associated-with-a-bucket)
 - [Accessing storage APIs from buckets](#accessing-storage-apis-from-buckets)
 - [Deleting buckets](#deleting-buckets)
-- [Enumeraing buckets](#enumeraing-buckets)
+- [Enumerating buckets](#enumerating-buckets)
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
@@ -272,7 +272,7 @@ completes. For example, when deleting a bucket, all its IndexedDB databases will
 be force-closed.
 
 
-## Enumeraing buckets
+## Enumerating buckets
 
 An origin can get a list of all its storage buckets.
 
