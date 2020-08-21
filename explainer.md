@@ -69,6 +69,9 @@
 
 ## Introduction
 
+This explainer proposes changes to
+[the Storage Standard](https://storage.spec.whatwg.org/).
+
 The core of the proposal is granting sites the ability to create multiple
 [storage buckets](https://storage.spec.whatwg.org/#buckets), where the
 user agent may choose to delete each bucket independently of other buckets. By
