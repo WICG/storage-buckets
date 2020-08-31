@@ -25,7 +25,7 @@ None.
 No.
 
 ### 2.8. What data does this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
-TODO
+This feature exposes data stored by the origin and storage usage data of the origin to the origin. This is identical to what is exposed via [IndexedDB](https://w3c.github.io/IndexedDB/), [CacheStorage](https://w3c.github.io/ServiceWorker/#cachestorage), and [StorageManager](https://storage.spec.whatwg.org/#storagemanager).
 
 ### 2.9. Does this specification enable new script execution/loading mechanisms?
 No.
@@ -40,13 +40,13 @@ No.
 None.
 
 ### 2.13. How does this specification distinguish between behavior in first-party and third-party contexts? 
-No distinction. This feature is inaccessible by third-party contexts. 
+No distinction. This feature is respects a same-orgin policy and is inaccessible by third-party contexts. 
 
 ### 2.14. How does this specification work in the context of a user agent’s Private Browsing or "incognito" mode?
-This feature is an entry point for established storage APIs such as [IndexedDB](https://w3c.github.io/IndexedDB/) and [CacheStorage](https://w3c.github.io/ServiceWorker/#cachestorage). The behavior under Private Browser or "incognito" will remain unchanged. 
+The behavior under Private Browser or "incognito" will remain unchanged to that of [IndexedDB](https://w3c.github.io/IndexedDB/) and [CacheStorage](https://w3c.github.io/ServiceWorker/#cachestorage) and will be inaccessible once incognito session is closed. 
 
 ### 2.15. Does this specification have a "Security Considerations" and "Privacy Considerations" section?
-TODO
+The specification will expect to have additions to security and privacy considerations about browser eviction. 
 
 ### 2.16. Does this specification allow downgrading default security characteristics?
 No.
