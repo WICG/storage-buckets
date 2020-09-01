@@ -1394,9 +1394,9 @@ TODO: Explain why we chose not to integrate `localStorage`.
 ## Stakeholder Feedback / Opposition
 
 * Chrome : Positive, authoring this explainer
-* [Implementor A] : Positive
-* [Stakeholder B] : No signals
-* [Implementor C] : Negative
+* Gecko : Positive
+* WebKit : No signals
+* Web developers : Positive
 
 
 ## References & acknowledgements
