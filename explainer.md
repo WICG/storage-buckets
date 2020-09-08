@@ -313,7 +313,7 @@ decline the request.
 
 ```javascript
 if (await draftsBucket.persisted() !== true) {
-  const butterBar = showButterBar(
+  const butterBar = showWarningButterBar(
       "Your email drafts may be lost if you run out of disk space. Fix?");
   butterBar.onFixClicked = () => {
     if (await draftsBucket.persist() === true) {
@@ -362,13 +362,13 @@ honor the policy requested by the `openOrCreate()` call.
 
 ```javascript
 if (await draftsBucket.durability() !== "strict") {
-  showButterBar("Your email drafts may be lost if you run out of power");
+  showWarningButterBar("Your email drafts may be lost if you run out of power");
 }
 ```
 
 A bucket's durability policy cannot be changed once the bucket is created.
 
-## Storage policy: Quota 
+## Storage policy: Quota
 
 A bucket's quota policy allows setting a per-bucket quota which can be used
 to place an upper bound on storage usage for each application feature. This
@@ -376,7 +376,7 @@ ensures that a bug in an application feature won't impact another feature's
 ability to store data by eating up the entire origin's quota.
 
 A quota argument passed to `openOrCreate` is a hint, and user agents may choose
-not to follow it. 
+not to follow it.
 
 ```javascript
 const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
@@ -385,8 +385,56 @@ const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
 }
 ```
 
-A bucket's quota can be read using `(await logsBucket.estimate()).quota`. 
-See [Getting a bucket's quota usage](#getting-a-buckets-quota-usage) for more details on querying quota. 
+A bucket's quota can be read using `(await logsBucket.estimate()).quota`.
+See [Getting a bucket's quota usage](#getting-a-buckets-quota-usage) for more details on querying quota.
+
+## Storage policy: Expiration
+
+A bucket's expiration polict ensures that the bucket's data isn't available to
+the site after a certain expiration time. This policy offers a similar
+capability to the expiration attribute of
+[HTTP cookies](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-05#section-5.4).
+
+```javascript
+const twoWeeks = 14 * 24 * 60 * 60 * 1000;
+const newsBucket = await navigator.storageBuckets.openOrCreate("news", {
+    expires: Date.now() + twoWeeks });
+```
+
+A bucket's expiration can be queried at any time.
+
+```javascript
+if ((await newsBucket.expires()) === null) {
+  // This should not happen. The browser must always honor the expires policy.
+  showWarningButterBar("");
+}
+
+```
+
+A bucket's expiration can be changed as long as the bucket does not expire.
+
+```javascript
+const oneDay = 24 * 60 * 60 * 1000;
+if (await newsBucket.expires() - Date.now() <= oneDay) {
+  await refreshNews(newsBucket);
+  await newsBucket.setExpireS(Date.now() + twoWeeks);
+}
+```
+
+User agents may continue storing the data associated with expired buckets that
+are not accessed by applications. While an origin's expired buckets remain
+stored, they count towards the origin's quota. The following operations are
+guaranteed to cause the deletion of an expired bucket.
+
+1. Calling `navigator.storageBuckets.delete()` with the name of an expired
+   bucket will delete the bucket's data.
+
+2. Calling `navigator.storage.openOrCreate()` with the name of an expired bucket
+   will delete the expired bucket's data, and return a newly created bucket.
+
+3. Calling `navigator.storageBuckets.keys()` will delete the data of all the
+   origin's expired buckets.
+
 
 ## Getting a bucket's quota usage
 
