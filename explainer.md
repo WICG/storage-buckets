@@ -80,7 +80,7 @@ deleting all the data stored by a site.
 
 This proposal also entails designating buckets as the recommended unit for
 managing existing storage policy (quota) and new storage policies, such as
-expiration, persistence, and encryption. Each storage bucket can store
+expiration and persistence. Each storage bucket can store
 data associated with established storage APIs such as
 [IndexedDB](https://w3c.github.io/IndexedDB/) and
 [CacheStorage](https://w3c.github.io/ServiceWorker/#cachestorage), so defining
