@@ -89,22 +89,18 @@ for specifying the policies for each individual API.
 
 ## Goals
 
-* Allow web applications to evict partitions of data.
+* Allow web applications to evict partitions of data
 
-* Allow web developers to specify eviction ordering.
+* Allow web developers to specify eviction prioritization
 
 * Allow web applications to easily evict service workers without clearing data
-  for the entire domain.
-
-* Allow web developers to reserve quota
+  for the entire domain
 
 * Allow web developers to express performance, durability and other trade-off
-  decisions on partitions of data.
-
-* Ensure privacy across accounts on shared devices
+  decisions on partitions of data
 
 * Allow users to have control over which data to evict, and prevent important
-  data from being deleted.
+  data from being deleted
 
 ## Non-goals
 
