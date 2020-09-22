@@ -239,9 +239,9 @@ TODO: Update the text here with the resolution of
 https://github.com/w3c/FileAPI/issues/157.
 
 Each storage bucket also has an entry point to the origin-private file system
-in the [Native File System API](https://wicg.github.io/native-file-system/).
+in the [File System Access API](https://wicg.github.io/file-system-access/).
 The entry point matches `StorageManager.getDirectory()`
-in [the Native File System spec](https://wicg.github.io/native-file-system/#sandboxed-filesystem).
+in [the File System Acces spec](https://wicg.github.io/file-system-access/#sandboxed-filesystem).
 
 ```javascript
 const inboxTestDir = await inboxBucket.getDirectory();
@@ -410,7 +410,7 @@ the `default` bucket on-demand.
 * `NavigatorStorage.storage` in
   [the Storage Standard](https://storage.spec.whatwg.org/#api)
 * `StorageManager.getDirectory` in
-  [Native File System](https://wicg.github.io/native-file-system/#sandboxed-filesystem)
+  [File System Access](https://wicg.github.io/file-system-access/#sandboxed-filesystem)
 
 The default bucket is created with the following options.
 
