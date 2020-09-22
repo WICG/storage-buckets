@@ -32,7 +32,6 @@
 - [Storage policy: Durability](#storage-policy-durability)
 - [Storage policy: Max Quota](#storage-policy-max-quota)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
-- [Reserving quota for a bucket](#reserving-quota-for-a-bucket)
 - [The default bucket](#the-default-bucket)
 - [Storage buckets and service workers](#storage-buckets-and-service-workers)
 - [Storage buckets and the Clear-Site-Data](#storage-buckets-and-the-clear-site-data)
@@ -393,21 +392,6 @@ if (inboxEstimate.usage >= inboxEstimate.quota * 0.95) {
   displayWarningButterBar("Go to settings and sync fewer days of email");
 }
 ```
-
-## Reserving quota for a bucket
-
-TODO: Flesh out this section or move it into a separate explainer.
-
-```javascript
-const autosaveBucket = await navigator.storageBuckets.openOrCreate(
-  "autosave",
-  {
-    title: "Autosaved Form Data",
-    durability: "strict",
-  });
-await autosaveBucket.reserve(20 * 1024 * 1024);  // 20 MB
-```
-
 
 ## The default bucket
 
