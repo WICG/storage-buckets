@@ -30,6 +30,7 @@
 - [Enumerating buckets](#enumerating-buckets)
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
+- [Storage policy: Max Quota](#storage-policy-max-quota)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [Reserving quota for a bucket](#reserving-quota-for-a-bucket)
 - [The default bucket](#the-default-bucket)
@@ -368,6 +369,16 @@ if (await draftsBucket.durability() !== "strict") {
 
 A bucket's durability policy cannot be changed once the bucket is created.
 
+## Storage policy: Max Quota 
+
+A bucket's max quota policy allows developers to specify the maximum amount of storage a bucket is allowed to use. This helps with quota management by ensuring a bucket doesn't use up storage meant for other higher priority buckets. 
+
+```javascript
+const attachments = await navigator.storageBuckets.openOrCreate("attachments", {
+  title: "Attachments",
+  maxQuota: 20 * 1024 * 1024  // 20 MB
+}
+```
 
 ## Getting a bucket's quota usage
 
