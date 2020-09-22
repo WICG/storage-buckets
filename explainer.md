@@ -371,7 +371,7 @@ A bucket's durability policy cannot be changed once the bucket is created.
 
 ## Storage policy: Max Quota 
 
-A bucket's max quota policy allows developers to specify the maximum amount of storage a bucket is allowed to use. This helps with quota management by ensuring a bucket doesn't use up storage meant for other higher priority buckets. 
+A bucket's max quota policy allows developers to specify the maximum amount of storage a bucket is allowed to use. This helps with quota management by ensuring a bucket does not use storage meant for other higher priority buckets. 
 
 ```javascript
 const attachments = await navigator.storageBuckets.openOrCreate("attachments", {
