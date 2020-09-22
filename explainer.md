@@ -241,7 +241,7 @@ https://github.com/w3c/FileAPI/issues/157.
 Each storage bucket also has an entry point to the origin-private file system
 in the [File System Access API](https://wicg.github.io/file-system-access/).
 The entry point matches `StorageManager.getDirectory()`
-in [the File System Acces spec](https://wicg.github.io/file-system-access/#sandboxed-filesystem).
+in [the File System Access spec](https://wicg.github.io/file-system-access/#sandboxed-filesystem).
 
 ```javascript
 const inboxTestDir = await inboxBucket.getDirectory();
