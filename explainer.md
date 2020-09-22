@@ -240,17 +240,13 @@ https://github.com/w3c/FileAPI/issues/157.
 
 Each storage bucket also has an entry point to the origin-private file system
 in the [Native File System API](https://wicg.github.io/native-file-system/).
-The entry point matches `WindowOrWorkerGlobalScope.getOriginPrivateDirectory()`
+The entry point matches `StorageManager.getDirectory()`
 in [the Native File System spec](https://wicg.github.io/native-file-system/#sandboxed-filesystem).
 
 ```javascript
-const inboxTestDir = await inboxBucket.getOriginPrivateDirectory();
-const draftsTestDir = await draftsBucket.getOriginPrivateDirectory();
+const inboxTestDir = await inboxBucket.getDirectory();
+const draftsTestDir = await draftsBucket.getDirectory();
 ```
-
-TODO: Update the text here with the resolution of
-https://github.com/WICG/native-file-system/issues/210.
-
 
 ## Deleting buckets
 
@@ -413,7 +409,7 @@ the `default` bucket on-demand.
   [ServiceWorker](https://w3c.github.io/ServiceWorker/#self-caches)
 * `NavigatorStorage.storage` in
   [the Storage Standard](https://storage.spec.whatwg.org/#api)
-* `WindowOrWorkerGlobalScope.getOriginPrivateDirectory` in
+* `StorageManager.getDirectory` in
   [Native File System](https://wicg.github.io/native-file-system/#sandboxed-filesystem)
 
 The default bucket is created with the following options.
@@ -877,7 +873,7 @@ const inboxFile = new File(
     ["Attachment data"], "attachment.txt",
     { type: "text/plain", lastModified: Date.now(), bucket: "inbox" });
 
-const inboxTestDir = await self.getOriginPrivateDirectory({ bucket: "inbox" });
+const inboxTestDir = await self.getDirectory({ bucket: "inbox" });
 
 const inboxRegistration = await navigator.serviceWorker.register(
     "/inbox-sw.js", { scope: "/inbox", bucket: "inbox" });
