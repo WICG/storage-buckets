@@ -773,9 +773,6 @@ facts were considered by our decision process.
 
 ## Considered alternatives
 
-[This should include as many alternatives as you can, from high level
-architectural decisions down to alternative naming choices.]
-
 ### Expose the API off of navigator.storage.buckets
 
 Instead of exposing the storage buckets API off of `navigator.storageBuckets`,
@@ -1375,7 +1372,7 @@ const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
 ```
 
 This alternative was rejected because we were concerned about the performance
-implications of supporintg multiple `localStorage` instances per origin.
+implications of supporting multiple `localStorage` instances per origin.
 
 Due to the synchronous nature of the Web Storage API, user agents implement
 `localStorage` via a full in-memory cache.
