@@ -30,7 +30,7 @@
 - [Enumerating buckets](#enumerating-buckets)
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
-- [Storage policy: Max Quota](#storage-policy-max-quota)
+- [Storage policy: Quota](#storage-policy-quota)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [The default bucket](#the-default-bucket)
 - [Storage buckets and service workers](#storage-buckets-and-service-workers)
@@ -368,16 +368,25 @@ if (await draftsBucket.durability() !== "strict") {
 
 A bucket's durability policy cannot be changed once the bucket is created.
 
-## Storage policy: Max Quota 
+## Storage policy: Quota 
 
-A bucket's max quota policy allows developers to specify the maximum amount of storage a bucket is allowed to use. This helps with quota management by ensuring a bucket does not use storage meant for other higher priority buckets. 
+A bucket's quota policy allows setting a per-bucket quota which can be used
+to place an upper bound on storage usage for each application feature. This
+ensures that a bug in an application feature won't impact another feature's
+ability to store data by eating up the entire origin's quota.
+
+A quota argument passed to `openOrCreate` is a hint, and user agents may choose
+not to follow it. 
 
 ```javascript
-const attachments = await navigator.storageBuckets.openOrCreate("attachments", {
-  title: "Attachments",
+const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
+  title: "Log data",
   maxQuota: 20 * 1024 * 1024  // 20 MB
 }
 ```
+
+A bucket's quota can be read using `(await logsBucket.estimate()).quota`. 
+See [Getting a bucket's quota usage](#getting-a-buckets-quota-usage) for more details on quering quota. 
 
 ## Getting a bucket's quota usage
 
