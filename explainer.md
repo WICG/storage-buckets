@@ -30,8 +30,8 @@
 - [Enumerating buckets](#enumerating-buckets)
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
+- [Storage policy: Quota](#storage-policy-quota)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
-- [Reserving quota for a bucket](#reserving-quota-for-a-bucket)
 - [The default bucket](#the-default-bucket)
 - [Storage buckets and service workers](#storage-buckets-and-service-workers)
 - [Storage buckets and the Clear-Site-Data](#storage-buckets-and-the-clear-site-data)
@@ -368,6 +368,25 @@ if (await draftsBucket.durability() !== "strict") {
 
 A bucket's durability policy cannot be changed once the bucket is created.
 
+## Storage policy: Quota 
+
+A bucket's quota policy allows setting a per-bucket quota which can be used
+to place an upper bound on storage usage for each application feature. This
+ensures that a bug in an application feature won't impact another feature's
+ability to store data by eating up the entire origin's quota.
+
+A quota argument passed to `openOrCreate` is a hint, and user agents may choose
+not to follow it. 
+
+```javascript
+const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
+  title: "Log data",
+  maxQuota: 20 * 1024 * 1024  // 20 MB
+}
+```
+
+A bucket's quota can be read using `(await logsBucket.estimate()).quota`. 
+See [Getting a bucket's quota usage](#getting-a-buckets-quota-usage) for more details on querying quota. 
 
 ## Getting a bucket's quota usage
 
@@ -382,21 +401,6 @@ if (inboxEstimate.usage >= inboxEstimate.quota * 0.95) {
   displayWarningButterBar("Go to settings and sync fewer days of email");
 }
 ```
-
-## Reserving quota for a bucket
-
-TODO: Flesh out this section or move it into a separate explainer.
-
-```javascript
-const autosaveBucket = await navigator.storageBuckets.openOrCreate(
-  "autosave",
-  {
-    title: "Autosaved Form Data",
-    durability: "strict",
-  });
-await autosaveBucket.reserve(20 * 1024 * 1024);  // 20 MB
-```
-
 
 ## The default bucket
 
