@@ -386,7 +386,7 @@ const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
 ```
 
 A bucket's quota can be read using `(await logsBucket.estimate()).quota`. 
-See [Getting a bucket's quota usage](#getting-a-buckets-quota-usage) for more details on quering quota. 
+See [Getting a bucket's quota usage](#getting-a-buckets-quota-usage) for more details on querying quota. 
 
 ## Getting a bucket's quota usage
 
