@@ -381,7 +381,7 @@ not to follow it.
 ```javascript
 const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
   title: "Log data",
-  maxQuota: 20 * 1024 * 1024  // 20 MB
+  quota: 20 * 1024 * 1024  // 20 MB
 }
 ```
 
