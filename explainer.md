@@ -277,6 +277,21 @@ This function is provided for debugging / logging purposes, and may have
 significant performance implications.
 
 
+## Getting a bucket's quota usage
+
+In order to support eviction at bucket granularity, user agents are expected to
+track quota usage for the data associated with each bucket. Applications can get
+this information using an API similar to
+[StorageManager.estimate()](https://storage.spec.whatwg.org/#dom-storagemanager-estimate).
+
+```javascript
+const inboxEstimate = await inboxBucket.estimate();
+if (inboxEstimate.usage >= inboxEstimate.quota * 0.95) {
+  displayWarningButterBar("Go to settings and sync fewer days of email");
+}
+```
+
+
 ## Storage policy: Persistence
 
 The storage specification currently endows each bucket with a
@@ -435,20 +450,6 @@ guaranteed to cause the deletion of an expired bucket.
 3. Calling `navigator.storageBuckets.keys()` will delete the data of all the
    origin's expired buckets.
 
-
-## Getting a bucket's quota usage
-
-In order to support eviction at bucket granularity, user agents are expected to
-track quota usage for the data associated with each bucket. Applications can get
-this information using an API similar to
-[StorageManager.estimate()](https://storage.spec.whatwg.org/#dom-storagemanager-estimate).
-
-```javascript
-const inboxEstimate = await inboxBucket.estimate();
-if (inboxEstimate.usage >= inboxEstimate.quota * 0.95) {
-  displayWarningButterBar("Go to settings and sync fewer days of email");
-}
-```
 
 ## The default bucket
 
