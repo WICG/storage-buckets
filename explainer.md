@@ -929,7 +929,16 @@ const inboxRegistration = await navigator.serviceWorker.register(
     "/inbox-sw.js", { scope: "/inbox", bucket: "inbox" });
 ```
 
+The API for creating buckets and specifying / querying policies wouldn't change.
+
 TODO: Explain why this is worse than the main decision.
+
+Developer ergonomics
+
+* Easier to learn - no per-API option to remember
+* Harder to make mistakes - option dictionaries are prone to typos
+* Easy to replace the default bucket in JS -
+  `window.indexedDB = inboxBucket.indexedDB`
 
 
 ### Allow all safe characters for HTTP headers in bucket names
@@ -1023,8 +1032,6 @@ The bucket `title` property could allow a dictionary instead of a string, where
 the keys are valid values for the
 [lang attribute in the HTML specification](https://html.spec.whatwg.org/#the-lang-and-xml:lang-attributes),
 and values are localized user-facing strings.
-
-TODO: The translations and codes need to be checked.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
@@ -1123,7 +1130,7 @@ async function flushDrafts() {
   const drafts = batchedDrafts;
   batchedDrafts = [];
 
-  // TODO: Eliminate redundant draft changes.
+  EliminateRedundantDraftChanges(batchedDrafts);
 
   const transaction = db.transaction("messages", "readwrite");
   const messageStore = transaction.objectStore("messages");
@@ -1283,6 +1290,16 @@ TODO: Explain that durability guarantees apply to individual writes, but
 applications need to handle inconsistencies across storage APIs (Cache
 Storage and IndexedDB). We don't offer two-phase commit across storage APIs.
 
+* Explain that strict durability is at a very specific scope (e.g. one IndexedDB
+  transaction), whereas applications care about it at some logical scope
+  (e.g. an email message that spans an IndexedDB record and a few Cache Storage
+  entries).
+* Guaranteeing strict durability at the logical scope (email) will require
+  custom recovery code (drop the email if its attachments are missing) or
+  generic two-phase commit logic.
+* Conclude that developers need to be explicit about ensuring strict durability
+  anyway, might as well make them be explicit about the "strict" option.
+
 
 ### Support changing a bucket's durability policy
 
@@ -1349,7 +1366,7 @@ async function saveDraft(draft) {
   });
 }
 
-// TODO: Code that reads drafts should operate on both databases.
+// Note: Code that reads drafts needs to operate on both databases.
 ```
 
 This alternative was rejected because of concerns that it would significantly
@@ -1431,6 +1448,12 @@ Due to the synchronous nature of the Web Storage API, user agents implement
 `localStorage` via a full in-memory cache.
 
 TODO: Explain why we chose not to integrate `localStorage`.
+
+* LocalStorage doesn't follow durability policies. Sync write API means we need
+  in-renderer caches, so we couldn't support either `"relaxed"` or `"strict"`
+* RAM consumption limitation. Would need special quota system just for
+  LocalStorage. Buckets with small `quota` would get access then.
+* Non-issue: sync read API. We can read all data on `openOrCreate()`.
 
 
 ## Stakeholder Feedback / Opposition
