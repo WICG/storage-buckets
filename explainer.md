@@ -1420,12 +1420,12 @@ interest of maxmizing the consistency of the API across storage policies.
 
 ### Keep deleted buckets alive while there are references to them
 
-Buckets could have followed the same pattern as IndexedDB in regards to deletion
-and queue a deletion request open deletion, waiting for all previous requests in
-the queue to be processed. However we intentionally make this difference to promise
-deletion upon request regardless of existing requests to prevent unintended behavior
-in scenarios such as logout where we want to promise immediate clean-up and return
-quota for the deleted bucket as soon as possible. 
+Buckets could have followed the same pattern as IndexedDB and queue a deletion
+request upon `delete()` to wait for all previous requests in the queue to be
+processed before deletion. However we intentionally make this difference to
+promise immediately deletion upon request regardless of existing requests to
+prevent unintended behavior in scenarios such as logout where we want to promise
+immediate clean-up and return quota for the deleted bucket as soon as possible. 
 
 ### Integrate storage buckets with DOM Storage
 
