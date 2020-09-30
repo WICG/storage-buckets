@@ -1337,13 +1337,13 @@ preferences, and read drafts from both buckets.
 const draftsBuckets = {};
 draftsBuckets.strict = await navigator.storageBuckets.openOrCreate("drafts", {
   durability: "strict", persisted: true, title: "Drafts (Durable)" });
-draftsBuckets.relxaed = await navigator.storageBuckets.openOrCreate("drafts", {
+draftsBuckets.relaxed = await navigator.storageBuckets.openOrCreate("drafts", {
   durability: "relaxed", persisted: true, title: "Drafts (Fast)" });
 
 
 const draftsDb = {};
 for (let durability of ["relaxed", "strict"]) {
-  draftsDb[druability] = await new Promise(resolve => {
+  draftsDb[durability] = await new Promise(resolve => {
     const request = draftsBucket[durability].indexedDB.open("messages");
     request.onupgradeneeded = () => { /* migration code */ };
     request.onsuccess = () => resolve(request.result);
