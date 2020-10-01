@@ -660,7 +660,7 @@ The restrictions were chosen with two goals in mind.
 
 2. Give browsers the option to integrate bucket names in file names on the
    computer's file system. This may help user agents avoid a database lookup in
-   their `createOrOpen()` implementations. We expect that opening buckets will
+   their `openOrCreate()` implementations. We expect that opening buckets will
    end up on the critical path for loading modern sites, so we consider that
    giving user agents maximum freedom in the name of efficiency serves users,
    which outweighs developer convenience.
