@@ -1489,19 +1489,11 @@ const settingsBucket = await navigator.storageBuckets.openOrCreate("settings", {
 const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
 ```
 
-This alternative was rejected because we were concerned about the performance
-implications of supporting multiple `localStorage` instances per origin.
+This alternative was rejected because `localStorage` does not follow durability policies. Due to the synchronous nature of Web Storage API, user agents would need an in-renderer cache to support writes for `localStorage`, so we couldn't support `"relaxed"` or `"strict"`.
 
-Due to the synchronous nature of the Web Storage API, user agents implement
-`localStorage` via a full in-memory cache.
+We would also need a special quota system just for `localStorage` and its RAM consumption. This could have performance implications of supporting multiple `localStorage` instances per origin. Each bucket could have a smaller quota than the existing quota limit but would add extra complexity to the implementation. 
 
-TODO: Explain why we chose not to integrate `localStorage`.
-
-* LocalStorage doesn't follow durability policies. Sync write API means we need
-  in-renderer caches, so we couldn't support either `"relaxed"` or `"strict"`
-* RAM consumption limitation. Would need special quota system just for
-  LocalStorage. Buckets with small `quota` would get access then.
-* Non-issue: sync read API. We can read all data on `openOrCreate()`.
+Buckets could help from main thread blocking of its synchronous read API because it could read all data asynchronously on `openOrCreate()`.
 
 
 ## Stakeholder Feedback / Opposition
