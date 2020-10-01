@@ -1420,10 +1420,6 @@ interest of maxmizing the consistency of the API across storage policies.
 
 ### Keep deleted buckets alive while there are references to them
 
-TODO: Explain that this is bad for predictability. We want the data to be gone
-when we say "logout completed", and we want to return quota when a bucket is
-deleted.
-
 `navigator.storageBuckets.delete()` force-closes the deleted bucket and
 immediately starts deleting the data. The promise it returns is resolved when
 all the data is deleted.
@@ -1440,7 +1436,7 @@ await navigator.storageBuckets.delete("inbox");
 const attachment = inboxCache.match("/attachments/3");
 ```
 
-We could also have had `delete()` wait until all the use of a bucket is done
+We could also have had `delete()` wait until all the uses of a bucket are done
 before returning.
 
 ```javascript
@@ -1449,10 +1445,10 @@ const inboxCache = await inboxBucket.caches.open("attachments");
 await navigator.storageBuckets.delete("inbox");
 ```
 
-This alternative was rejected it would break the core use case of multiple
-user accounts. In this case, the data associated with each account is stored
-in one (or a few) bucket. Logging out of one account is implemented by
-deleting the buckets associated with that account. Under this alternative,
+This alternative was rejected because it would break the core use case of
+multiple user accounts. In this case, the data associated with each account
+is stored in one (or a few) bucket. Logging out of one account is implemented
+by deleting the buckets associated with that account. Under this alternative,
 the application code for logging out would need to coordinate across all tabs
 that may be using the same account, and close all connections to a bucket
 while logging out.
