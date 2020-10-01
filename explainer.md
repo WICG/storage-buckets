@@ -1424,6 +1424,58 @@ TODO: Explain that this is bad for predictability. We want the data to be gone
 when we say "logout completed", and we want to return quota when a bucket is
 deleted.
 
+`navigator.storageBuckets.delete()` force-closes the deleted bucket and
+immediately starts deleting the data. The promise it returns is resolved when
+all the data is deleted.
+
+We could have had `delete()` queue a deletion request and return immediately,
+like
+[indexedDB.deleteDatabase](https://w3c.github.io/IndexedDB/#dom-idbfactory-deletedatabase).
+
+```javascript
+const inboxCache = await inboxBucket.caches.open("attachments");
+await navigator.storageBuckets.delete("inbox");
+
+// Completes successfully.
+const attachment = inboxCache.match("/attachments/3");
+```
+
+We could also have had `delete()` wait until all the use of a bucket is done
+before returning.
+
+```javascript
+const inboxCache = await inboxBucket.caches.open("attachments");
+// Completes after the tab is closed, because inboxCache is currently open.
+await navigator.storageBuckets.delete("inbox");
+```
+
+This alternative was rejected it would break the core use case of multiple
+user accounts. In this case, the data associated with each account is stored
+in one (or a few) bucket. Logging out of one account is implemented by
+deleting the buckets associated with that account. Under this alternative,
+the application code for logging out would need to coordinate across all tabs
+that may be using the same account, and close all connections to a bucket
+while logging out.
+
+```javascript
+const user2Bucket = await navigator.storageBuckets.openOrCreate(
+    "userid222222_inbox", {title: "bob@email.com Inbox" });
+const user2LogoutChannel = new BroadcastChannel("userid222222_logout");
+
+// Attachments for User 2
+const user2Attachments = user2Bucket.caches.open("attachments");
+user2LogoutChannel.addEventListener("message", async () => {
+  user2Attachments.close();
+}, {once: true});
+```
+
+We consider this alternative to be more confusing for developers than the
+proposed behavior. The main benefit would be possibly simplifying user
+agents' implementation of buckets, by avoiding the need to implement
+force-closing in storage APIs. We don't expect to see much simplification in
+practice, because user agents need to implement force-closing to handle
+storage corruption.
+
 
 ### Integrate storage buckets with DOM Storage
 
