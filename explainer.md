@@ -31,6 +31,7 @@
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
 - [Storage policy: Quota](#storage-policy-quota)
+- [Storage policy: Expiration](#storage-policy-expiration)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [The default bucket](#the-default-bucket)
 - [Storage buckets and service workers](#storage-buckets-and-service-workers)
