@@ -931,11 +931,22 @@ const inboxRegistration = await navigator.serviceWorker.register(
 
 The API for creating buckets and specifying / querying policies wouldn't change.
 
-This alternative was rejected in favor of better ergonomics and avoiding complexity for developers.
-Requiring extra options for bucket names per storage API would create more opportunity for error by 
-either forgetting to specify an option or by typos in the bucket name.
-It also makes replacing the default bucket in JS easy making migration to buckets more simple.
-`window.indexedDB = inboxBucket.indexedDB`
+This alternative was rejected because of worse ergonomics for web developers. 
+Web developers will have to specify bucket names in the options per storage API
+creating more opportunity for error by either forgetting to specify a name
+or typos in the bucket name.
+
+Having entry points to for each storage API on the bucket also makes replacing
+the default bucket in JS easy.
+
+```javascript
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
+  title: "Inbox",
+});
+
+// Replace default bucket with inboxBucket for IndexedDB. 
+window.indexedDB = inboxBucket.indexedDB;
+```
 
 ### Allow all safe characters for HTTP headers in bucket names
 
