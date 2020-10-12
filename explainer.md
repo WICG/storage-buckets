@@ -28,11 +28,11 @@
 - [Accessing storage APIs from buckets](#accessing-storage-apis-from-buckets)
 - [Deleting buckets](#deleting-buckets)
 - [Enumerating buckets](#enumerating-buckets)
+- [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
 - [Storage policy: Quota](#storage-policy-quota)
 - [Storage policy: Expiration](#storage-policy-expiration)
-- [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [The default bucket](#the-default-bucket)
 - [Storage buckets and service workers](#storage-buckets-and-service-workers)
 - [Storage buckets and the Clear-Site-Data](#storage-buckets-and-the-clear-site-data)
@@ -59,6 +59,7 @@
   - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
   - [Default to strict durability](#default-to-strict-durability)
   - [Support changing a bucket's durability policy](#support-changing-a-buckets-durability-policy)
+  - [Express bucket expiration using a different type or convention](#express-bucket-expiration-using-a-different-type-or-convention)
   - [Synchronous access to a bucket's storage policies](#synchronous-access-to-a-buckets-storage-policies)
   - [Keep deleted buckets alive while there are references to them](#keep-deleted-buckets-alive-while-there-are-references-to-them)
   - [Integrate storage buckets with DOM Storage](#integrate-storage-buckets-with-dom-storage)
@@ -1391,6 +1392,28 @@ The example above illustrates that user agents may be able to obtain better
 performance if they can place data with different `durability` policies in
 entirely different underlying stores. The ability to change a bucket's
 `durability` policy would significantly undermine this flexibility.
+
+
+### Express bucket expiration using a different type or convention
+
+Bucket expiration times are currently represented as the number of milliseconds
+ellapsed sinced January 1, 1970 UTC. This representation is consistent with the
+[Date.now()](https://tc39.es/ecma262/#sec-date.now) JavaScript API.
+
+Other options considered are:
+
+* [Date](https://tc39.es/ecma262/#sec-date-objects) instances
+* Timestamps with second resolution
+
+The current design was preferred over alternatives because it met the TAG's
+guidelines around
+[time measurement](https://w3ctag.github.io/design-principles/#milliseconds),
+and it is consistent with the following APIs.
+
+* [CookieListItem.expires](https://wicg.github.io/cookie-store/#dom-cookielistitem-expires)
+  and
+  [CookieInit.expires](https://wicg.github.io/cookie-store/#dom-cookieinit-expires)
+* [File.lastModified](https://w3c.github.io/FileAPI/#dfn-lastModified)
 
 
 ### Synchronous access to a bucket's storage policies
