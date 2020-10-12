@@ -609,10 +609,11 @@ data.
 
 In this example, Bucket A will store videos users have explicitly downloaded
 onto their device for offline access. Bucket B will store data for user
-recommendations. The service can decide that they want to reserve the quota
-usage for Bucket B, saving more space for Bucket A.
+recommendations. The service can set a quota for Bucket B to ensure
+that it won't impact Bucket A's ability to store data by eating up the
+entire origin's quota.
 
-TODO: Add image and details on reserve quota.
+TODO: Add image.
 
 ```javascript
 const offlineVideosBucket = await navigator.storageBuckets.openOrCreate(
@@ -620,13 +621,10 @@ const offlineVideosBucket = await navigator.storageBuckets.openOrCreate(
     { title: "Offline Videos", durability: "strict", persisted: false });
 
 const recommendationBucket = await navigator.storageBuckets.openOrCreate(
-   "recommendations", {title: "Recommendations" });
-```
-
-Reserve quota to ensure storage availability for recommended videos bucket.
-
-```javascript
-await recommendationBucket.reserve(20 * 1024 * 1024);  // 20 MB
+   "recommendations", {
+     title: "Recommendations",
+     quota: 20 * 1024 * 1024,  // 20 MB
+   });
 ```
 
 Query quota usage to check if a user can download more videos.
