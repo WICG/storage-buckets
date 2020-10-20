@@ -943,10 +943,21 @@ Developer ergonomics
 
 ### Allow all safe characters for HTTP headers in bucket names
 
-TODO: Explain that the current setup puts users above developers, but the
-performance benefit is pretty weak. Summarize safe transformation scheme that
-does not require a database lookup.
+Bucket names are currently restricted to characters that are safe for
+HTTP headers and file systems. An alternative would have been to allow
+all safe characters allowed for HTTP headers defined by
+[RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2.6).
+This would allow for the following characters.
 
+* Latin letters `a` - `z` `A` - `Z` 
+* Digits `0` - `9`
+* Special characters `!` `#` `$` `%` `&` `'` `*`  `+` `-` `.` `^` `_` `` ` `` `~` 
+* Any visible US-ASCII character except delimiters DQUOTE and `(),/:;<=>?@[\]{}`
+
+Allowing for these characters would mean that user agents would need
+to do expensive database lookups for bucket names before transactions.
+Although this restriction is not flexible for developers,
+we think that the performance benefits would be better for users. 
 
 ### No length restriction for bucket names
 
