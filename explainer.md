@@ -1495,17 +1495,19 @@ just to support it.
 
 Due to the synchronous nature of Web Storage API, user agents would need an
 in-renderer cache to support writes for `localStorage`.
-Therefore we would be able to support `"relaxed"` or `"strict"` policies.
+Therefore we would not be able to support `"relaxed"` or `"strict"` policies.
 
-We would also need a special quota system just for `localStorage` and
-its RAM consumption. This could have performance implications of supporting multiple
-`localStorage` instances per origin. Each bucket could have a smaller quota than
-the existing quota limit but would add extra complexity to the implementation. 
+Web developers would need to keeping track of separate quota just for `localStorage`
+and its RAM consumption. Supporting multiple `localStorage` instances per origins
+could also have performance implications. Each bucket could have a smaller quota
+than the existing quota limit, however it may be less desirable for web developers
+to have less quota in this way.
 
 At first pass, the synchronous read API of `localStorage` seems like it could be
-a problem. However in this case, buckets could help from its main thread blocking
-during read, since it can read all data asynchronously on `openOrCreate()`.
-
+a problem. However in this case, user agents do not need to block the main thread
+to read the `localStorage` contents. Instead, implementations can read the
+`localStorage` data asynchronously, while processing
+`navigator.storageBuckets.openOrCreate()`.
 
 ## Stakeholder Feedback / Opposition
 
