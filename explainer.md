@@ -108,11 +108,9 @@ for specifying the policies for each individual API.
 
 * Sharding for cookies
 
-* Standardizing browser eviction
-
 * Change behavior for third party context
 
-* Change behavior for user triggered exiction
+* Standardizing browser eviction
 
 ## Use Cases
 
