@@ -106,9 +106,11 @@ for specifying the policies for each individual API.
 
 ## Non-goals
 
-[If there are “adjacent” goals which may appear to be in scope but aren’t,
-enumerate them here. This section may be fleshed out as your design
-progresses and you encounter necessary technical and other trade-offs.]
+* Integration with storage mechanisms that don't follow the same origin policy, such as cookies
+
+* Behavior in third-party contexts is deferred to future work, to keep this explainer manageable
+
+* Standardizing user agent behavior around storage eviction
 
 ## Use Cases
 
