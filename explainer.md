@@ -106,11 +106,11 @@ for specifying the policies for each individual API.
 
 ## Non-goals
 
-* Sharding for cookies
+* Integration with storage mechanisms that don't follow the same origin policy, such as cookies
 
-* Change behavior for third party context
+* Behavior in third-party contexts is deferred to future work, to keep this explainer manageable
 
-* Standardizing browser eviction
+* Standardizing user agent behavior around storage eviction
 
 ## Use Cases
 
