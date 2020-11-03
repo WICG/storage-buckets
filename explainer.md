@@ -106,9 +106,13 @@ for specifying the policies for each individual API.
 
 ## Non-goals
 
-[If there are “adjacent” goals which may appear to be in scope but aren’t,
-enumerate them here. This section may be fleshed out as your design
-progresses and you encounter necessary technical and other trade-offs.]
+* Sharding for cookies
+
+* Standardizing browser eviction
+
+* Change behavior for third party context
+
+* Change behavior for user triggered exiction
 
 ## Use Cases
 
