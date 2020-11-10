@@ -38,7 +38,7 @@
 - [Storage buckets and the Clear-Site-Data](#storage-buckets-and-the-clear-site-data)
 - [Key Scenarios](#key-scenarios)
   - [Storage Eviction](#storage-eviction)
-  - [Partitioned Storage](#partitioned-storage)
+  - [Storage Division](#storage-division)
   - [Quota Management](#quota-management)
 - [Detailed design discussion](#detailed-design-discussion)
   - [Bucket names](#bucket-names)
@@ -91,7 +91,7 @@ for specifying the policies for each individual API.
 
 ## Goals
 
-* Allow web applications to evict partitions of data
+* Allow web applications to evict slices of data
 
 * Allow web developers to specify eviction prioritization
 
@@ -99,7 +99,7 @@ for specifying the policies for each individual API.
   for the entire domain
 
 * Allow web developers to express performance, durability and other trade-off
-  decisions on partitions of data
+  decisions on slices of data
 
 * Allow users to have control over which data to evict, and prevent important
   data from being deleted
@@ -121,10 +121,10 @@ prioritization and organization, it allows them to decide on storage
 trade-offs themselves upon storage eviction during low disk space instead of
 losing all data.
 
-- **Storage partitioning**: allowing applications to group data. Applications
-can also choose to group data via buckets by user account on a shared device,
-or by time frame if an application would like to prioritize last accessed
-data.
+- **Storage division**: allowing applications to divide and organize their
+data. Whether it's by user account on a shared device or by feature,
+web applications can choose to divide their data into slices via buckets
+however they would like.
 
 - **Quota management**: applications can be smart with quota usage by keeping
 track of quota usage per bucket and reserving quota before a write,
@@ -561,14 +561,15 @@ const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts",
     { durability: "strict", persisted: true, title: "Drafts" });
 ```
 
-### Partitioned Storage
+### Storage Division
 
-Currently there isn’t an option for granular partitioning of stored data
-making it hard for applications to evict all relevant low priority data at
-once. Buckets allow applications to partition data however they seem fit.
+Currently there isn’t any way for applications to divide data, making it
+hard for applications to organize and do partial cleanup on divisions of
+data. Buckets allow applications to divide their data into slices by feature,
+account, or however they seem fit.
 
 In this example we will explore a scenario where an email client will
-partition storage using Buckets by user accounts on a shared device.
+divide storage using Buckets by user accounts on a shared device.
 
 TODO: Add image
 
