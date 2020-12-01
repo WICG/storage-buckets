@@ -1,6 +1,6 @@
 ### StorageBuckets API Interface
 
-### The StorageBucketManager Interface
+#### The StorageBucketManager Interface
 ```
 [
   Exposed=(Window,Worker),
@@ -38,47 +38,47 @@ dictionary StorageBucket {
 }
 ```
 
-## navigator.storageBuckets
+### navigator.storageBuckets
 ```
 partial interface Navigator {
   [SecureContext, SameObject] readonly attribute StorageBucketManager storageBuckets;
 }
 ```
 
-## Storage Manager
+### Storage Manager
 [SecureContext] partial interface StorageBucket {
   estimate();
 }
 
-## Indexed DB
+### Indexed DB
 ```
 [SameObject] partial interface StorageBucket {
   readonly attribute IDBFactory indexedDB;
 }
 ```
 
-## Cache Storage
+### Cache Storage
 ```
 [SecureContext, SameObject] partial interface StorageBucket {
   readonly attribute CacheStorage caches;
 }
 ```
 
-## File System Access
+### File System Access
 ```
 [SecureContext] partial interface StorageBucket {
   promise<FileSystemDirectoryHandle> getDirectory();
 }
 ```
 
-## Service Worker
+### Service Worker
 ```
 [SecureContext] partial interface StorageBucket {
   readonly attribute ServiceWorkerContainer serviceWorker;
 }
 ```
 
-## File API
+### File API
 ```
 partial interface StorageBucket {
   Promise<Blob> createBlob(BlobPart, Blob);
