@@ -16,7 +16,7 @@ dictionary StorageBucketOptions {
   USVString? title = null,
   boolean persisted = false,
   StorageBucketDurability durability = "relaxed",
-  unsigned long? quota = null,
+  unsigned long long? quota = null,
   DOMTimeStamp? expires = null,
 }
 
@@ -25,7 +25,7 @@ enum StorageBucketDurability {
   "relaxed"
 }
 
-dictionary StorageBucket {
+[SecureContext] interface StorageBucket {
   [Exposed=Window] Promise<boolean> persist();
   Promise<boolean> persisted();
 
@@ -47,36 +47,39 @@ partial interface Navigator {
 
 ### Indexed DB
 ```
-[SameObject] partial interface StorageBucket {
-  readonly attribute IDBFactory indexedDB;
+partial interface StorageBucket {
+  [SameObject] readonly attribute IDBFactory indexedDB;
 }
 ```
 
 ### Cache Storage
 ```
-[SecureContext, SameObject] partial interface StorageBucket {
-  readonly attribute CacheStorage caches;
+partial interface StorageBucket {
+  [SameObject] readonly attribute CacheStorage caches;
 }
 ```
 
 ### File System Access
 ```
-[SecureContext] partial interface StorageBucket {
+partial interface StorageBucket {
   promise<FileSystemDirectoryHandle> getDirectory();
 }
 ```
 
 ### Service Worker
 ```
-[SecureContext] partial interface StorageBucket {
-  readonly attribute ServiceWorkerContainer serviceWorker;
+partial interface StorageBucket {
+  [SameObject] readonly attribute ServiceWorkerContainer serviceWorker;
 }
 ```
 
 ### File API
 ```
 partial interface StorageBucket {
-  Promise<Blob> createBlob(BlobPart, Blob);
-  Promise<File> createFile();
+  Promise<Blob> createBlob(optional sequence<BlobPart> blobParts,
+                           optional BlobPropertyBag options = {});
+  Promise<File> createFile(sequence<BlobPart> fileBits,
+                           USVString fileName,
+                           optional FilePropertyBag options = {});
 }
 ```
