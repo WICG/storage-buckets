@@ -46,9 +46,11 @@ partial interface Navigator {
 ```
 
 ### Storage Manager
+```
 [SecureContext] partial interface StorageBucket {
   estimate();
 }
+```
 
 ### Indexed DB
 ```
