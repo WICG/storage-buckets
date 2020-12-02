@@ -6,14 +6,14 @@
   Exposed=(Window,Worker),
   SecureContext
 ] interface StorageBucketManager {
-    [NewObject] Promise<StorageBucket> openOrCreate(USVString name,
+    [NewObject] Promise<StorageBucket> openOrCreate(DOMString name,
                                                     optional StorageBucketOptions options = {});
-    Promise<sequence<USVString>> keys();
-    Promise<undefined> delete(USVString name);
+    Promise<sequence<DOMString>> keys();
+    Promise<undefined> delete(DOMString name);
 };
 
 dictionary StorageBucketOptions {
-  USVString? title = null,
+  DOMString? title = null,
   boolean persisted = false,
   StorageBucketDurability durability = "relaxed",
   unsigned long long? quota = null,
@@ -25,7 +25,10 @@ enum StorageBucketDurability {
   "relaxed"
 }
 
-[SecureContext] interface StorageBucket {
+[
+  Exposed=(Window,Worker),
+  SecureContext
+] interface StorageBucket {
   [Exposed=Window] Promise<boolean> persist();
   Promise<boolean> persisted();
 
@@ -45,28 +48,46 @@ partial interface Navigator {
 }
 ```
 
-### Indexed DB
+### Integration with IndexedDB
 ```
 partial interface StorageBucket {
   [SameObject] readonly attribute IDBFactory indexedDB;
 }
 ```
 
-### Cache Storage
+### Integration with Cache Storage
 ```
 partial interface StorageBucket {
   [SameObject] readonly attribute CacheStorage caches;
 }
 ```
 
-### File System Access
+### Integration with File System Access
 ```
 partial interface StorageBucket {
-  promise<FileSystemDirectoryHandle> getDirectory();
+  Promise<FileSystemDirectoryHandle> getDirectory();
 }
 ```
 
-### Service Worker
+### Integration with File API
+```
+partial interface StorageBucket {
+  [NewObject] Promise<Blob> createBlob(optional sequence<BlobPart> blobParts,
+                           optional BlobPropertyBag options = {});
+  [NewObject] Promise<File> createFile(sequence<BlobPart> fileBits,
+                           USVString fileName,
+                           optional FilePropertyBag options = {});
+}
+```
+
+### Integration with Service Worker
+`StorageBucket` exposes a subset of methods from [ServiceWorkerContainer](https://w3c.github.io/ServiceWorker/#serviceworkercontainer) and will include the following methods. 
+- [register](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-register)
+- [getRegistration](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistration)
+- [getRegistrations](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistrations)
+
+
+`ServiceWorkerContainerRegistration` will pull some members from `ServiceWorkerContainer` so it can be included in the `StorageBucket` interface, ultimately changing the Service Worker spec.
 ```
 interface mixin ServiceWorkerContainerRegistration {
   [NewObject] Promise<ServiceWorkerRegistration> register(USVString scriptURL,
@@ -74,23 +95,13 @@ interface mixin ServiceWorkerContainerRegistration {
   [NewObject] Promise<any> getRegistration(optional USVString clientURL = "");
   [NewObject] Promise<FrozenArray<ServiceWorkerRegistration>> getRegistrations();
 }
-
+```
+```
 interface StorageBucketServiceWorkerContainer {}
 
 StorageBucketServiceWorkerContainer includes ServiceWorkerContainerRegistration;
 
 partial interface StorageBucket {
   [SameObject] readonly attribute StorageBucketServiceWorkerContainer serviceWorker;
-}
-```
-
-### File API
-```
-partial interface StorageBucket {
-  Promise<Blob> createBlob(optional sequence<BlobPart> blobParts,
-                           optional BlobPropertyBag options = {});
-  Promise<File> createFile(sequence<BlobPart> fileBits,
-                           USVString fileName,
-                           optional FilePropertyBag options = {});
 }
 ```
