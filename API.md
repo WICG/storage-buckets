@@ -18,12 +18,12 @@ dictionary StorageBucketOptions {
   StorageBucketDurability durability = "relaxed",
   unsigned long long? quota = null,
   DOMTimeStamp? expires = null,
-}
+};
 
 enum StorageBucketDurability {
   "strict",
   "relaxed"
-}
+};
 
 [
   Exposed=(Window,Worker),
@@ -38,42 +38,42 @@ enum StorageBucketDurability {
 
   Promise<undefined> setExpires(DOMTimeStamp expires);
   Promise<DOMTimeStamp> expires();
-}
+};
 ```
 
 ### navigator.storageBuckets
 ```
 partial interface Navigator {
   [SecureContext, SameObject] readonly attribute StorageBucketManager storageBuckets;
-}
+};
 ```
 
 ### Integration with IndexedDB
 ```
 partial interface StorageBucket {
   [SameObject] readonly attribute IDBFactory indexedDB;
-}
+};
 ```
 
 ### Integration with Cache Storage
 ```
 partial interface StorageBucket {
   [SameObject] readonly attribute CacheStorage caches;
-}
+};
 ```
 
 ### Integration with Web Locks API
 ```
 partial interface StorageBucket {
   [SameObject] readonly attribute LockManager locks;
-}
+};
 ```
 
 ### Integration with File System Access
 ```
 partial interface StorageBucket {
   Promise<FileSystemDirectoryHandle> getDirectory();
-}
+};
 ```
 
 ### Integration with File API
@@ -84,7 +84,7 @@ partial interface StorageBucket {
   [NewObject] Promise<File> createFile(sequence<BlobPart> fileBits,
                                        USVString fileName,
                                        optional FilePropertyBag options = {});
-}
+};
 ```
 
 ### Integration with Service Worker
@@ -101,14 +101,14 @@ interface mixin ServiceWorkerContainerRegistration {
                                                           optional RegistrationOptions options = {});
   [NewObject] Promise<any> getRegistration(optional USVString clientURL = "");
   [NewObject] Promise<FrozenArray<ServiceWorkerRegistration>> getRegistrations();
-}
+};
 ```
 ```
-interface StorageBucketServiceWorkerContainer {}
+interface StorageBucketServiceWorkerContainer {};
 
 StorageBucketServiceWorkerContainer includes ServiceWorkerContainerRegistration;
 
 partial interface StorageBucket {
   [SameObject] readonly attribute StorageBucketServiceWorkerContainer serviceWorker;
-}
+};
 ```
