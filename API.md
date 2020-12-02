@@ -73,10 +73,10 @@ partial interface StorageBucket {
 ```
 partial interface StorageBucket {
   [NewObject] Promise<Blob> createBlob(optional sequence<BlobPart> blobParts,
-                           optional BlobPropertyBag options = {});
+                                       optional BlobPropertyBag options = {});
   [NewObject] Promise<File> createFile(sequence<BlobPart> fileBits,
-                           USVString fileName,
-                           optional FilePropertyBag options = {});
+                                       USVString fileName,
+                                       optional FilePropertyBag options = {});
 }
 ```
 
