@@ -254,7 +254,7 @@ const draftsTestDir = await draftsBucket.getDirectory();
 
 Each storage bucket also has an entry point to
 [the Web Locks API](https://wicg.github.io/web-locks/).
-The entry point matches `NavigatorLocks.lock` in
+The entry point matches `NavigatorLocks.locks` in
 [the Web Locks API spec](https://wicg.github.io/web-locks/#lockmanager).
 
 ```javascript
@@ -452,7 +452,7 @@ A bucket's expiration can be changed as long as the bucket does not expire.
 const oneDay = 24 * 60 * 60 * 1000;
 if (await newsBucket.expires() - Date.now() <= oneDay) {
   await refreshNews(newsBucket);
-  await newsBucket.setExpireS(Date.now() + twoWeeks);
+  await newsBucket.setExpires(Date.now() + twoWeeks);
 }
 ```
 
