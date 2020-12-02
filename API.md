@@ -62,6 +62,13 @@ partial interface StorageBucket {
 }
 ```
 
+### Integration with Web Locks API
+```
+partial interface StorageBucket {
+  [SameObject] readonly attribute LockManager locks;
+}
+```
+
 ### Integration with File System Access
 ```
 partial interface StorageBucket {
