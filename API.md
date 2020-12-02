@@ -6,8 +6,8 @@
   Exposed=(Window,Worker),
   SecureContext
 ] interface StorageBucketManager {
-    Promise<StorageBucket> openOrCreate(USVString name,
-                                        optional StorageBucketOptions options = {});
+    [NewObject] Promise<StorageBucket> openOrCreate(USVString name,
+                                                    optional StorageBucketOptions options = {});
     Promise<sequence<USVString>> keys();
     Promise<undefined> delete(USVString name);
 };
@@ -68,8 +68,19 @@ partial interface StorageBucket {
 
 ### Service Worker
 ```
+interface mixin ServiceWorkerContainerRegistration {
+  [NewObject] Promise<ServiceWorkerRegistration> register(USVString scriptURL,
+                                                          optional RegistrationOptions options = {});
+  [NewObject] Promise<any> getRegistration(optional USVString clientURL = "");
+  [NewObject] Promise<FrozenArray<ServiceWorkerRegistration>> getRegistrations();
+}
+
+interface StorageBucketServiceWorkerContainer {}
+
+StorageBucketServiceWorkerContainer includes ServiceWorkerContainerRegistration;
+
 partial interface StorageBucket {
-  [SameObject] readonly attribute ServiceWorkerContainer serviceWorker;
+  [SameObject] readonly attribute StorageBucketServiceWorkerContainer serviceWorker;
 }
 ```
 
