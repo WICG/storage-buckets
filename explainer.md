@@ -1553,20 +1553,30 @@ const settingsBucket = await navigator.storageBuckets.openOrCreate("settings", {
 const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
 ```
 
-This alternative was rejected because we were concerned about the performance
-implications of supporting multiple `localStorage` instances per origin.
+This alternative was rejected because `localStorage` does not follow
+the same durability policies, and developers would need to manage a
+separate quota system just for `localStorage`.
 
-Due to the synchronous nature of the Web Storage API, user agents implement
-`localStorage` via a full in-memory cache.
+The DOM storage standard, and by extension `localStorage` does not dictate
+any durability policy. However, because the standard exposes a synchronous API
+to the main thread, it forces some choices on all implementations that want
+to give a good user experience. The choices are (1) using a a RAM-backed
+cache (so `getItem` doesn't block on disk), and (2) committing writes
+asynchronously (so `setItem` doesn't block on disk). Therefore `localStorage`
+does not have any stance on durability, and user agents would not be able to
+honor any durability policy set here.
 
-TODO: Explain why we chose not to integrate `localStorage`.
+Web developers would need to keep track of separate quota just for `localStorage`
+and its RAM consumption. Supporting multiple `localStorage` instances per origins
+could also have performance implications. Each bucket could have a smaller quota
+than the existing quota limit, however it may be less desirable for web developers
+to have less quota in this way.
 
-* LocalStorage doesn't follow durability policies. Sync write API means we need
-  in-renderer caches, so we couldn't support either `"relaxed"` or `"strict"`
-* RAM consumption limitation. Would need special quota system just for
-  LocalStorage. Buckets with small `quota` would get access then.
-* Non-issue: sync read API. We can read all data on `openOrCreate()`.
-
+At a first pass, the synchronous read API of `localStorage` seems like it could be
+a problem. However in this case, user agents do not need to block the main thread
+to read the `localStorage` contents. Instead, implementations can read the
+`localStorage` data asynchronously, while processing
+`navigator.storageBuckets.openOrCreate()`.
 
 ## Stakeholder Feedback / Opposition
 
