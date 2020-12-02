@@ -13,11 +13,11 @@
 };
 
 dictionary StorageBucketOptions {
-  DOMString? title = null,
-  boolean persisted = false,
-  StorageBucketDurability durability = "relaxed",
-  unsigned long long? quota = null,
-  DOMTimeStamp? expires = null,
+  DOMString? title = null;
+  boolean persisted = false;
+  StorageBucketDurability durability = "relaxed";
+  unsigned long long? quota = null;
+  DOMTimeStamp? expires = null;
 };
 
 enum StorageBucketDurability {
