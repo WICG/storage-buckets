@@ -252,6 +252,22 @@ const inboxTestDir = await inboxBucket.getDirectory();
 const draftsTestDir = await draftsBucket.getDirectory();
 ```
 
+Each storage bucket also has an entry point to
+[the Web Locks API](https://wicg.github.io/web-locks/).
+The entry point matches `NavigatorLocks.lock` in
+[the Web Locks API spec](https://wicg.github.io/web-locks/#lockmanager).
+
+```javascript
+inboxBucket.locks.request("cache", lock => {
+  return new Promise((resolve, reject) => {
+    const tx = inboxDb.transaction("attachments", "readonly");
+    tx.oncomplete = resolve;
+    tx.onabort = e => reject(tx.error);
+    // use tx...
+  });
+});
+```
+
 ## Deleting buckets
 
 Storage buckets can be deleted. For example, the code below could be used to
@@ -468,6 +484,8 @@ the `default` bucket on-demand.
   [the Storage Standard](https://storage.spec.whatwg.org/#api)
 * `StorageManager.getDirectory` in
   [File System Access](https://wicg.github.io/file-system-access/#sandboxed-filesystem)
+* `NavigatorLocks.locks` in
+  [Web Locks](https://wicg.github.io/web-locks/#lockmanager)
 
 The default bucket is created with the following options.
 
