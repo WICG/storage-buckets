@@ -42,7 +42,6 @@
   - [Quota Management](#quota-management)
 - [Detailed design discussion](#detailed-design-discussion)
   - [Bucket names](#bucket-names)
-  - [Bucket titles](#bucket-titles)
   - [Storage policy naming](#storage-policy-naming)
   - [Durability guarantees](#durability-guarantees)
 - [Considered alternatives](#considered-alternatives)
@@ -52,6 +51,7 @@
   - [Allow all safe characters for HTTP headers in bucket names](#allow-all-safe-characters-for-http-headers-in-bucket-names)
   - [No length restriction for bucket names](#no-length-restriction-for-bucket-names)
   - [Relaxed length restrictions for bucket names](#relaxed-length-restrictions-for-bucket-names)
+  - [Bucket titles](#bucket-titles)
   - [Alternative name for the bucket `title` property](#alternative-name-for-the-bucket-title-property)
   - [Language maps for bucket titles](#language-maps-for-bucket-titles)
   - [Enumerate all buckets using an async iterator](#enumerate-all-buckets-using-an-async-iterator)
@@ -1023,25 +1023,27 @@ can be
 
 ### Bucket titles
 
-Buckets are expected to be named using programmer-friendly identifiers, simiarly
-to variable names. By contrast, bucket titles are user-friendly descriptions.
-Titles are intended to support user agents that want to offer the ability to
-delete individual buckets in their storage management UI. These user agents may
+Because buckets are expected to be named using programmer-friendly identifiers,
+simiarly to variable names, we could have a bucket title option,
+which in contrast would be user-friendly descriptions of the bucket.
+Titles could be useful for user agents that want to offer the ability to
+delete individual buckets in their storage management UI. These user agents could
 display bucket titles when showing buckets to their users.
 
 `title` was chosen for consistency with the
 [HTML title element](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element).
 
-Bucket titles present some subtleties for applications that support multiple
-languages. Specifically, a bucket's title will presumably reflect the
-users' preferred language at the time the bucket is created. The current API
-surface does not allow changing a bucket's description, so already-created
+Bucket titles could present some subtleties for applications that support multiple
+languages. Specifically, a bucket's title could presumably reflect the
+users' preferred language at the time the bucket is created. In this alternative
+the API surface will not allow changing a bucket's description, so already-created
 buckets will not reflect language preference changes.
 
-Including application strings in user agent UI has non-trivial security and
-privacy implications, which may deter some user agents from using the `title` as
-intended. For example, user agents that intend to incorporate the `title` need
-to mitigate against misleading values such as
+This alternative was rejected because including strings provided by the author in
+user agent UI may introduce a11y and i18n issues, as well as have non-trivial
+security and privacy implications, which may deter some user agents from using
+the `title` as intended. For example, user agents that intend to incorporate
+the `title` need to mitigate against misleading values such as
 `"You have a virus! Go to www.evil.com for a cleanup"`.
 
 ### Alternative name for the bucket `title` property
