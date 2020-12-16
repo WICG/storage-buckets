@@ -917,11 +917,11 @@ const inboxBucket = await navigator.storageBuckets.open("inbox", {
   title: "Inbox", failIfExists: true });
 ```
 
-We think that only exposing an `open()` option that combines intents is
-the best way to support the model where each bucket can be evicted by
-the browser independently of other buckets. We want applications to be
-written assuming that each time they attempt to open a bucket, they
-may be creating the bucket from scratch.
+We think that exposing an `open()` option that combines the intent
+to open or create is the best way to support the model where each
+bucket can be evicted by the browser independently of other buckets.
+We want applications to be written assuming that each time they
+attempt to open a bucket, they may be creating the bucket from scratch.
 
 
 ### Bucket designations for each storage API
