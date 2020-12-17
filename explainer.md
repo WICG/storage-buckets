@@ -42,7 +42,6 @@
   - [Quota Management](#quota-management)
 - [Detailed design discussion](#detailed-design-discussion)
   - [Bucket names](#bucket-names)
-  - [Bucket titles](#bucket-titles)
   - [Storage policy naming](#storage-policy-naming)
   - [Durability guarantees](#durability-guarantees)
   - [Default bucket quota](#default-bucket-quota)
@@ -53,8 +52,7 @@
   - [Allow all safe characters for HTTP headers in bucket names](#allow-all-safe-characters-for-http-headers-in-bucket-names)
   - [No length restriction for bucket names](#no-length-restriction-for-bucket-names)
   - [Relaxed length restrictions for bucket names](#relaxed-length-restrictions-for-bucket-names)
-  - [Alternative name for the bucket `title` property](#alternative-name-for-the-bucket-title-property)
-  - [Language maps for bucket titles](#language-maps-for-bucket-titles)
+  - [Bucket titles](#bucket-titles)
   - [Enumerate all buckets using an async iterator](#enumerate-all-buckets-using-an-async-iterator)
   - [Separate durability options for flushing to the storage device vs media](#separate-durability-options-for-flushing-to-the-storage-device-vs-media)
   - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
@@ -155,9 +153,7 @@ before using storage APIs. In the simplest form, usage looks as follows.
 
 ```javascript
 // Create a bucket for emails that are synchronized with the server.
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
-  title: "Inbox",  // User agents may display titles in storage management UI.
-});
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
 ```
 
 Buckets can be assigned different storage policies at creation time. The example
@@ -167,7 +163,7 @@ described in future sections.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-    durability: "strict", persisted: true, title: "Drafts" });
+    durability: "strict", persisted: true });
 ```
 
 
@@ -181,7 +177,7 @@ does not match the desired value.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-    durability: "strict", persisted: true, title: "Drafts" });
+    durability: "strict", persisted: true });
 
 if (await draftsBucket.persisted() !== true) {
   showWarningButterBar("Your drafts may be lost if you run out of disk space!");
@@ -332,7 +328,7 @@ A bucket's persistence policy is specified at bucket creation time.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-    persisted: true, title: "Drafts" });
+    persisted: true });
 ```
 
 The persistence policy can be queried at any time. The user agent may decline a
@@ -390,7 +386,7 @@ A bucket's durability policy is specified at bucket creation time.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-    durability: "strict", title: "Drafts" });
+    durability: "strict" });
 ```
 
 The durability policy can be queried at any time. The user agent may not
@@ -416,7 +412,6 @@ not to follow it.
 
 ```javascript
 const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
-  title: "Log data",
   quota: 20 * 1024 * 1024  // 20 MB
 }
 ```
@@ -492,7 +487,7 @@ The default bucket is created with the following options.
 
 ```js
 await navigator.storageBuckets.openOrCreate("default", {
-  durability: "strict", persist: false, title: "" });
+  durability: "strict", persist: false });
 ```
 
 
@@ -574,10 +569,10 @@ TODO: Add image
 
 ```javascript
 const recentBucket = await navigator.storageBuckets.openOrCreate("recent",
-    { durability: "relaxed", persisted: false, title: "Recent" });
+    { durability: "relaxed", persisted: false });
 
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts",
-    { durability: "strict", persisted: true, title: "Drafts" });
+    { durability: "strict", persisted: true });
 ```
 
 ### Storage Division
@@ -595,10 +590,10 @@ TODO: Add image
 ```javascript
 // Bucket creation per user account.
 const user1Bucket = await navigator.storageBuckets.openOrCreate(
-    "userid111111_inbox", {title: "alice@email.com Inbox" });
+    "userid111111_inbox" });
 
 const user2Bucket = await navigator.storageBuckets.openOrCreate(
-    "userid222222_inbox", {title: "bob@email.com Inbox" });
+    "userid222222_inbox" });
 
 ```
 
@@ -640,11 +635,10 @@ TODO: Add image.
 ```javascript
 const offlineVideosBucket = await navigator.storageBuckets.openOrCreate(
     "offline_videos",
-    { title: "Offline Videos", durability: "strict", persisted: false });
+    { durability: "strict", persisted: false });
 
 const recommendationBucket = await navigator.storageBuckets.openOrCreate(
    "recommendations", {
-     title: "Recommendations",
      quota: 20 * 1024 * 1024,  // 20 MB
    });
 ```
@@ -713,30 +707,6 @@ These buckets may be displayed in the UI as follows.
 Bucket names are limited to 64 characters. This supports implementations that
 would directly integrate bucket names into file names, and makes it easy to
 reason about bucket lookup performance.
-
-
-### Bucket titles
-
-Buckets are expected to be named using programmer-friendly identifiers, simiarly
-to variable names. By contrast, bucket titles are user-friendly descriptions.
-Titles are intended to support user agents that want to offer the ability to
-delete individual buckets in their storage management UI. These user agents may
-display bucket titles when showing buckets to their users.
-
-`title` was chosen for consistency with the
-[HTML title element](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element).
-
-Bucket titles present some subtleties for applications that support multiple
-languages. Specifically, a bucket's title will presumably reflect the
-users' preferred language at the time the bucket is created. The current API
-surface does not allow changing a bucket's description, so already-created
-buckets will not reflect language preference changes.
-
-Including application strings in user agent UI has non-trivial security and
-privacy implications, which may deter some user agents from using the `title` as
-intended. For example, user agents that intend to incorporate the `title` need
-to mitigate against misleading values such as
-`"You have a virus! Go to www.evil.com for a cleanup"`.
 
 
 ### Storage policy naming
@@ -869,11 +839,9 @@ we have exposed it off of `navigator.storage.buckets`. The examples below
 illustrate this alternative.
 
 ```javascript
-const inboxBucket = await navigator.storage.buckets.openOrCreate("inbox", {
-  title: "Inbox",
-});
+const inboxBucket = await navigator.storage.buckets.openOrCreate("inbox");
 const draftsBucket = await navigator.storage.buckets.openOrCreate("drafts", {
-  durability: "strict", persisted: true, title: "Drafts" });
+  durability: "strict", persisted: true });
 
 await navigator.storage.buckets.delete("inbox");
 await navigator.storage.buckets.delete("drafts");
@@ -903,16 +871,13 @@ illustrated in the example below.
 
 ```javascript
 // Creates the "inbox" bucket if does not already exist.
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
-  title: "Inbox" });
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
 
 // Fails if the "inbox" bucket does not already exist.
-const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox" });
+const inboxBucket = await navigator.storageBuckets.open("inbox");
 
 // Fails if the "inbox" bucket already exists.
-const inboxBucket = await navigator.storageBuckets.create("inbox", {
-  title: "Inbox" });
+const inboxBucket = await navigator.storageBuckets.create("inbox");
 ```
 
 Alternatively, we could have settled for one `open()` method with options, as
@@ -920,16 +885,15 @@ shown below.
 
 ```javascript
 // By default, creates the "inbox" bucket if does not already exist.
-const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox" });
+const inboxBucket = await navigator.storageBuckets.open("inbox");
 
 // Fails if the "inbox" bucket does not already exist.
 const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox", failIfNotExist: true });
+  failIfNotExist: true });
 
 // Fails if the "inbox" bucket already exists.
 const inboxBucket = await navigator.storageBuckets.open("inbox", {
-  title: "Inbox", failIfExists: true });
+  failIfExists: true });
 ```
 
 We think that only exposing the `openOrCreate()` option is the best way to
@@ -976,9 +940,7 @@ Having entry points to each storage API on the bucket also makes replacing
 the default bucket in JS easy.
 
 ```javascript
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
-  title: "Inbox",
-});
+const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
 
 // Replace default bucket with inboxBucket for IndexedDB. 
 window.indexedDB = inboxBucket.indexedDB;
@@ -1071,7 +1033,32 @@ Relaxing the length to 1024 characters makes it less likely that bucket names
 can be
 
 
-### Alternative name for the bucket `title` property
+### Bucket titles
+
+Because buckets are expected to be named using programmer-friendly identifiers,
+simiarly to variable names, we could have a bucket title option,
+which in contrast would be user-friendly descriptions of the bucket.
+Titles could be useful for user agents that want to offer the ability to
+delete individual buckets in their storage management UI. These user agents could
+display bucket titles when showing buckets to their users.
+
+`title` was chosen for consistency with the
+[HTML title element](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element).
+
+Bucket titles could present some subtleties for applications that support multiple
+languages. Specifically, a bucket's title could presumably reflect the
+users' preferred language at the time the bucket is created. In this alternative
+the API surface will not allow changing a bucket's description, so already-created
+buckets will not reflect language preference changes.
+
+This alternative was rejected because including strings provided by the author in
+user agent UI may introduce a11y and i18n issues, as well as have non-trivial
+security and privacy implications, which may deter some user agents from using
+the `title` as intended. For example, user agents that intend to incorporate
+the `title` need to mitigate against misleading values such as
+`"You have a virus! Go to www.evil.com for a cleanup"`.
+
+#### Alternative name for the bucket `title` property
 
 The `title` properties could be named `description` instead. This would be
 consistent with the
@@ -1083,7 +1070,7 @@ full sentence. We expect that short strings will be better suited for inclusion
 in user management UIs.
 
 
-### Language maps for bucket titles
+#### Language maps for bucket titles
 
 The bucket `title` property could allow a dictionary instead of a string, where
 the keys are valid values for the
@@ -1137,7 +1124,7 @@ additional complexity introduced by this alternative.
 // Each change (keystroke) in a draft is saved here.
 const immediateDraftsBucket = await navigator.storage.buckets.openOrCreate(
     "device-drafts",
-    { durability: "device", persisted: true, title: "Drafts Cache" });
+    { durability: "device", persisted: true });
 const immediateDraftsDb = await new Promise(resolve => {
   const request = inboxBucket.indexedDB.open("messages", { bucket: "inbox" });
   request.onupgradeneeded = () => { /* migration code */ };
@@ -1151,7 +1138,7 @@ const immediateDraftsDb = await new Promise(resolve => {
 // Draft changes are batched every minute and saved here. Writing to this bucket
 // on every keystroke is too much of a battery drain.
 const draftsBucket = await navigator.storage.buckets.openOrCreate(
-    "media-drafts", { durability: "media", persisted: true, title: "Drafts" });
+    "media-drafts", { durability: "media", persisted: true });
 const draftsDb = await new Promise(resolve => {
   const request = inboxBucket.indexedDB.open("messages", { bucket: "inbox" });
   request.onupgradeneeded = () => { /* migration code */ };
@@ -1329,10 +1316,10 @@ that this alternative leads to more bulky code for expressing the common case.
 
 ```javascript
 const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
-  title: "Inbox", durability: "relaxed" });
+  durability: "relaxed" });
 
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  persisted: true, title: "Drafts" });
+  persisted: true });
 ```
 
 Second, we think that the current proposal will make it easier to reason about
@@ -1371,7 +1358,7 @@ with `"strict"` durability and storing the drafts with `"relaxed"` durability.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict", persisted: true, title: "Drafts" });
+  durability: "strict", persisted: true });
 
 // Called when the user switches a "drafts" durability toggle.
 async function setDraftsDurability(durability) {
@@ -1392,10 +1379,10 @@ preferences, and read drafts from both buckets.
 
 ```javascript
 const draftsBuckets = {};
-draftsBuckets.strict = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "strict", persisted: true, title: "Drafts (Durable)" });
-draftsBuckets.relaxed = await navigator.storageBuckets.openOrCreate("drafts", {
-  durability: "relaxed", persisted: true, title: "Drafts (Fast)" });
+draftsBuckets.strict = await navigator.storageBuckets.openOrCreate(
+  "drafts-durable", { durability: "strict", persisted: true });
+draftsBuckets.relaxed = await navigator.storageBuckets.openOrCreate(
+  "drafts-fast", { durability: "relaxed", persisted: true });
 
 
 const draftsDb = {};
@@ -1534,7 +1521,7 @@ while logging out.
 
 ```javascript
 const user2Bucket = await navigator.storageBuckets.openOrCreate(
-    "userid222222_inbox", {title: "bob@email.com Inbox" });
+    "userid222222_inbox");
 const user2LogoutChannel = new BroadcastChannel("userid222222_logout");
 
 // Attachments for User 2
@@ -1561,9 +1548,7 @@ could have included
 on the list of APIs that buckets offer.
 
 ```javascript
-const settingsBucket = await navigator.storageBuckets.openOrCreate("settings", {
-  title: "User Preferences",
-});
+const settingsBucket = await navigator.storageBuckets.openOrCreate("settings");
 
 const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
 ```
