@@ -951,7 +951,6 @@ Having entry points to each storage API on the bucket also makes replacing
 the default bucket in JS easy.
 
 ```javascript
-
 const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
 
 // Replace default bucket with inboxBucket for IndexedDB. 
@@ -1149,7 +1148,6 @@ const immediateDraftsDb = await new Promise(resolve => {
 //
 // Draft changes are batched every minute and saved here. Writing to this bucket
 // on every keystroke is too much of a battery drain.
-
 const draftsBucket = await navigator.storage.buckets.open(
     "media-drafts", { durability: "media", persisted: true });
 const draftsDb = await new Promise(resolve => {
