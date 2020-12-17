@@ -52,8 +52,6 @@
   - [No length restriction for bucket names](#no-length-restriction-for-bucket-names)
   - [Relaxed length restrictions for bucket names](#relaxed-length-restrictions-for-bucket-names)
   - [Bucket titles](#bucket-titles)
-  - [Alternative name for the bucket `title` property](#alternative-name-for-the-bucket-title-property)
-  - [Language maps for bucket titles](#language-maps-for-bucket-titles)
   - [Enumerate all buckets using an async iterator](#enumerate-all-buckets-using-an-async-iterator)
   - [Separate durability options for flushing to the storage device vs media](#separate-durability-options-for-flushing-to-the-storage-device-vs-media)
   - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
@@ -1020,7 +1018,6 @@ Relaxing the length to 1024 characters makes it less likely that bucket names
 can be
 
 
-
 ### Bucket titles
 
 Because buckets are expected to be named using programmer-friendly identifiers,
@@ -1046,7 +1043,7 @@ the `title` as intended. For example, user agents that intend to incorporate
 the `title` need to mitigate against misleading values such as
 `"You have a virus! Go to www.evil.com for a cleanup"`.
 
-### Alternative name for the bucket `title` property
+#### Alternative name for the bucket `title` property
 
 The `title` properties could be named `description` instead. This would be
 consistent with the
@@ -1058,7 +1055,7 @@ full sentence. We expect that short strings will be better suited for inclusion
 in user management UIs.
 
 
-### Language maps for bucket titles
+#### Language maps for bucket titles
 
 The bucket `title` property could allow a dictionary instead of a string, where
 the keys are valid values for the
