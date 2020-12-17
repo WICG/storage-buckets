@@ -47,7 +47,7 @@
   - [Default bucket quota](#default-bucket-quota)
 - [Considered alternatives](#considered-alternatives)
   - [Expose the API off of navigator.storage.buckets](#expose-the-api-off-of-navigatorstoragebuckets)
-  - [Separate intents for creating a bucket and opening an existing bucket](#separate-intents-for-creating-a-bucket-and-opening-an-existing-bucket)
+  - [Opening and creating buckets](#opening-and-creating-buckets)
   - [Bucket designations for each storage API](#bucket-designations-for-each-storage-api)
   - [Allow all safe characters for HTTP headers in bucket names](#allow-all-safe-characters-for-http-headers-in-bucket-names)
   - [No length restriction for bucket names](#no-length-restriction-for-bucket-names)
@@ -854,8 +854,9 @@ nesting and the default bucket. Specifically, some `navigator.storage` methods
 `navigator.storage.buckets` is a property on `navigator.storage`, and it may be
 confusing that it refers to all the origin's buckets, not to the default bucket.
 
+### Opening and creating buckets
 
-### Separate intents for creating a bucket and opening an existing bucket
+#### Separate intents for creating a bucket and opening an existing bucket
 
 `navigator.storageBuckets.open()` always attempts to create a bucket
 with the given name if it does not exist. This is different from storage APIs on
@@ -901,6 +902,15 @@ to open or create is the best way to support the model where each
 bucket can be evicted by the browser independently of other buckets.
 We want applications to be written assuming that each time they
 attempt to open a bucket, they may be creating the bucket from scratch.
+
+#### Alternative naming to `open`
+
+Instead of `open` this could have been called `openOrCreate`
+to clearly describe that a Storage Bucket could be created if it
+does not exist yet. However the `open` naming is consistent and more
+recognizable across the storage APIs including
+[CacheStorage](https://w3c.github.io/ServiceWorker/#cache-storage-open)
+which matches this behavior of auto creation if the Cache does not exist. 
 
 
 ### Bucket designations for each storage API
@@ -1550,7 +1560,6 @@ could have included
 on the list of APIs that buckets offer.
 
 ```javascript
-
 const settingsBucket = await navigator.storageBuckets.open("settings");
 
 const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
