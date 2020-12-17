@@ -834,13 +834,13 @@ A default quota will be assigned to every storage bucket that is created
 with `openOrCreate()` without a `quota` policy. The behavior of the
 default bucket quota will be user agent specific.
 
-In Chrome, we plan to have the default quota for a storage bucket to
+Chrome plans to have the default quota for a storage bucket to
 match the origin quota. It may seem unintuitive to have the quota
 for a storage bucket be so large, disconnecting further from available
-disk space. However, we think having anything under 100% of the origin quota
-will become a constraint to developers, disincentivizing the use of
-buckets. We think developers should be able to use all available quota for
-an origin in one storage bucket.
+disk space. However, the Chrome team thinks that having anything under
+100% of the origin quota will become a constraint to developers, disincentivizing
+the use of buckets. We think developers should be able to use all available
+quota for an origin in one storage bucket.
 
 ## Considered alternatives
 
