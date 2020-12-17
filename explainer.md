@@ -45,6 +45,7 @@
   - [Bucket titles](#bucket-titles)
   - [Storage policy naming](#storage-policy-naming)
   - [Durability guarantees](#durability-guarantees)
+  - [Default bucket quota](#default-bucket-quota)
 - [Considered alternatives](#considered-alternatives)
   - [Expose the API off of navigator.storage.buckets](#expose-the-api-off-of-navigatorstoragebuckets)
   - [Separate intents for creating a bucket and opening an existing bucket](#separate-intents-for-creating-a-bucket-and-opening-an-existing-bucket)
@@ -844,6 +845,20 @@ facts were considered by our decision process.
   at transaction level via the
   [WriteOptions.sync option](https://github.com/google/leveldb/blob/master/doc/index.md#synchronous-writes).
 
+
+### Default Bucket Quota
+
+A default quota will be assigned to every storage bucket that is created
+with `openOrCreate()` without a `quota` policy. The behavior of the
+default bucket quota will be user agent specific.
+
+Chrome plans to have the default quota for a storage bucket to
+match the origin quota. It may seem unintuitive to have the quota
+for a storage bucket be so large, disconnecting further from available
+disk space. However, the Chrome team thinks that having anything under
+100% of the origin quota will become a constraint to developers, disincentivizing
+the use of buckets. The Chrome team thinks developers should be able to use
+all available quota for an origin in one storage bucket.
 
 ## Considered alternatives
 
