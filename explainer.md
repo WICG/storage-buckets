@@ -839,8 +839,8 @@ match the origin quota. It may seem unintuitive to have the quota
 for a storage bucket be so large, disconnecting further from available
 disk space. However, the Chrome team thinks that having anything under
 100% of the origin quota will become a constraint to developers, disincentivizing
-the use of buckets. We think developers should be able to use all available
-quota for an origin in one storage bucket.
+the use of buckets. The Chrome team thinks developers should be able to use
+all available quota for an origin in one storage bucket.
 
 ## Considered alternatives
 
