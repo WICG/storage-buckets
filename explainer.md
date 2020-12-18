@@ -47,7 +47,7 @@
   - [Default bucket quota](#default-bucket-quota)
 - [Considered alternatives](#considered-alternatives)
   - [Expose the API off of navigator.storage.buckets](#expose-the-api-off-of-navigatorstoragebuckets)
-  - [Separate intents for creating a bucket and opening an existing bucket](#separate-intents-for-creating-a-bucket-and-opening-an-existing-bucket)
+  - [Opening and creating buckets](#opening-and-creating-buckets)
   - [Bucket designations for each storage API](#bucket-designations-for-each-storage-api)
   - [Allow all safe characters for HTTP headers in bucket names](#allow-all-safe-characters-for-http-headers-in-bucket-names)
   - [No length restriction for bucket names](#no-length-restriction-for-bucket-names)
@@ -147,13 +147,13 @@ smooth user experience.
 [introduces buckets](https://storage.spec.whatwg.org/#buckets), but does not
 have an API for explicitly managing buckets.
 
-This explainer introduces the `navigator.storageBuckets.openOrCreate()` method.
+This explainer introduces the `navigator.storageBuckets.open()` method.
 Applications are expected to use this method to deliberately set up buckets
 before using storage APIs. In the simplest form, usage looks as follows.
 
 ```javascript
 // Create a bucket for emails that are synchronized with the server.
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
+const inboxBucket = await navigator.storageBuckets.open("inbox");
 ```
 
 Buckets can be assigned different storage policies at creation time. The example
@@ -162,21 +162,21 @@ synchronized with a server. The policies introduced by this proposal will be
 described in future sections.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
     durability: "strict", persisted: true });
 ```
 
 
 ## Getting the storage policies associated with a bucket
 
-The storage policies passed to `openOrCreate()` are advisory. User agents may
+The storage policies passed to `open()` are advisory. User agents may
 create buckets whose policies don't match the requests. In most cases, the
 deviations only result in different performance characteristics. Applications
 can check a bucket's policies and take appropriate action when a vital policy
 does not match the desired value.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
     durability: "strict", persisted: true });
 
 if (await draftsBucket.persisted() !== true) {
@@ -184,7 +184,7 @@ if (await draftsBucket.persisted() !== true) {
 }
 ```
 
-Each `openOrCreate()` option that indicates a storage policy has a
+Each `open()` option that indicates a storage policy has a
 corresponding property on the bucket object. Examples for all policy-related
 properties will be shown in future sections.
 
@@ -327,12 +327,12 @@ also propose the following API for operating on a bucket's persistence policy.
 A bucket's persistence policy is specified at bucket creation time.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
     persisted: true });
 ```
 
 The persistence policy can be queried at any time. The user agent may decline a
-`persisted: true` policy requested by `openOrCreate()`.
+`persisted: true` policy requested by `open()`.
 
 ```javascript
 if (await draftsBucket.persisted() !== true) {
@@ -385,12 +385,12 @@ application would not be able to recover from power loss. By contrast,
 A bucket's durability policy is specified at bucket creation time.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
     durability: "strict" });
 ```
 
 The durability policy can be queried at any time. The user agent may not
-honor the policy requested by the `openOrCreate()` call.
+honor the policy requested by the `open()` call.
 
 ```javascript
 if (await draftsBucket.durability() !== "strict") {
@@ -407,11 +407,11 @@ to place an upper bound on storage usage for each application feature. This
 ensures that a bug in an application feature won't impact another feature's
 ability to store data by eating up the entire origin's quota.
 
-A quota argument passed to `openOrCreate` is a hint, and user agents may choose
+A quota argument passed to `open` is a hint, and user agents may choose
 not to follow it.
 
 ```javascript
-const logsBucket = await navigator.storageBuckets.openOrCreate("logs", {
+const logsBucket = await navigator.storageBuckets.open("logs", {
   quota: 20 * 1024 * 1024  // 20 MB
 }
 ```
@@ -428,7 +428,7 @@ capability to the expiration attribute of
 
 ```javascript
 const twoWeeks = 14 * 24 * 60 * 60 * 1000;
-const newsBucket = await navigator.storageBuckets.openOrCreate("news", {
+const newsBucket = await navigator.storageBuckets.open("news", {
     expires: Date.now() + twoWeeks });
 ```
 
@@ -460,7 +460,7 @@ guaranteed to cause the deletion of an expired bucket.
 1. Calling `navigator.storageBuckets.delete()` with the name of an expired
    bucket will delete the bucket's data.
 
-2. Calling `navigator.storage.openOrCreate()` with the name of an expired bucket
+2. Calling `navigator.storage.open()` with the name of an expired bucket
    will delete the expired bucket's data, and return a newly created bucket.
 
 3. Calling `navigator.storageBuckets.keys()` will delete the data of all the
@@ -486,7 +486,7 @@ the `default` bucket on-demand.
 The default bucket is created with the following options.
 
 ```js
-await navigator.storageBuckets.openOrCreate("default", {
+await navigator.storageBuckets.open("default", {
   durability: "strict", persist: false });
 ```
 
@@ -568,10 +568,10 @@ low priority since it contains data that can be recovered from the server.
 TODO: Add image
 
 ```javascript
-const recentBucket = await navigator.storageBuckets.openOrCreate("recent",
+const recentBucket = await navigator.storageBuckets.open("recent",
     { durability: "relaxed", persisted: false });
 
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts",
+const draftsBucket = await navigator.storageBuckets.open("drafts",
     { durability: "strict", persisted: true });
 ```
 
@@ -589,12 +589,12 @@ TODO: Add image
 
 ```javascript
 // Bucket creation per user account.
-const user1Bucket = await navigator.storageBuckets.openOrCreate(
+
+const user1Bucket = await navigator.storageBuckets.open(
     "userid111111_inbox" });
 
-const user2Bucket = await navigator.storageBuckets.openOrCreate(
+const user2Bucket = await navigator.storageBuckets.open(
     "userid222222_inbox" });
-
 ```
 
 Data can be stored for each user via Storage APIs per bucket without
@@ -633,11 +633,11 @@ entire origin's quota.
 TODO: Add image.
 
 ```javascript
-const offlineVideosBucket = await navigator.storageBuckets.openOrCreate(
+const offlineVideosBucket = await navigator.storageBuckets.open(
     "offline_videos",
     { durability: "strict", persisted: false });
 
-const recommendationBucket = await navigator.storageBuckets.openOrCreate(
+const recommendationBucket = await navigator.storageBuckets.open(
    "recommendations", {
      quota: 20 * 1024 * 1024,  // 20 MB
    });
@@ -676,7 +676,7 @@ The restrictions were chosen with two goals in mind.
 
 2. Give browsers the option to integrate bucket names in file names on the
    computer's file system. This may help user agents avoid a database lookup in
-   their `openOrCreate()` implementations. We expect that opening buckets will
+   their `open()` implementations. We expect that opening buckets will
    end up on the critical path for loading modern sites, so we consider that
    giving user agents maximum freedom in the name of efficiency serves users,
    which outweighs developer convenience.
@@ -839,8 +839,8 @@ we have exposed it off of `navigator.storage.buckets`. The examples below
 illustrate this alternative.
 
 ```javascript
-const inboxBucket = await navigator.storage.buckets.openOrCreate("inbox");
-const draftsBucket = await navigator.storage.buckets.openOrCreate("drafts", {
+const inboxBucket = await navigator.storage.buckets.open("inbox");
+const draftsBucket = await navigator.storage.buckets.open("drafts", {
   durability: "strict", persisted: true });
 
 await navigator.storage.buckets.delete("inbox");
@@ -854,10 +854,11 @@ nesting and the default bucket. Specifically, some `navigator.storage` methods
 `navigator.storage.buckets` is a property on `navigator.storage`, and it may be
 confusing that it refers to all the origin's buckets, not to the default bucket.
 
+### Opening and creating buckets
 
-### Separate intents for creating a bucket and opening an existing bucket
+#### Separate intents for creating a bucket and opening an existing bucket
 
-`navigator.storageBuckets.openOrCreate()` always attempts to create a bucket
+`navigator.storageBuckets.open()` always attempts to create a bucket
 with the given name if it does not exist. This is different from storage APIs on
 most systems, where developers can express the three separate intents below.
 
@@ -896,10 +897,20 @@ const inboxBucket = await navigator.storageBuckets.open("inbox", {
   failIfExists: true });
 ```
 
-We think that only exposing the `openOrCreate()` option is the best way to
-support the model where each bucket can be evicted by the browser independently
-of other buckets. We want applications to be written assuming that each time
-they attempt to open a bucket, they may be creating the bucket from scratch.
+We think that exposing an `open()` option that combines the intent
+to open or create is the best way to support the model where each
+bucket can be evicted by the browser independently of other buckets.
+We want applications to be written assuming that each time they
+attempt to open a bucket, they may be creating the bucket from scratch.
+
+#### Alternative naming to `open`
+
+Instead of `open` this could have been called `openOrCreate`
+to clearly describe that a Storage Bucket could be created if it
+does not exist yet. However the `open` naming is consistent and more
+recognizable across the storage APIs including
+[CacheStorage](https://w3c.github.io/ServiceWorker/#cache-storage-open)
+which matches this behavior of auto creation if the Cache does not exist. 
 
 
 ### Bucket designations for each storage API
@@ -1078,7 +1089,7 @@ the keys are valid values for the
 and values are localized user-facing strings.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
   durability: "strict", persisted: true,
   title: { en: "Drafts", es: "Borradoers", jp: "下書き" }});
 ```
@@ -1122,7 +1133,7 @@ additional complexity introduced by this alternative.
 // lost in case of power failure.
 //
 // Each change (keystroke) in a draft is saved here.
-const immediateDraftsBucket = await navigator.storage.buckets.openOrCreate(
+const immediateDraftsBucket = await navigator.storage.buckets.open(
     "device-drafts",
     { durability: "device", persisted: true });
 const immediateDraftsDb = await new Promise(resolve => {
@@ -1137,7 +1148,7 @@ const immediateDraftsDb = await new Promise(resolve => {
 //
 // Draft changes are batched every minute and saved here. Writing to this bucket
 // on every keystroke is too much of a battery drain.
-const draftsBucket = await navigator.storage.buckets.openOrCreate(
+const draftsBucket = await navigator.storage.buckets.open(
     "media-drafts", { durability: "media", persisted: true });
 const draftsDb = await new Promise(resolve => {
   const request = inboxBucket.indexedDB.open("messages", { bucket: "inbox" });
@@ -1305,7 +1316,7 @@ may be flushed to an OS-level buffer using
 ### Default to strict durability
 
 Newly created buckets receive the `"relaxed"` storage policy, unless a different
-`durability` option is passed to `openOrCreate()`. The default storage policy
+`durability` option is passed to `open()`. The default storage policy
 could have been `"strict"`. This alternative was rejected for two reasons,
 outlined below.
 
@@ -1315,10 +1326,10 @@ This use case is best served by the `"relaxed"` policy. The example below shows
 that this alternative leads to more bulky code for expressing the common case.
 
 ```javascript
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox", {
+const inboxBucket = await navigator.storageBuckets.open("inbox", {
   durability: "relaxed" });
 
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
   persisted: true });
 ```
 
@@ -1357,7 +1368,7 @@ our example might want to allow the user to switch between storing email drafts
 with `"strict"` durability and storing the drafts with `"relaxed"` durability.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.openOrCreate("drafts", {
+const draftsBucket = await navigator.storageBuckets.open("drafts", {
   durability: "strict", persisted: true });
 
 // Called when the user switches a "drafts" durability toggle.
@@ -1379,11 +1390,10 @@ preferences, and read drafts from both buckets.
 
 ```javascript
 const draftsBuckets = {};
-draftsBuckets.strict = await navigator.storageBuckets.openOrCreate(
+draftsBuckets.strict = await navigator.storageBuckets.open(
   "drafts-durable", { durability: "strict", persisted: true });
-draftsBuckets.relaxed = await navigator.storageBuckets.openOrCreate(
+draftsBuckets.relaxed = await navigator.storageBuckets.open(
   "drafts-fast", { durability: "relaxed", persisted: true });
-
 
 const draftsDb = {};
 for (let durability of ["relaxed", "strict"]) {
@@ -1520,7 +1530,7 @@ that may be using the same account, and close all connections to a bucket
 while logging out.
 
 ```javascript
-const user2Bucket = await navigator.storageBuckets.openOrCreate(
+const user2Bucket = await navigator.storageBuckets.open(
     "userid222222_inbox");
 const user2LogoutChannel = new BroadcastChannel("userid222222_logout");
 
@@ -1548,7 +1558,7 @@ could have included
 on the list of APIs that buckets offer.
 
 ```javascript
-const settingsBucket = await navigator.storageBuckets.openOrCreate("settings");
+const settingsBucket = await navigator.storageBuckets.open("settings");
 
 const emailsPerPage = settingsBucket.localStorage.getItem('emailsPerPage');
 ```
@@ -1576,7 +1586,7 @@ At a first pass, the synchronous read API of `localStorage` seems like it could 
 a problem. However in this case, user agents do not need to block the main thread
 to read the `localStorage` contents. Instead, implementations can read the
 `localStorage` data asynchronously, while processing
-`navigator.storageBuckets.openOrCreate()`.
+`navigator.storageBuckets.open()`.
 
 ## Stakeholder Feedback / Opposition
 
