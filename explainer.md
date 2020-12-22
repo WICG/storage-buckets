@@ -191,7 +191,10 @@ properties will be shown in future sections.
 
 ## Accessing storage APIs from buckets
 
-Each storage bucket has an entry point to the
+User agents may add entry points to the following storage APIs if they choose
+to implement them.
+
+Each storage bucket can have an entry point to the
 [Cache storage API](https://w3c.github.io/ServiceWorker/#cache-objects). The
 entry point matches `WindowOrWorkerGlobalScope.caches` in
 [the Service Worker spec](https://w3c.github.io/ServiceWorker/#self-caches).
@@ -201,7 +204,7 @@ const inboxCache = await inboxBucket.caches.open("attachments");
 const draftsCache = await draftsBucket.caches.open("attachments");
 ```
 
-Each storage bucket also has an entry point to the
+Each storage bucket can also have an entry point to the
 [IndexedDB API](https://w3c.github.io/IndexedDB/). The entry point matches
 `WindowOrWorkerGlobalScope.indexedDB` in
 [the IndexedDB spec](https://w3c.github.io/IndexedDB/#factory-interface).
@@ -221,7 +224,7 @@ const draftsDb = await new Promise(resolve => {
 });
 ```
 
-Each storage bucket also has an entry point to
+Each storage bucket can also have an entry point to
 [the File API](https://w3c.github.io/FileAPI/). The entry points are
 asynchronous versions of
 [the Blob constructor](https://w3c.github.io/FileAPI/#dom-blob-blob) and
@@ -239,8 +242,9 @@ const draftFile = await draftsBucket.createFile(
 TODO: Update the text here with the resolution of
 https://github.com/w3c/FileAPI/issues/157.
 
-Each storage bucket also has an entry point to the origin-private file system
-in the [File System Access API](https://wicg.github.io/file-system-access/).
+Each storage bucket can also have an entry point to the origin-private file
+system in the
+[File System Access API](https://wicg.github.io/file-system-access/).
 The entry point matches `StorageManager.getDirectory()`
 in [the File System Access spec](https://wicg.github.io/file-system-access/#sandboxed-filesystem).
 
@@ -249,7 +253,7 @@ const inboxTestDir = await inboxBucket.getDirectory();
 const draftsTestDir = await draftsBucket.getDirectory();
 ```
 
-Each storage bucket also has an entry point to
+Each storage bucket can also have an entry point to
 [the Web Locks API](https://wicg.github.io/web-locks/).
 The entry point matches `NavigatorLocks.locks` in
 [the Web Locks API spec](https://wicg.github.io/web-locks/#lockmanager).
@@ -469,8 +473,9 @@ guaranteed to cause the deletion of an expired bucket.
 
 ## The default bucket
 
-The following existing APIs operate on the `default` bucket. These APIs create
-the `default` bucket on-demand.
+The following existing APIs, if a user agent chooses to support them,
+will operate on the `default` bucket. These APIs create the
+`default` bucket on-demand.
 
 * `WindowOrWorkerGlobalScope.indexedDB` in
   [IndexedDB](https://w3c.github.io/IndexedDB/#factory-interface)
