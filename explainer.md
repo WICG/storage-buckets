@@ -824,7 +824,7 @@ facts were considered by our decision process.
 ### Default Bucket Quota
 
 A default quota will be assigned to every storage bucket that is created
-with `openOrCreate()` without a `quota` policy. The behavior of the
+with `open()` without a `quota` policy. The behavior of the
 default bucket quota will be user agent specific.
 
 Chrome plans to have the default quota for a storage bucket to
@@ -956,7 +956,7 @@ Having entry points to each storage API on the bucket also makes replacing
 the default bucket in JS easy.
 
 ```javascript
-const inboxBucket = await navigator.storageBuckets.openOrCreate("inbox");
+const inboxBucket = await navigator.storageBuckets.open("inbox");
 
 // Replace default bucket with inboxBucket for IndexedDB. 
 window.indexedDB = inboxBucket.indexedDB;
