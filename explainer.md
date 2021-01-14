@@ -503,7 +503,7 @@ TODO: Flesh out this section or move it into a separate explainer.
 Each storage bucket can store
 [service worker registrations](https://w3c.github.io/ServiceWorker/#dfn-service-worker-registration).
 When a storage bucket is deleted, all service worker registrations that it
-contains are also evicted.
+contains are also evicted, using the same [purge method](https://github.com/w3c/ServiceWorker/pull/1506) used by [Clear-Site-Data](https://www.w3.org/TR/clear-site-data/).
 
 Applications are expected to associate a service worker registration with a
 storage bucket if the service worker would not be able to do its job without
@@ -527,6 +527,8 @@ methods.
 * [getRegistration](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistration)
 * [getRegistrations](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistrations)
 
+Storage policies do not affect the service worker registrations of a given bucket.
+
 
 ## Storage buckets and the Clear-Site-Data
 
@@ -544,6 +546,10 @@ the `inbox` bucket to be deleted.
 Clear-Site-Data: "storage:inbox"
 ```
 
+The above `Clear-Site-Data` storage bucket directive is functionally equivalent to calling `delete()`.
+```JavaScript
+navigator.storageBuckets.delete("inbox");
+```
 
 ## Key Scenarios
 
