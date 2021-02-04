@@ -6,8 +6,8 @@
   Exposed=(Window,Worker),
   SecureContext
 ] interface StorageBucketManager {
-    [NewObject] Promise<StorageBucket> openOrCreate(DOMString name,
-                                                    optional StorageBucketOptions options = {});
+    [NewObject] Promise<StorageBucket> open(DOMString name,
+                                            optional StorageBucketOptions options = {});
     Promise<sequence<DOMString>> keys();
     Promise<undefined> delete(DOMString name);
 };
