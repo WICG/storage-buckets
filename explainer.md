@@ -28,6 +28,7 @@
 - [Accessing storage APIs from buckets](#accessing-storage-apis-from-buckets)
 - [Deleting buckets](#deleting-buckets)
 - [Enumerating buckets](#enumerating-buckets)
+- [Maximum bucket count](#maximum-bucket-count)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [Storage policy: Persistence](#storage-policy-persistence)
 - [Storage policy: Durability](#storage-policy-durability)
@@ -297,6 +298,14 @@ console.log(bucketNames);  // [ "drafts", "inbox" ]
 This function is provided for debugging / logging purposes, and may have
 significant performance implications.
 
+
+## Maximum bucket count
+
+A user agent can specify the maximum number of buckets allowed for an origin.
+
+```javascript
+console.log(navigator.storageBuckets.maxCount);  // 5
+```
 
 ## Getting a bucket's quota usage
 
