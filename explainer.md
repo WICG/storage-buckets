@@ -100,9 +100,6 @@ for specifying the policies for each individual API.
 * Allow web developers to express performance, durability and other trade-off
   decisions on slices of data
 
-* Allow users to have control over which data to evict, and prevent important
-  data from being deleted
-
 ## Non-goals
 
 * Integration with storage mechanisms that don't follow the same origin policy, such as cookies
@@ -110,6 +107,8 @@ for specifying the policies for each individual API.
 * Behavior in third-party contexts is deferred to future work, to keep this explainer manageable
 
 * Standardizing user agent behavior around storage eviction
+
+* Allowing users to have control over which data to evict
 
 ## Use Cases
 
@@ -276,8 +275,7 @@ delete all the data stored on the device when the user logs out.
 
 
 ```javascript
-await navigator.storageBuckets.delete("inbox");
-await navigator.storageBuckets.delete("drafts");
+await navigator.storageBuckets.delete("user-1234");
 ```
 
 A bucket's data becomes inacessible by the time the deletion operation
@@ -703,18 +701,6 @@ constrains the character set. The constraints we are aware of are listed below.
   For example, `.` separates file names from extensions, and files ending in
   `.exe` are executable on Windows.
 
-The `_` character in bucket names is designated for conveying hierarchical
-structure. The user agent may choose to display this structure in its storage
-management UI.
-
-For example, assume three buckets with names `user123456`, `user123456_inbox`
-and `user123456_drafts`, and titles `pwnall@chromium.org`, `Inbox` and `Drafts`.
-These buckets may be displayed in the UI as follows.
-
-* pwnall@chromium.org
-  * Inbox
-  * Drafts
-
 Bucket names are limited to 64 characters. This supports implementations that
 would directly integrate bucket names into file names, and makes it easy to
 reason about bucket lookup performance.
@@ -1058,7 +1044,7 @@ can be
 ### Bucket titles
 
 Because buckets are expected to be named using programmer-friendly identifiers,
-simiarly to variable names, we could have a bucket title option,
+similarly to variable names, we could have a bucket title option,
 which in contrast would be user-friendly descriptions of the bucket.
 Titles could be useful for user agents that want to offer the ability to
 delete individual buckets in their storage management UI. These user agents could
@@ -1078,7 +1064,8 @@ user agent UI may introduce a11y and i18n issues, as well as have non-trivial
 security and privacy implications, which may deter some user agents from using
 the `title` as intended. For example, user agents that intend to incorporate
 the `title` need to mitigate against misleading values such as
-`"You have a virus! Go to www.evil.com for a cleanup"`.
+`"You have a virus! Go to www.evil.com for a cleanup"`. Currently, any use of
+buckets is intended to be transparent to end users.
 
 #### Alternative name for the bucket `title` property
 
