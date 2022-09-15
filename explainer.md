@@ -5,6 +5,7 @@
 
 * Ayu Ishii
 * Victor Costan
+* Evan Stade
 
 
 ## Participate
