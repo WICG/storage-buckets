@@ -1066,7 +1066,7 @@ security and privacy implications, which may deter some user agents from using
 the `title` as intended. For example, user agents that intend to incorporate
 the `title` need to mitigate against misleading values such as
 `"You have a virus! Go to www.evil.com for a cleanup"`. Currently, any use of
-buckets is intended to be transparent to end users.
+buckets is intended to be unnoticeable by end users.
 
 #### Alternative name for the bucket `title` property
 
