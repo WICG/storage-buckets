@@ -10,7 +10,7 @@ Editor: Evan Stade, Google https://www.google.com/, estade@google.com
 Editor: Ayu Ishii, Google https://www.google.com/, ayui@google.com
 Former Editor: Victor Costan
 !Participate: <a href="https://github.com/WICG/storage-buckets">GitHub WICG/storage-buckets</a> (<a href="https://github.com/WICG/storage-buckets/issues/new">new issue</a>, <a href="https://github.com/WICG/storage-buckets/issues?state=open">open issues</a>)
-Abstract: The storage buckets API provides a way for a site to create multiple storage buckets, where the user agent may choose to delete each bucket independently of other buckets.
+Abstract: The Storage Buckets API provides a way for sites to organize locally stored data into groupings called "storage buckets". This allows the user agent or sites to manage and delete buckets independently rather than applying the same treatment to all the data from a single origin.
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
