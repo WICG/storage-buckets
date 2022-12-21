@@ -72,8 +72,6 @@ interface StorageBucket {
 
   [SameObject] readonly attribute IDBFactory indexedDB;
 
-  [SameObject] readonly attribute LockManager locks;
-
   [SameObject] readonly attribute CacheStorage caches;
 
   Promise<FileSystemDirectoryHandle> getDirectory();
