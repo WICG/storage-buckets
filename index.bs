@@ -52,6 +52,12 @@ dictionary StorageBucketOptions {
 </xmp>
 
 <h3 id="storage-bucket-open">Creating a bucket</h3>
+
+When not null, {{StorageBucketOptions/durability}} is a hint to the user agent
+specifying the desired {{StorageBucket/durability}}. The user agent MAY
+create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
+MUST NOT modify the [=bucket durability=] of an existing bucket.
+
 <h3 id="storage-bucket-delete">Deleting a bucket</h3>
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
 
@@ -77,5 +83,33 @@ interface StorageBucket {
   Promise<FileSystemDirectoryHandle> getDirectory();
 };
 </xmp>
+
+<h3 id="storage-bucket-durability">Durability</h3>
+
+A {{StorageBucket}} has a <dfn>bucket durability</dfn>. This reflects whether the user agent
+will prioritize performance or durability when completing operations on data in the bucket.
+The value is one of the following:
+
+: "{{StorageBucketDurability/strict}}"
+:: The user agent MUST consider that operations on data in the bucket are successful only after verifying that outstanding changes have been written to a persistent storage medium.
+: "{{StorageBucketDurability/relaxed}}"
+:: The user agent MUST consider that operations on data in the bucket are successful as soon as all outstanding changes have been written to the operating system, without subsequent verification.
+
+The user agent MUST ignore the [=bucket durability=] for operations that otherwise override default durability behavior.
+
+<h3 id="storage-bucket-indexeddb">Creating an Indexed Database</h3>
+
+Each {{StorageBucket}} has an {{IDBFactory}} object. {{IDBDatabase}} objects created by
+{{StorageBucket/indexedDB}} are associated with the bucket.
+
+The user agent should consider the associated {{StorageBucket/durability}} when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
+of an {{IDBTransaction}} |transaction|. To calculate the effective <a spec="IndexedDB">durability hint</a> for |transaction| with associated
+|bucket|:
+
+1. If |durability| is not "{{IDBTransactionDurability/default}}", then return |durability|.
+
+1. If |bucket|'s [=bucket durability=] is "{{StorageBucketDurability/strict}}", then return "{{IDBTransactionDurability/strict}}".
+
+1. Return "{{IDBTransactionDurability/relaxed}}".
 
 <h2 id="security-privacy">Security and privacy considerations</h2>
