@@ -102,8 +102,10 @@ The user agent MUST ignore the [=bucket durability=] for operations that otherwi
 Each {{StorageBucket}} has an {{IDBFactory}} object. {{IDBDatabase}} objects created by
 {{StorageBucket/indexedDB}} are associated with the bucket.
 
+<div algorithm>
+
 The user agent should consider the associated {{StorageBucket/durability}} when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
-of an {{IDBTransaction}} |transaction|. To calculate the effective <a spec="IndexedDB">durability hint</a> for |transaction| with associated
+of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec="IndexedDB">durability hint</a></dfn> for |transaction| with associated
 |bucket|:
 
 1. If |durability| is not "{{IDBTransactionDurability/default}}", then return |durability|.
@@ -111,5 +113,7 @@ of an {{IDBTransaction}} |transaction|. To calculate the effective <a spec="Inde
 1. If |bucket|'s [=bucket durability=] is "{{StorageBucketDurability/strict}}", then return "{{IDBTransactionDurability/strict}}".
 
 1. Return "{{IDBTransactionDurability/relaxed}}".
+
+</div>
 
 <h2 id="security-privacy">Security and privacy considerations</h2>
