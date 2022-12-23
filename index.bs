@@ -11,6 +11,7 @@ Editor: Ayu Ishii, Google https://www.google.com/, ayui@google.com
 Former Editor: Victor Costan
 !Participate: <a href="https://github.com/WICG/storage-buckets">GitHub WICG/storage-buckets</a> (<a href="https://github.com/WICG/storage-buckets/issues/new">new issue</a>, <a href="https://github.com/WICG/storage-buckets/issues?state=open">open issues</a>)
 Abstract: The Storage Buckets API provides a way for sites to organize locally stored data into groupings called "storage buckets". This allows the user agent or sites to manage and delete buckets independently rather than applying the same treatment to all the data from a single origin.
+Markup Shorthands: css no, markdown yes
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
@@ -97,14 +98,14 @@ The value is one of the following:
 
 The user agent MUST ignore the [=bucket durability=] for operations that otherwise override default durability behavior.
 
-<h3 id="storage-bucket-indexeddb">Creating an Indexed Database</h3>
+<h3 id="storage-bucket-indexeddb">Using Indexed Database</h3>
 
-Each {{StorageBucket}} has an {{IDBFactory}} object. {{IDBDatabase}} objects created by
+A {{StorageBucket}} has an {{IDBFactory}} object. [[IndexedDB]] objects created through
 {{StorageBucket/indexedDB}} are associated with the bucket.
 
 <div algorithm>
 
-The user agent should consider the associated {{StorageBucket/durability}} when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
+The user agent MUST consider the associated {{StorageBucket/durability}} when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
 of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec="IndexedDB">durability hint</a></dfn> for |transaction| with associated
 |bucket|:
 
@@ -113,6 +114,26 @@ of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec=
 1. If |bucket|'s [=bucket durability=] is "{{StorageBucketDurability/strict}}", then return "{{IDBTransactionDurability/strict}}".
 
 1. Return "{{IDBTransactionDurability/relaxed}}".
+
+</div>
+
+<h3 id="storage-bucket-caches">Using CacheStorage</h3>
+
+A {{StorageBucket}} has a {{CacheStorage}} object. [[service-workers#cache-objects]] objects created through {{StorageBucket/caches}} are associated with the bucket.
+
+<h3 id="storage-bucket-getdirectory">Using opfs</h3>
+
+Issue: [[Storage]] needs to define helpers to retrieve the bottle map for a given (non-default) bucket.
+
+Issue: [[FS]] needs to define a helper to retrieve an OPFS given a bottle map.
+
+<div algorithm>
+
+The <dfn method for=StorageBucket>getDirectory()</dfn> steps for |bucket| are:
+
+1. Let |map| be the result of [=obtain a local storage bottle map=] with |bucket| and `"fileSystem"`.
+
+1. Return the result of retrieving a [[FS#sandboxed-filesystem]] with |map|.
 
 </div>
 
