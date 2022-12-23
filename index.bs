@@ -121,7 +121,7 @@ of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec=
 
 A {{StorageBucket}} has a {{CacheStorage}} object. [[service-workers#cache-objects]] objects created through {{StorageBucket/caches}} are associated with the bucket.
 
-<h3 id="storage-bucket-getdirectory">Using opfs</h3>
+<h3 id="storage-bucket-getdirectory">Using an Origin Private File System</h3>
 
 Issue: [[Storage]] needs to define helpers to retrieve the bottle map for a given (non-default) bucket.
 
