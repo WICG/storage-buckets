@@ -13,6 +13,14 @@ Former Editor: Victor Costan
 Abstract: The Storage Buckets API provides a way for sites to organize locally stored data into groupings called "storage buckets". This allows the user agent or sites to manage and delete buckets independently rather than applying the same treatment to all the data from a single origin.
 </pre>
 
+<pre class=anchors>
+spec: storage; urlPrefix: https://storage.spec.whatwg.org/
+    type: dfn
+        text: mode; url: bucket-mode
+        text: storage bucket; url: storage-bucket
+        text: storage key; url: storage-key
+</pre>
+
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
 
 <xmp class="idl">
@@ -53,6 +61,73 @@ dictionary StorageBucketOptions {
 
 <h3 id="storage-bucket-open">Creating a bucket</h3>
 
+<div algorithm>
+
+  The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method steps are:
+
+  1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+  1. Let |storageKey| be the result of running [=obtain a storage key=] given |environment|.
+
+      If failure is returned, then [=exception/throw=] a "{{SecurityError}}" {{DOMException}} and abort these steps.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Run the following steps [=in parallel=]:
+
+      1. Let |r| be the result of running [=opening a bucket=] with
+          |storageKey|,
+          |name|,
+          and |options| if given and undefined otherwise.
+
+      1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
+
+      1. [=/Resolve=] |p| with undefined.
+
+  1. Return |p|.
+
+</div>
+
+<div algorithm>
+
+ To <dfn>opening a bucket</dfn> for a |storageKey| given a bucket |name| and |options|, then:
+
+ 1. If |name| contain any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
+
+ 1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
+
+ 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
+
+ 1. Let |persisted| be false.
+
+ 1. If |options|["{{StorageBucketOptions/persisted}}"] is true, then:
+
+     1. Let |permission| be the result of [=/requesting permission to use=] "<code>persistent-storage</code>".
+
+     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
+
+ 1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists; otherwise undefined.
+
+ 1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists; otherwise undefined.
+
+ 1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| or null otherwise.
+
+ 1. If |bucket| is null, then:
+
+     1. Let |bucket| be a new [=/storage bucket=] with name |name|
+
+     1. Set |bucket|'s [=bucket durability|durability=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
+
+ 1. If |persisted| is true, set |bucket|'s [=/mode=] to "<code>persistent</code>".
+
+ 1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
+
+ 1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
+
+ 1. Return |bucket|.
+
+</div>
+
 When not null, {{StorageBucketOptions/durability}} is a hint to the user agent
 specifying the desired {{StorageBucket/durability}}. The user agent MAY
 create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
@@ -83,6 +158,14 @@ interface StorageBucket {
   Promise<FileSystemDirectoryHandle> getDirectory();
 };
 </xmp>
+
+A {{StorageBucket}} has a <dfn>bucket quota</dfn>, a number-or-null, initially null.
+Specifies the upper limit of usage which can be used by the bucket. It is not guaranteed
+that the specified quota will be available by the user agent.
+
+A {{StorageBucket}} has a <dfn>bucket expiration</dfn>, a timestamp-or-null, initially null.
+Specifies the upper limit of a bucket lifetime. The user agent MAY set a lower limit to enforce
+shorter data retention timelines.
 
 <h3 id="storage-bucket-durability">Durability</h3>
 
