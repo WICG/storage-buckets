@@ -75,7 +75,7 @@ dictionary StorageBucketOptions {
 
   1. Run the following steps [=in parallel=]:
 
-      1. Let |r| be the result of running [=opening a bucket=] with
+      1. Let |r| be the result of running [=open a bucket=] with
           |storageKey|,
           |name|,
           and |options| if given and undefined otherwise.
@@ -90,7 +90,7 @@ dictionary StorageBucketOptions {
 
 <div algorithm>
 
- To <dfn>opening a bucket</dfn> for a |storageKey| given a bucket |name| and |options|, then:
+ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and |options|, run the following steps:
 
  1. If |name| contain any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
 
