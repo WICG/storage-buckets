@@ -22,6 +22,13 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: storage key; url: storage-key
 </pre>
 
+<pre class=anchors>
+spec: storage; urlPrefix: https://storage.spec.whatwg.org/
+    type: dfn
+        text: storage bucket; url: storage-bucket
+        text: storage key; url: storage-key
+</pre>
+
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
 
 <xmp class="idl">
@@ -132,9 +139,51 @@ create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
 MUST NOT modify the [=bucket durability=] of an existing bucket.
 
 <h3 id="storage-bucket-delete">Deleting a bucket</h3>
+
+<div algorithm>
+
+The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are:
+
+1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+1. Let |storageKey| be the result of running [=obtain a storage key=] given |environment|.
+
+1. If |storageKey| is failure, then [=exception/throw=] a "{{SecurityError}}" {{DOMException}} and abort these steps.
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |r| be the result of running [=delete a bucket=] with |storageKey| and |name|
+
+    1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
+
+    1. [=/Resolve=] |p| with |r|.
+
+1. Return |p|.
+
+</div>
+
+<div algorithm>
+
+To <dfn>delete a bucket</dfn> for a |storageKey| given a bucket |name|, run the following steps:
+
+1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return.
+
+1. Let |bottle map| be the result of running [=obtain a local storage bottle map=] for |bucket|.
+
+1. Remove each |bottle| in |bottle map|. If this fails for any reason, return an appropriate error.
+
+1. Remove |bucket|. If this fails for any reason, return an appropriate error.
+
+1. Return.
+
+</div>
+
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
 
 <h2 id="storage-bucket">The {{StorageBucket}} interface</h2>
+
 <xmp class="idl">
 [Exposed=(Window,Worker),
  SecureContext]
