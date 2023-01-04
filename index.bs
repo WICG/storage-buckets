@@ -195,7 +195,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. Let |keys| be a new [=/list=].
 
-    1. For each |key| in |shelf|'s [=bucket map=], Append |key| to |keys|.
+    1. For each |key| in |shelf|'s [=bucket map=], [=list/append=] |key| to |keys|.
 
     1. [=/Resolve=] |p| with |keys|.
 
