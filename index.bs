@@ -22,13 +22,6 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: storage key; url: storage-key
 </pre>
 
-<pre class=anchors>
-spec: storage; urlPrefix: https://storage.spec.whatwg.org/
-    type: dfn
-        text: storage bucket; url: storage-bucket
-        text: storage key; url: storage-key
-</pre>
-
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
 
 <xmp class="idl">
