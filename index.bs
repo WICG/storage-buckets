@@ -17,7 +17,9 @@ Markup Shorthands: css no, markdown yes
 <pre class=anchors>
 spec: storage; urlPrefix: https://storage.spec.whatwg.org/
     type: dfn
+        text: bucket map; url: bucket-map
         text: mode; url: bucket-mode
+        text: obtain a local storage shelf; url: obtain-a-local-storage-shelf
         text: storage bucket; url: storage-bucket
         text: storage key; url: storage-key
 </pre>
@@ -174,6 +176,32 @@ To <dfn>delete a bucket</dfn> for a |storageKey| given a bucket |name|, run the 
 </div>
 
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
+
+<div algorithm>
+
+The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
+
+1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+1. Let |storageKey| be the result of running [=obtain a storage key=] given |environment|.
+
+1. If |storageKey| is failure, then [=exception/throw=] a "{{SecurityError}}" {{DOMException}} and abort these steps.
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |shelf| be the result of running [=obtain a local storage shelf=].
+
+    1. Let |keys| be a new [=/list=].
+
+    1. For each |key| in |shelf|'s [=bucket map=], Append |key| to |keys|.
+
+    1. [=/Resolve=] |p| with |keys|.
+
+1. Return |p|.
+
+</div>
 
 <h2 id="storage-bucket">The {{StorageBucket}} interface</h2>
 
