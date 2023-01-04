@@ -261,7 +261,9 @@ The user agent MUST ignore the [=bucket durability=] for operations that otherwi
 
 Issue: {{IDBFactory}} methods need to take a storage bottle map rather than a storageKey.
 
-A {{StorageBucket}} has an {{IDBFactory}} object. {{StorageBucket/indexedDB}} getter steps are:
+<div algorithm>
+
+A {{StorageBucket}} has an {{IDBFactory}} object. The <dfn attribute for=StorageBucket>indexedDB</dfn> getter steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
@@ -272,6 +274,8 @@ A {{StorageBucket}} has an {{IDBFactory}} object. {{StorageBucket/indexedDB}} ge
 1. Set the [=bottle map=] for |indexedDB| to |bottle map|.
 
 1. Return |indexedDB|.
+
+</div>
 
 <div algorithm>
 
@@ -289,7 +293,9 @@ of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec=
 
 <h3 id="storage-bucket-caches">Using CacheStorage</h3>
 
-A {{StorageBucket}} has a {{CacheStorage}} object. {{StorageBucket/caches}} getter steps are:
+<div algorithm>
+
+A {{StorageBucket}} has a {{CacheStorage}} object. The <dfn attribute for=StorageBucket>caches</dfn> getter steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
@@ -300,6 +306,8 @@ A {{StorageBucket}} has a {{CacheStorage}} object. {{StorageBucket/caches}} gett
 1. Set the <a spec="service-workers">relevant name to cache map</a> for |cacheStorage| to |bottle map|.
 
 1. Return |cacheStorage|.
+
+</div>
 
 <h3 id="storage-bucket-getdirectory">Using an Origin Private File System</h3>
 
