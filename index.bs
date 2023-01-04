@@ -11,6 +11,15 @@ Editor: Ayu Ishii, Google https://www.google.com/, ayui@google.com
 Former Editor: Victor Costan
 !Participate: <a href="https://github.com/WICG/storage-buckets">GitHub WICG/storage-buckets</a> (<a href="https://github.com/WICG/storage-buckets/issues/new">new issue</a>, <a href="https://github.com/WICG/storage-buckets/issues?state=open">open issues</a>)
 Abstract: The Storage Buckets API provides a way for sites to organize locally stored data into groupings called "storage buckets". This allows the user agent or sites to manage and delete buckets independently rather than applying the same treatment to all the data from a single origin.
+Markup Shorthands: css no, markdown yes
+</pre>
+
+<pre class=anchors>
+spec: storage; urlPrefix: https://storage.spec.whatwg.org/
+    type: dfn
+        text: mode; url: bucket-mode
+        text: storage bucket; url: storage-bucket
+        text: storage key; url: storage-key
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
@@ -52,10 +61,122 @@ dictionary StorageBucketOptions {
 </xmp>
 
 <h3 id="storage-bucket-open">Creating a bucket</h3>
+
+<div algorithm>
+
+  The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method steps are:
+
+  1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+  1. Let |storageKey| be the result of running [=obtain a storage key=] given |environment|.
+
+  1. If |storageKey| is failure, then [=exception/throw=] a "{{SecurityError}}" {{DOMException}} and abort these steps.
+
+  1. Let |p| be [=a new promise=].
+
+  1. Run the following steps [=in parallel=]:
+
+      1. Let |r| be the result of running [=open a bucket=] with |storageKey|, |name|, and |options|.
+
+      1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
+
+      1. [=/Resolve=] |p| with |r|.
+
+  1. Return |p|.
+
+</div>
+
+<div algorithm>
+
+ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optional |options|, run the following steps:
+
+ 1. If |name| contain any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
+
+ 1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
+
+ 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
+
+ 1. Let |persisted| be false.
+
+ 1. If |options|["{{StorageBucketOptions/persisted}}"] is true, then:
+
+     1. Let |permission| be the result of [=/requesting permission to use=] "<code>persistent-storage</code>".
+
+     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
+
+ 1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists; otherwise undefined.
+
+ 1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists; otherwise undefined.
+
+ 1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| or null otherwise.
+
+ 1. If |bucket| is null, then:
+
+     1. Let |bucket| be a new [=/storage bucket=] with name |name|
+
+     1. Set |bucket|'s [=bucket durability|durability=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
+
+ 1. If |persisted| is true, set |bucket|'s [=/mode=] to "<code>persistent</code>".
+
+ 1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
+
+ 1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
+
+ 1. Return |bucket|.
+
+</div>
+
+When not null, {{StorageBucketOptions/durability}} is a hint to the user agent
+specifying the desired {{StorageBucket/durability}}. The user agent MAY
+create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
+MUST NOT modify the [=bucket durability=] of an existing bucket.
+
 <h3 id="storage-bucket-delete">Deleting a bucket</h3>
+
+<div algorithm>
+
+The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are:
+
+1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+1. Let |storageKey| be the result of running [=obtain a storage key=] given |environment|.
+
+1. If |storageKey| is failure, then [=exception/throw=] a "{{SecurityError}}" {{DOMException}} and abort these steps.
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |r| be the result of running [=delete a bucket=] with |storageKey| and |name|
+
+    1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
+
+    1. [=/Resolve=] |p| with |r|.
+
+1. Return |p|.
+
+</div>
+
+<div algorithm>
+
+To <dfn>delete a bucket</dfn> for a |storageKey| given a bucket |name|, run the following steps:
+
+1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return.
+
+1. Let |bottle map| be the result of running [=obtain a local storage bottle map=] for |bucket|.
+
+1. Remove each |bottle| in |bottle map|. If this fails for any reason, return an appropriate error.
+
+1. Remove |bucket|. If this fails for any reason, return an appropriate error.
+
+1. Return.
+
+</div>
+
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
 
 <h2 id="storage-bucket">The {{StorageBucket}} interface</h2>
+
 <xmp class="idl">
 [Exposed=(Window,Worker),
  SecureContext]
@@ -77,5 +198,65 @@ interface StorageBucket {
   Promise<FileSystemDirectoryHandle> getDirectory();
 };
 </xmp>
+
+A {{StorageBucket}} has a <dfn>bucket quota</dfn>, a number-or-null, initially null.
+Specifies the upper limit of usage which can be used by the bucket. The user agent MAY further limit
+the realized storage space.
+
+A {{StorageBucket}} has a <dfn>bucket expiration</dfn>, a timestamp-or-null, initially null.
+Specifies the upper limit of a bucket lifetime. The user agent MAY clear buckets whose [=/mode=] is
+"<code>best-effort</code>" before the specified timestamp when faced with storage pressure.
+
+<h3 id="storage-bucket-durability">Durability</h3>
+
+A {{StorageBucket}} has a <dfn>bucket durability</dfn>. This reflects whether the user agent
+will prioritize performance or durability when completing operations on data in the bucket.
+The value is one of the following:
+
+: "{{StorageBucketDurability/strict}}"
+:: The user agent MUST consider that operations on data in the bucket are successful only after verifying that outstanding changes have been written to a persistent storage medium.
+: "{{StorageBucketDurability/relaxed}}"
+:: The user agent MUST consider that operations on data in the bucket are successful as soon as all outstanding changes have been written to the operating system, without subsequent verification.
+
+The user agent MUST ignore the [=bucket durability=] for operations that otherwise override default durability behavior.
+
+<h3 id="storage-bucket-indexeddb">Using Indexed Database</h3>
+
+A {{StorageBucket}} has an {{IDBFactory}} object. [[IndexedDB]] objects created through
+{{StorageBucket/indexedDB}} are associated with the bucket.
+
+<div algorithm>
+
+The user agent MUST consider the associated {{StorageBucket/durability}} when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
+of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec="IndexedDB">durability hint</a></dfn> for |transaction| with associated
+|bucket|:
+
+1. If |durability| is not "{{IDBTransactionDurability/default}}", then return |durability|.
+
+1. If |bucket|'s [=bucket durability=] is "{{StorageBucketDurability/strict}}", then return "{{IDBTransactionDurability/strict}}".
+
+1. Return "{{IDBTransactionDurability/relaxed}}".
+
+</div>
+
+<h3 id="storage-bucket-caches">Using CacheStorage</h3>
+
+A {{StorageBucket}} has a {{CacheStorage}} object. [[service-workers#cache-objects]] objects created through {{StorageBucket/caches}} are associated with the bucket.
+
+<h3 id="storage-bucket-getdirectory">Using an Origin Private File System</h3>
+
+Issue: [[Storage]] needs to define helpers to retrieve the bottle map for a given (non-default) bucket.
+
+Issue: [[FS]] needs to define a helper to retrieve an OPFS given a bottle map.
+
+<div algorithm>
+
+The <dfn method for=StorageBucket>getDirectory()</dfn> steps for |bucket| are:
+
+1. Let |map| be the result of [=obtain a local storage bottle map=] with |bucket| and `"fileSystem"`.
+
+1. Return the result of retrieving a [[FS#sandboxed-filesystem]] with |map|.
+
+</div>
 
 <h2 id="security-privacy">Security and privacy considerations</h2>
