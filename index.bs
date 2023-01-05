@@ -103,7 +103,7 @@ dictionary StorageBucketOptions {
 
  1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists, otherwise undefined.
 
- 1. If |expires| is not undefined, and is less than now, then return failure.
+ 1. If |expires| is not undefined, and is less than or equal to now, then return failure.
 
  1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists, otherwise undefined.
 
@@ -119,7 +119,7 @@ dictionary StorageBucketOptions {
 
  1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| or null otherwise.
 
- 1. If |bucket| is non-null and |bucket|'s [=bucket expiration=] is less than now, then:
+ 1. If |bucket| is non-null and |bucket|'s [=bucket expiration=] is less than or equal to now, then:
 
      1. Remove |bucket|.
 
@@ -219,7 +219,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
         1. Let |bucket| be |shelf|'s [=/bottle map=][|key|].
 
-        1. If |bucket|'s [=bucket expiration=] is less than now, remove |bucket|.
+        1. If |bucket|'s [=bucket expiration=] is less than or equal to now, remove |bucket|.
 
         1. Otherwise, [=list/append=] |key| to |keys|.
 
