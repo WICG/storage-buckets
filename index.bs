@@ -106,10 +106,6 @@ dictionary StorageBucketOptions {
 
      1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
 
- 1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists; otherwise undefined.
-
- 1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists; otherwise undefined.
-
  1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| or null otherwise.
 
  1. If |bucket| is null, then:
@@ -120,9 +116,9 @@ dictionary StorageBucketOptions {
 
  1. If |persisted| is true, set |bucket|'s [=/mode=] to "<code>persistent</code>".
 
- 1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
+ 1. Set |bucket|'s [=bucket quota|quota=] to |options|["{{StorageBucketOptions/quota}}"] if it exists.
 
- 1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
+ 1. Set |bucket|'s [=bucket expiration|expiration=] to |options|["{{StorageBucketOptions/expires}}"] if it exists.
 
  1. Let |storageBucket| be a new {{StorageBucket}}.
 
@@ -236,26 +232,131 @@ interface StorageBucket {
 
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
-A {{StorageBucket}} has a <dfn>bucket quota</dfn>, a number-or-null, initially null.
+<h3 id="storage-bucket-durability">Persistence</h3>
+
+Issue: add definitions.
+
+<h3 id="storage-bucket-durability">Quota</h3>
+
+A [=/storage bucket=] has a <dfn>bucket quota</dfn>, a number-or-null, initially null.
 Specifies the upper limit of usage which can be used by the bucket. The user agent MAY further limit
 the realized storage space.
 
-A {{StorageBucket}} has a <dfn>bucket expiration</dfn>, a timestamp-or-null, initially null.
-Specifies the upper limit of a bucket lifetime. The user agent MAY clear buckets whose [=/mode=] is
-"<code>best-effort</code>" before the specified timestamp when faced with storage pressure.
+The <dfn>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
+of the number of bytes used by all of its [=/storage bottle=]s.
+
+<div algorithm>
+
+The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
+
+1. Let |p| be [=a new promise=].
+
+1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+1. Let |shelf| be the result of running [=obtain a local storage shelf=] with |environment|.
+
+1. If |shelf| is failure, [=reject=] p with a {{TypeError}}.
+
+1. Otherwise, run the following steps [=in parallel=]:
+
+    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+
+    1. Otherwise,
+
+        1. Let |quota| be [=storage quota=] for |shelf|.
+
+        1. Set |quota| to |bucket|'s [=bucket quota=] if it is non-null.
+
+        1. Let |usage| be [=storage usage=] for |bucket|.
+
+        1. Resolve |p| with |quota| and |usage|.
+
+1. Return |p|.
+
+</div>
 
 <h3 id="storage-bucket-durability">Durability</h3>
 
-A {{StorageBucket}} has a <dfn>bucket durability</dfn>. This reflects whether the user agent
-will prioritize performance or durability when completing operations on data in the bucket.
-The value is one of the following:
+A [=/storage bucket=] has a <dfn>bucket durability</dfn>, a {{StorageBucketDurability}}.
+The user agent MAY initialize this value to "{{StorageBucketDurability/strict}}" or
+"{{StorageBucketDurability/relaxed}}". The user agent SHOULD ignore the [=bucket durability=]
+for operations that otherwise specify durability behavior.
+
+<div algorithm>
+
+The <dfn method for="StorageBucket">durability()</dfn> method steps are:
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+    1. If |bucket| has been cleared, reject |p| with an appropriate error.
+
+    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket durability=].
+
+1. Return |p|.
+
+</div>
+
+<aside class="note">
+
+The durability reflects whether the user agent will prioritize performance or durability when completing operations on data in the bucket.
+Some operations, such as {{IDBTransaction}}s, can specify a durability which will override the bucket's default. The default durability is
+left to the user agent. Durability can be specified when a bucket is initially created, but not changed later. The {{StorageBucket/durability()}}
+method should report what the user agent will actually do. The value is one of the following:
 
 : "{{StorageBucketDurability/strict}}"
-:: The user agent MUST consider that operations on data in the bucket are successful only after verifying that outstanding changes have been written to a persistent storage medium.
+:: The user agent will consider that operations on data in the bucket are successful only after verifying that outstanding changes have been written to a persistent storage medium.
 : "{{StorageBucketDurability/relaxed}}"
-:: The user agent MUST consider that operations on data in the bucket are successful as soon as all outstanding changes have been written to the operating system, without subsequent verification.
+:: The user agent will consider that operations on data in the bucket are successful as soon as all outstanding changes have been written to the operating system, without subsequent verification.
 
-The user agent MUST ignore the [=bucket durability=] for operations that otherwise override default durability behavior.
+</aside>
+
+<h3 id="storage-bucket-durability">Expiration</h3>
+
+A [=/storage bucket=] has a <dfn>bucket expiration</dfn>, a timestamp-or-null, initially null.
+Specifies the upper limit of a bucket lifetime. The user agent MAY clear buckets whose [=/mode=] is
+"<code>best-effort</code>" before the specified timestamp when faced with storage pressure.
+
+<div algorithm>
+
+The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are:
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+    1. If |bucket| has been cleared, reject |p| with an appropriate error.
+
+    1. Otherwise, set |bucket|'s [=bucket expiration=] to |expires| and [=/resolve=] |p|.
+
+1. Return |p|.
+
+</div>
+
+<div algorithm>
+
+The <dfn method for="StorageBucket">expires()</dfn> method steps are:
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+    1. If |bucket| has been cleared, reject |p| with an appropriate error.
+
+    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket expiration=].
+
+1. Return |p|.
+
+</div>
 
 <h3 id="storage-bucket-indexeddb">Using Indexed Database</h3>
 
