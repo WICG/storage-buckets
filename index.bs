@@ -271,7 +271,9 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
         1. Let |usage| be [=storage usage=] for |bucket|.
 
-        1. Resolve |p| with |quota| and |usage|.
+        1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
+
+        1. Resolve |p| with |dictionary|.
 
 1. Return |p|.
 
