@@ -17,11 +17,14 @@ Markup Shorthands: css no, markdown yes
 <pre class=anchors>
 spec: storage; urlPrefix: https://storage.spec.whatwg.org/
     type: dfn
+        text: bottle map; url: bottle-map
         text: bucket map; url: bucket-map
         text: mode; url: bucket-mode
         text: obtain a local storage shelf; url: obtain-a-local-storage-shelf
         text: storage bucket; url: storage-bucket
+        text: storage bottle; url: storage-bottle
         text: storage key; url: storage-key
+        text: storage shelf; url: storage-shelf
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
@@ -252,11 +255,11 @@ interface StorageBucket {
 
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
-<h3 id="storage-bucket-durability">Persistence</h3>
+<h3 id="storage-bucket-persistence">Persistence</h3>
 
 Issue: add definitions.
 
-<h3 id="storage-bucket-durability">Quota</h3>
+<h3 id="storage-bucket-quota">Quota</h3>
 
 A [=/storage bucket=] has a <dfn>bucket quota</dfn>, a number-or-null, initially null.
 Specifies the upper limit of usage which can be used by the bucket. The user agent MAY further limit
@@ -345,7 +348,7 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 </aside>
 
-<h3 id="storage-bucket-durability">Expiration</h3>
+<h3 id="storage-bucket-expiration">Expiration</h3>
 
 A [=/storage bucket=] has a <dfn>bucket expiration</dfn>, a timestamp-or-null, initially null.
 Specifies the upper limit of a bucket lifetime. The user agent MAY clear buckets whose [=/mode=] is
@@ -388,7 +391,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 </div>
 
 User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
-User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open}}.
+User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}.
 User agents MAY remove a bucket that has expired at any time.
 
 <h3 id="storage-bucket-indexeddb">Using Indexed Database</h3>
