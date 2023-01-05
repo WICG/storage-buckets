@@ -21,8 +21,8 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: bucket map; url: bucket-map
         text: mode; url: bucket-mode
         text: obtain a local storage shelf; url: obtain-a-local-storage-shelf
-        text: storage bucket; url: storage-bucket
         text: storage bottle; url: storage-bottle
+        text: storage bucket; url: storage-bucket
         text: storage key; url: storage-key
         text: storage shelf; url: storage-shelf
 </pre>
@@ -217,7 +217,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
 
-        1. Let |bucket| be |shelf|'s [=/bottle map=][|key|].
+        1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
 
         1. If |bucket|'s [=bucket expiration=] is less than or equal to now, remove |bucket|.
 
