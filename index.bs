@@ -98,6 +98,14 @@ dictionary StorageBucketOptions {
 
  1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
 
+ 1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists, otherwise undefined.
+
+ 1. If |expires| is not undefined, and is less than now, then return failure.
+
+ 1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists, otherwise undefined.
+
+ 1. If |quota| is less than or equal to zero, then return failure.
+
  1. Let |persisted| be false.
 
  1. If |options|["{{StorageBucketOptions/persisted}}"] is true, then:
@@ -108,17 +116,23 @@ dictionary StorageBucketOptions {
 
  1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| or null otherwise.
 
+ 1. If |bucket| is non-null and |bucket|'s [=bucket expiration=] is less than now, then:
+
+     1. Remove |bucket|.
+
+     1. Set |bucket| to null.
+
  1. If |bucket| is null, then:
 
      1. Let |bucket| be a new [=/storage bucket=] with name |name|
 
      1. Set |bucket|'s [=bucket durability|durability=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
 
+     1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
+
  1. If |persisted| is true, set |bucket|'s [=/mode=] to "<code>persistent</code>".
 
- 1. Set |bucket|'s [=bucket quota|quota=] to |options|["{{StorageBucketOptions/quota}}"] if it exists.
-
- 1. Set |bucket|'s [=bucket expiration|expiration=] to |options|["{{StorageBucketOptions/expires}}"] if it exists.
+ 1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
 
  1. Let |storageBucket| be a new {{StorageBucket}}.
 
@@ -198,7 +212,13 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. Let |keys| be a new [=/list=].
 
-    1. For each |key| in |shelf|'s [=bucket map=], [=list/append=] |key| to |keys|.
+    1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
+
+        1. Let |bucket| be |shelf|'s [=/bottle map=][|key|].
+
+        1. If |bucket|'s [=bucket expiration=] is less than now, remove |bucket|.
+
+        1. Otherwise, [=list/append=] |key| to |keys|.
 
     1. [=/Resolve=] |p| with |keys|.
 
@@ -279,6 +299,13 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 </div>
 
+<aside class="note">
+
+The [=bucket quota=] will be ignored if it exceeds the total amount of space available to the [=/storage shelf=], i.e. site.
+Its intended use is to keep a specific bucket from using up the entire site's storage space.
+
+</aside>
+
 <h3 id="storage-bucket-durability">Durability</h3>
 
 A [=/storage bucket=] has a <dfn>bucket durability</dfn>, a {{StorageBucketDurability}}.
@@ -307,9 +334,9 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 <aside class="note">
 
 The durability reflects whether the user agent will prioritize performance or durability when completing operations on data in the bucket.
-Some operations, such as {{IDBTransaction}}s, can specify a durability which will override the bucket's default. The default durability is
-left to the user agent. Durability can be specified when a bucket is initially created, but not changed later. The {{StorageBucket/durability()}}
-method should report what the user agent will actually do. The value is one of the following:
+Some operations, such as {{IDBTransaction}}s, can specify a durability which will override the [=bucket durability=]. The default
+[=bucket durability=] is left to the user agent. Durability can be specified when a bucket is initially created, but not changed later.
+The {{StorageBucket/durability()}} method should report what the user agent will actually do. The value is one of the following:
 
 : "{{StorageBucketDurability/strict}}"
 :: The user agent will consider that operations on data in the bucket are successful only after verifying that outstanding changes have been written to a persistent storage medium.
@@ -360,6 +387,10 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 </div>
 
+User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
+User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open}}.
+User agents MAY remove a bucket that has expired at any time.
+
 <h3 id="storage-bucket-indexeddb">Using Indexed Database</h3>
 
 Issue: {{IDBFactory}} methods need to take a storage bottle map rather than a storageKey.
@@ -382,9 +413,9 @@ A {{StorageBucket}} has an {{IDBFactory}} object. The <dfn attribute for=Storage
 
 <div algorithm>
 
-The user agent MUST consider the associated {{StorageBucket/durability}} when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
-of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec="IndexedDB">durability hint</a></dfn> for |transaction| with associated
-|bucket|:
+The user agent MUST consider the [=bucket durability=] when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
+of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec="IndexedDB">durability hint</a></dfn> for
+|transaction| with associated |bucket|:
 
 1. If |durability| is not "{{IDBTransactionDurability/default}}", then return |durability|.
 
@@ -424,8 +455,14 @@ The <dfn method for=StorageBucket>getDirectory()</dfn> steps are:
 
 1. Let |map| be the result of [=obtain a local storage bottle map=] with [=this=]'s [=/storage bucket=] and `"fileSystem"`.
 
-1. Return the result of retrieving a [[FS#sandboxed-filesystem]] with |map|.
+1. Return the result of {{StorageManager/getDirectory}} with |map|.
 
 </div>
+
+<aside class="note">
+
+See [[FS#sandboxed-filesystem]].
+
+</aside>
 
 <h2 id="security-privacy">Security and privacy considerations</h2>
