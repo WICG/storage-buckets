@@ -19,7 +19,7 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
     type: dfn
         text: bottle map; url: bottle-map
         text: bucket map; url: bucket-map
-        text: mode; url: bucket-mode
+        text: bucket mode; url: bucket-mode
         text: obtain a local storage shelf; url: obtain-a-local-storage-shelf
         text: storage bottle; url: storage-bottle
         text: storage bucket; url: storage-bucket
@@ -133,7 +133,7 @@ dictionary StorageBucketOptions {
 
      1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
 
- 1. If |persisted| is true, set |bucket|'s [=/mode=] to "<code>persistent</code>".
+ 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to "<code>persistent</code>".
 
  1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
 
@@ -257,7 +257,55 @@ A {{StorageBucket}} has an associated [=/storage bucket=].
 
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
-Issue: add definitions.
+Issue: Merge with [[Storage#buckets]] which already defines [=bucket mode=].
+
+<div algorithm>
+
+The <dfn method for="StorageBucket">persist()</dfn> method steps are:
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+
+    1. Otherwise,
+
+        1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
+        1. Let |permission| be the result of [=getting the current permission state=] with `"persistent-storage"` and |environment|.
+
+        1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=resolve=] |p| with `true`.
+
+        1. Otherwise, [=resolve=] |p| with false.
+
+1. Return |p|.
+
+</div>
+
+<div algorithm>
+
+The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
+
+1. Let |p| be [=a new promise=].
+
+1. Run the following steps [=in parallel=]:
+
+    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+
+    1. Otherwise,
+
+        1. If |bucket|'s [=bucket mode=] is `"persistent"` and [=resolve=] |p| with `true`.
+
+        1. Otherwise, [=resolve=] |p| with false.
+
+1. Return |p|.
+
+</div>
 
 <h3 id="storage-bucket-quota">Quota</h3>
 
@@ -296,7 +344,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
         1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
 
-        1. Resolve |p| with |dictionary|.
+        1. [=Resolve=] |p| with |dictionary|.
 
 1. Return |p|.
 
@@ -326,7 +374,7 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, reject |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
 
     1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket durability=].
 
@@ -351,8 +399,12 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
 A [=/storage bucket=] has a <dfn>bucket expiration</dfn>, a timestamp-or-null, initially null.
-Specifies the upper limit of a bucket lifetime. The user agent MAY clear buckets whose [=/mode=] is
-"<code>best-effort</code>" before the specified timestamp when faced with storage pressure.
+Specifies the upper limit of a bucket lifetime.
+
+User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
+User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}.
+User agents MAY clear buckets whose [=/bucket mode=] is "<code>best-effort</code>" before the
+specified timestamp when faced with storage pressure.
 
 <div algorithm>
 
@@ -364,7 +416,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, reject |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
 
     1. Otherwise, set |bucket|'s [=bucket expiration=] to |expires| and [=/resolve=] |p|.
 
@@ -382,17 +434,13 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, reject |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
 
     1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket expiration=].
 
 1. Return |p|.
 
 </div>
-
-User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
-User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}.
-User agents MAY remove a bucket that has expired at any time.
 
 <h3 id="storage-bucket-indexeddb">Using Indexed Database</h3>
 
