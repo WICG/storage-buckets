@@ -81,6 +81,8 @@ dictionary StorageBucketOptions {
 
   1. Run the following steps [=in parallel=]:
 
+      1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
+
       1. Let |r| be the result of running [=open a bucket=] with |storageKey|, |name|, and |options|.
 
       1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
@@ -94,12 +96,6 @@ dictionary StorageBucketOptions {
 <div algorithm>
 
  To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optional |options|, run the following steps:
-
- 1. If |name| contain any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
-
- 1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
-
- 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
 
  1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists, otherwise undefined.
 
@@ -145,6 +141,20 @@ dictionary StorageBucketOptions {
 
 </div>
 
+<div algorithm>
+
+ To <dfn>validate a bucket name</dfn> given string |name|, run the following steps:
+
+ 1. If |name| contain any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
+
+ 1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
+
+ 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
+
+ 1. Return.
+
+</div>
+
 When not null, {{StorageBucketOptions/durability}} is a hint to the user agent
 specifying the desired {{StorageBucket/durability}}. The user agent MAY
 create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
@@ -166,9 +176,11 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 1. Run the following steps [=in parallel=]:
 
-    1. Let |r| be the result of running [=delete a bucket=] with |storageKey| and |name|
+    1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
+    1. Let |r| be the result of running [=delete a bucket=] with |storageKey| and |name|.
+
+    1. If |r| is failure, then [=reject=] |p| with an {{InvalidStateError}} and abort these steps.
 
     1. [=/Resolve=] |p| with |r|.
 
@@ -180,13 +192,13 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 To <dfn>delete a bucket</dfn> for a |storageKey| given a bucket |name|, run the following steps:
 
-1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return.
+1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return failure.
 
 1. Let |bottle map| be the result of running [=obtain a local storage bottle map=] for |bucket|.
 
-1. Remove each |bottle| in |bottle map|. If this fails for any reason, return an appropriate error.
+1. Remove each |bottle| in |bottle map|.
 
-1. Remove |bucket|. If this fails for any reason, return an appropriate error.
+1. Remove |bucket|.
 
 1. Return.
 
@@ -212,6 +224,8 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 1. Run the following steps [=in parallel=]:
 
     1. Let |shelf| be the result of running [=obtain a local storage shelf=].
+
+    1. If |shelf| is failure, [=reject=] p with an {{UnknownError}} and abort these steps.
 
     1. Let |keys| be a new [=/list=].
 
@@ -269,7 +283,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with {{InvalidStateError}}.
 
     1. Otherwise,
 
@@ -277,9 +291,9 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
         1. Let |permission| be the result of [=getting the current permission state=] with `"persistent-storage"` and |environment|.
 
-        1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=resolve=] |p| with true.
+        1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=/resolve=] |p| with true.
 
-        1. Otherwise, [=resolve=] |p| with false.
+        1. Otherwise, [=/resolve=] |p| with false.
 
 1. Return |p|.
 
@@ -295,13 +309,13 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise,
 
-        1. If |bucket|'s [=bucket mode=] is `"persistent"` and [=resolve=] |p| with true.
+        1. If |bucket|'s [=bucket mode=] is `"persistent"` and [=/resolve=] |p| with true.
 
-        1. Otherwise, [=resolve=] |p| with false.
+        1. Otherwise, [=/resolve=] |p| with false.
 
 1. Return |p|.
 
@@ -326,13 +340,13 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] with |environment|.
 
-1. If |shelf| is failure, [=reject=] p with a {{TypeError}}.
+1. If |shelf| is failure, [=reject=] p with an {{UnknownError}}.
 
 1. Otherwise, run the following steps [=in parallel=]:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise,
 
@@ -344,7 +358,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
         1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
 
-        1. [=Resolve=] |p| with |dictionary|.
+        1. [=/Resolve=] |p| with |dictionary|.
 
 1. Return |p|.
 
@@ -374,7 +388,7 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket durability=].
 
@@ -416,7 +430,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise, set |bucket|'s [=bucket expiration=] to |expires| and [=/resolve=] |p|.
 
@@ -434,7 +448,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an appropriate error.
+    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket expiration=].
 
