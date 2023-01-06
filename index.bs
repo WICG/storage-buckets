@@ -135,8 +135,6 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 1. Let |storageBucket| be a new {{StorageBucket}}.
 
-1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to "<code>persistent</code>".
-
 1. Set |storageBucket|'s [=/storage bucket=] to |bucket|.
 
 1. Return |storageBucket|.
