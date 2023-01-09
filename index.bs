@@ -145,7 +145,7 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 To <dfn>validate a bucket name</dfn> given string |name|, run the following steps:
 
-1. If |name| contain any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
+1. If |name| contains any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
 
 1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
 
@@ -178,33 +178,17 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. Let |r| be the result of running [=delete a bucket=] with |storageKey| and |name|.
+    1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return.
 
-    1. If |r| is failure, then [=reject=] |p| with an {{InvalidStateError}} and abort these steps.
+    1. Remove |bucket|.
 
-    1. [=/Resolve=] |p| with |r|.
+    1. [=/Resolve=] |p|.
 
 1. Return |p|.
 
 </div>
 
-<div algorithm>
-
-To <dfn>delete a bucket</dfn> for a |storageKey| given a bucket |name|, run the following steps:
-
-1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return failure.
-
-1. Let |bottle map| be the result of running [=obtain a local storage bottle map=] for |bucket|.
-
-1. Remove each |bottle| in |bottle map|.
-
-1. Remove |bucket|.
-
-1. Return.
-
-</div>
-
-Issue: [[Storage]] needs to define bucket removal/clearing. The bucket needs to be internally marked as
+Issue: [[Storage]] needs to define bucket removal. The bucket needs to be internally marked as
 removed and subsequent attempts to access it (through associated storage endpoints) should fail.
 
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
@@ -283,7 +267,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket| has been removed, [=reject=] |p| with {{InvalidStateError}}.
 
     1. Otherwise,
 
@@ -309,7 +293,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
+    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise,
 
@@ -346,7 +330,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
+    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise,
 
@@ -388,7 +372,7 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
+    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket durability=].
 
@@ -430,7 +414,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
+    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise, set |bucket|'s [=bucket expiration=] to |expires| and [=/resolve=] |p|.
 
@@ -448,7 +432,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been cleared, [=reject=] |p| with an {{InvalidStateError}}.
+    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket expiration=].
 
