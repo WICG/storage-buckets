@@ -521,9 +521,10 @@ Issue: Update [[clear-site-data#header]].
 : "<dfn grammar>`storage:bucket-name`</dfn>"
 
   ::  If the type string starts with "`storage:`" then the remaining characters after the
-      `:` will be taken to refer to a specific [=storage bucket=] in |origin|.
+      `:` will be taken to refer to a specific [=storage bucket=] in the [=origin=] of a
+      particular response's URL.
 
-Issue: Update [[clear-site-data#parsing]] with these partial algorithms.
+Issue: add the steps below to the algorithm in [[clear-site-data#parsing]].
 
 <div algorithm>
 
@@ -533,13 +534,15 @@ To <dfn>parse a Clear-Site-Data header with buckets</dfn>, execute the following
 
     1. If |type| does not [=string/start with=] `"storage:"`, abort these steps.
 
-    1. Let |bucket name| be the [=code-unit-substring-by-positions|code unit substring=] from 8 to to |end| of |type|.
+    1. Let |bucket name| be the [=code-unit-substring-by-positions|code unit substring=] from 8 to |end| of |type|.
 
     1. If the result of [=validate a bucket name=] with |bucket name| is failure, then abort these steps.
 
     1. Append a [=tuple=] consisting of (`"storage-bucket"`, |bucket name|) to |types|.
 
 </div>
+
+Issue: add the steps below to the algorithm in [[clear-site-data#clear-response]].
 
 <div algorithm>
 
