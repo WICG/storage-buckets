@@ -514,4 +514,50 @@ See [[FS#sandboxed-filesystem]].
 
 </aside>
 
+<h3 id="storage-bucket-clear-site-data">Clear Site Data integration</h3>
+
+Issue: Update [[clear-site-data#header]].
+
+: "<dfn grammar>`storage:bucket-name`</dfn>"
+
+  ::  If the type string starts with "`storage:`" then the remaining characters after the
+      `:` will be taken to refer to a specific [=storage bucket=] in the [=origin=] of a
+      particular response's URL.
+
+Issue: add the steps below to the algorithm in [[clear-site-data#parsing]].
+
+<div algorithm>
+
+To <dfn>parse a Clear-Site-Data header with buckets</dfn>, execute the following steps:
+
+1. For each |type| in |header|, execute the following steps:
+
+    1. If |type| does not [=string/start with=] `"storage:"`, abort these steps.
+
+    1. Let |bucket name| be the [=code-unit-substring-by-positions|code unit substring=] from 8 to |end| of |type|.
+
+    1. If the result of [=validate a bucket name=] with |bucket name| is failure, then abort these steps.
+
+    1. Append a [=tuple=] consisting of (`"storage-bucket"`, |bucket name|) to |types|.
+
+</div>
+
+Issue: add the steps below to the algorithm in [[clear-site-data#clear-response]].
+
+<div algorithm>
+
+To <dfn>clear data with buckets</dfn>, execute the following steps:
+
+1. For each |type| in |types|, execute the following steps:
+
+    1. If |type| is not a [=tuple=] or |type|[0] is not `"storage-bucket"`, abort these steps.
+
+    1. Let |bucket name| be |type|[1].
+
+    1. Let |bucket| be the [=/storage bucket=] named |bucket name| in |storageKey| if one exists. Otherwise abort these steps.
+
+    1. Remove |bucket|.
+
+</div>
+
 <h2 id="security-privacy">Security and privacy considerations</h2>
