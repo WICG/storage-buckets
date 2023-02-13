@@ -41,7 +41,7 @@ WorkerNavigator includes NavigatorStorageBuckets;
 Each [=environment settings object=] has an associated {{StorageBucketManager}} object.
 
 The <dfn attribute for=NavigatorStorageBuckets><code>storageBuckets</code></dfn>
-getter steps are to return [=this=]'s {{StorageBucketManager}} object.
+getter steps are to return [=this=]'s [/=relevant settings object=]'s {{StorageBucketManager}} object.
 
 <xmp class="idl">
 [Exposed=(Window,Worker),
