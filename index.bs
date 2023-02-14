@@ -123,9 +123,9 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 1. If |bucket| is null, then:
 
-    1. Let |bucket| be a new [=/storage bucket=] with name |name|
+    1. Let |bucket| be a new [=/storage bucket=] with name |name|.
 
-    1. Set |bucket|'s [=bucket durability|durability=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
+    1. Set |bucket|'s [=StorageBucket/durability value=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
 
     1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
 
@@ -157,8 +157,8 @@ To <dfn>validate a bucket name</dfn> given string |name|, run the following step
 
 When not null or undefined, {{StorageBucketOptions/durability}} is a hint to the user agent
 specifying the desired {{StorageBucket/durability}}. The user agent MAY
-create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
-MUST NOT modify the [=bucket durability=] of an existing bucket.
+create a new {{StorageBucket}} with this [=StorageBucket/durability value=]. The user agent
+MUST NOT modify the [=StorageBucket/durability value=] of an existing bucket.
 
 <h3 id="storage-bucket-delete">Deleting a bucket</h3>
 
@@ -357,9 +357,9 @@ Its intended use is to keep a specific bucket from using up the entire site's st
 
 <h3 id="storage-bucket-durability">Durability</h3>
 
-A [=/storage bucket=] has a <dfn>bucket durability</dfn>, a {{StorageBucketDurability}}.
+A [=/storage bucket=] has a <dfn for=StorageBucket>durability value</dfn>, a {{StorageBucketDurability}}.
 The user agent MAY initialize this value to "{{StorageBucketDurability/strict}}" or
-"{{StorageBucketDurability/relaxed}}". The user agent SHOULD ignore the [=bucket durability=]
+"{{StorageBucketDurability/relaxed}}". The user agent SHOULD ignore the [=StorageBucket/durability value=]
 for operations that otherwise specify durability behavior.
 
 <div algorithm>
@@ -374,7 +374,7 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
     1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket durability=].
+    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
 
 1. Return |p|.
 
@@ -383,8 +383,8 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 <aside class="note">
 
 The durability reflects whether the user agent will prioritize performance or durability when completing operations on data in the bucket.
-Some operations, such as {{IDBTransaction}}s, can specify a durability which will override the [=bucket durability=]. The default
-[=bucket durability=] is left to the user agent. Durability can be specified when a bucket is initially created, but not changed later.
+Some operations, such as {{IDBTransaction}}s, can specify a durability which will override the [=StorageBucket/durability value=]. The default
+[=StorageBucket/durability value=] is left to the user agent. Durability can be specified when a bucket is initially created, but not changed later.
 The {{StorageBucket/durability()}} method should report what the user agent will actually do. The value is one of the following:
 
 : "{{StorageBucketDurability/strict}}"
@@ -470,13 +470,13 @@ A {{StorageBucket}} has an {{IDBFactory}} object, initially null. The <dfn attri
 
 <div algorithm>
 
-The user agent MUST consider the [=bucket durability=] when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
+The user agent MUST consider the [=StorageBucket/durability value=] when evaluating the <a spec="IndexedDB">durability hint</a> |durability|
 of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec="IndexedDB">durability hint</a></dfn> for
 |transaction| with associated |bucket|:
 
 1. If |durability| is not "{{IDBTransactionDurability/default}}", then return |durability|.
 
-1. If |bucket|'s [=bucket durability=] is "{{StorageBucketDurability/strict}}", then return "{{IDBTransactionDurability/strict}}".
+1. If |bucket|'s [=StorageBucket/durability value=] is "{{StorageBucketDurability/strict}}", then return "{{IDBTransactionDurability/strict}}".
 
 1. Return "{{IDBTransactionDurability/relaxed}}".
 
