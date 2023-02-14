@@ -297,7 +297,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
     1. Otherwise,
 
-        1. If |bucket|'s [=bucket mode=] is `"persistent"` and [=/resolve=] |p| with true.
+        1. If |bucket|'s [=bucket mode=] is `"persistent"`, then [=/resolve=] |p| with true.
 
         1. Otherwise, [=/resolve=] |p| with false.
 
