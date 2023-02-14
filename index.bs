@@ -81,7 +81,7 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
 
 1. Run the following steps [=in parallel=]:
 
-    1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
+    1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{TypeError}} and abort these steps.
 
     1. Let |r| be the result of running [=open a bucket=] with |storageKey|, |name|, and |options|.
 
@@ -109,7 +109,7 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 1. If |options|["{{StorageBucketOptions/persisted}}"] exists and is true, then:
 
-    1. Let |permission| be the result of [=/requesting permission to use=] "<code>persistent-storage</code>".
+    1. Let |permission| be the result of [=/requesting permission to use=] `"persistent-storage"`.
 
     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
 
@@ -129,7 +129,7 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
     1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
 
-1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to "<code>persistent</code>".
+1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
 1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
 
@@ -155,7 +155,7 @@ To <dfn>validate a bucket name</dfn> given string |name|, run the following step
 
 </div>
 
-When not null, {{StorageBucketOptions/durability}} is a hint to the user agent
+When not null or undefined, {{StorageBucketOptions/durability}} is a hint to the user agent
 specifying the desired {{StorageBucket/durability}}. The user agent MAY
 create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
 MUST NOT modify the [=bucket durability=] of an existing bucket.
@@ -297,7 +297,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
     1. Otherwise,
 
-        1. If |bucket|'s [=bucket mode=] is `"persistent"` and [=/resolve=] |p| with true.
+        1. If |bucket|'s [=bucket mode=] is `"persistent"`, then [=/resolve=] |p| with true.
 
         1. Otherwise, [=/resolve=] |p| with false.
 
@@ -401,7 +401,7 @@ Specifies the upper limit of a bucket lifetime.
 
 User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
 User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}.
-User agents MAY clear buckets whose [=/bucket mode=] is "<code>best-effort</code>" before the
+User agents MAY clear buckets whose [=/bucket mode=] is `"best-effort"` before the
 specified timestamp when faced with storage pressure.
 
 <div algorithm>
