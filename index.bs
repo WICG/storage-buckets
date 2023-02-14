@@ -115,7 +115,7 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| or null otherwise.
 
-1. If |bucket| is non-null and |bucket|'s [=bucket expiration=] is less than or equal to now, then:
+1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is less than or equal to now, then:
 
     1. Remove |bucket|.
 
@@ -131,7 +131,7 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
-1. Set |bucket|'s [=bucket expiration|expiration=] to |expires|.
+1. Set |bucket|'s [=StorageBucket/expiration value|expiration=] to |expires|.
 
 1. Let |storageBucket| be a new {{StorageBucket}}.
 
@@ -217,7 +217,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
         1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
 
-        1. If |bucket|'s [=bucket expiration=] is less than or equal to now, remove |bucket|.
+        1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal to now, remove |bucket|.
 
         1. Otherwise, [=list/append=] |key| to |keys|.
 
@@ -396,7 +396,7 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
-A [=/storage bucket=] has a <dfn>bucket expiration</dfn>, which is either null or a [=duration=], initially null.
+A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=duration=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
 User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
@@ -416,7 +416,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. Otherwise, set |bucket|'s [=bucket expiration=] to |expires| and [=/resolve=] |p|.
+    1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -434,7 +434,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=bucket expiration=].
+    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
 
 1. Return |p|.
 
