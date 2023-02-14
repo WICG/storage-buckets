@@ -145,9 +145,9 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 To <dfn>validate a bucket name</dfn> given string |name|, run the following steps:
 
-1. If |name| contains any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
+1. If |name| contains any [=code point=] that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
 
-1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
+1. If |name| [=string/code point length=] is 0 or exceeds 64, then return failure.
 
 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
 
