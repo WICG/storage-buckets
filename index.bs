@@ -308,8 +308,8 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 <h3 id="storage-bucket-quota">Quota</h3>
 
 A [=/storage bucket=] has a <dfn for=StorageBucket>quota value</dfn>, a number-or-null, initially null.
-Specifies the upper limit of usage which can be used by the bucket. The user agent MAY further limit
-the realized storage space.
+Specifies the upper limit of usage in bytes which can be used by the bucket. The user agent MAY further
+limit the realized storage space.
 
 The <dfn>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
 of the number of bytes used by all of its [=/storage bottle=]s.
