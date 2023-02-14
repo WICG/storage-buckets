@@ -155,7 +155,7 @@ To <dfn>validate a bucket name</dfn> given string |name|, run the following step
 
 </div>
 
-When not null, {{StorageBucketOptions/durability}} is a hint to the user agent
+When not null or undefined, {{StorageBucketOptions/durability}} is a hint to the user agent
 specifying the desired {{StorageBucket/durability}}. The user agent MAY
 create a new {{StorageBucket}} with this [=bucket durability=]. The user agent
 MUST NOT modify the [=bucket durability=] of an existing bucket.
