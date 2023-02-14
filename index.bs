@@ -127,7 +127,7 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
     1. Set |bucket|'s [=StorageBucket/durability value=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
 
-    1. Set |bucket|'s [=bucket quota|quota=] to |quota|.
+    1. Set |bucket|'s [=StorageBucket/quota value=] to |quota|.
 
 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
@@ -307,7 +307,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
 <h3 id="storage-bucket-quota">Quota</h3>
 
-A [=/storage bucket=] has a <dfn>bucket quota</dfn>, a number-or-null, initially null.
+A [=/storage bucket=] has a <dfn for=StorageBucket>quota value</dfn>, a number-or-null, initially null.
 Specifies the upper limit of usage which can be used by the bucket. The user agent MAY further limit
 the realized storage space.
 
@@ -336,7 +336,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
         1. Let |quota| be [=storage quota=] for |shelf|.
 
-        1. Set |quota| to |bucket|'s [=bucket quota=] if it is non-null.
+        1. Set |quota| to |bucket|'s [=StorageBucket/quota value=] if it is non-null.
 
         1. Let |usage| be [=storage usage=] for |bucket|.
 
@@ -350,7 +350,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 <aside class="note">
 
-The [=bucket quota=] will be ignored if it exceeds the total amount of space available to the [=/storage shelf=], i.e. site.
+The [=StorageBucket/quota value=] will be ignored if it exceeds the total amount of space available to the [=/storage shelf=], i.e. site.
 Its intended use is to keep a specific bucket from using up the entire site's storage space.
 
 </aside>
