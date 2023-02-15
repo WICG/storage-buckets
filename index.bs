@@ -560,13 +560,15 @@ Issue: add the steps below to the algorithm in [[clear-site-data#clear-response]
 
 To <dfn>clear data with buckets</dfn>, execute the following steps:
 
+1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
+
+1. If |shelf| is failure, then [=exception/throw=] an "{{UnknownError}}" {{DOMException}} and abort these steps.
+
 1. For each |type| in |types|, execute the following steps:
 
     1. If |type| is not a [=tuple=] or |type|[0] is not `"storage-bucket"`, abort these steps.
 
-    1. Let |bucket name| be |type|[1].
-
-    1. Let |bucket| be the [=/storage bucket=] named |bucket name| in |storageKey| if one exists. Otherwise abort these steps.
+    1. Let |bucket| be |shelf|'s [=bucket map=][|bucket name|] if one exists. Otherwise abort these steps
 
     1. Remove |bucket|.
 
