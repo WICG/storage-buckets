@@ -25,6 +25,9 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: storage bucket; url: storage-bucket
         text: storage key; url: storage-key
         text: storage shelf; url: storage-shelf
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+    type: dfn
+        text: parse a duration string; url: common-microsyntaxes.html#parse-a-duration-string
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
@@ -97,9 +100,15 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
 
 To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |options|, run the following steps:
 
-1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists, otherwise undefined.
-
-1. If |expires| is not undefined, and is less than or equal to now, then return failure.
+1. Let |expires| be undefined.
+    
+1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
+    
+    1. Let |expires| be the result of [=parse a duration string=] from |options|["{{StorageBucketOptions/expires}}"]
+    
+    1. If |expires| is not a [=duration=], then return failure.
+    
+    1. If |expires| is less than or equal to the [=current monotonic time=], then return failure.
 
 1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists, otherwise undefined.
 
@@ -115,7 +124,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
 
-1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is less than or equal to now, then:
+1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current monotonic time=], then:
 
     1. Remove |bucket|.
 
@@ -217,7 +226,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
         1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
 
-        1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal to now, remove |bucket|.
+        1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current monotonic time=], remove |bucket|.
 
         1. Otherwise, [=list/append=] |key| to |keys|.
 
