@@ -145,9 +145,9 @@ To <dfn>open a bucket</dfn> for a |storageKey| given a bucket |name| and optiona
 
 To <dfn>validate a bucket name</dfn> given string |name|, run the following steps:
 
-1. If |name| contains any character that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
+1. If |name| contains any [=code point=] that is not [=ASCII lower alpha=], [=ASCII digit=], U+005F (_), or U+002D(-), then return failure.
 
-1. If |name| [=string/length=] is 0 or exceeds 64, then return failure.
+1. If |name| [=string/code point length=] is 0 or exceeds 64, then return failure.
 
 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
 
@@ -178,7 +178,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return.
+    1. Let |bucket| be the [=/storage bucket=] with [=map/key=] |name| in [=bucket map=] if one exists. Otherwise return.
 
     1. Remove |bucket|.
 
@@ -308,8 +308,8 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 <h3 id="storage-bucket-quota">Quota</h3>
 
 A [=/storage bucket=] has a <dfn for=StorageBucket>quota value</dfn>, a number-or-null, initially null.
-Specifies the upper limit of usage which can be used by the bucket. The user agent MAY further limit
-the realized storage space.
+Specifies the upper limit of usage in bytes which can be used by the bucket. The user agent MAY further
+limit the realized storage space.
 
 The <dfn>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
 of the number of bytes used by all of its [=/storage bottle=]s.
