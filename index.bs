@@ -115,7 +115,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
 
-1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current monotonic time=], then:
+1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current monotonic time=], then:
 
     1. Remove |bucket|.
 
