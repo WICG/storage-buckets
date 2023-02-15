@@ -25,6 +25,9 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: storage bucket; url: storage-bucket
         text: storage key; url: storage-key
         text: storage shelf; url: storage-shelf
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+    type: dfn
+        text: parse a duration string; url: common-microsyntaxes.html#parse-a-duration-string
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
