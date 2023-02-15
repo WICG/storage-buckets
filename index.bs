@@ -178,7 +178,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. Let |bucket| be the [=/storage bucket=] named |name| in |storageKey| if one exists. Otherwise return.
+    1. Let |bucket| be the [=/storage bucket=] with [=map/key=] |name| in [=bucket map=] if one exists. Otherwise return.
 
     1. Remove |bucket|.
 
