@@ -113,7 +113,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
 
-1. Let |bucket| be the |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
+1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
 
 1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is less than or equal to now, then:
 
@@ -178,7 +178,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. Let |bucket| be the |shelf|'s [=bucket map=][|name|] if exists. Otherwise return.
+    1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return.
 
     1. Remove |bucket|.
 
