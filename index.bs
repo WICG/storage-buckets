@@ -97,9 +97,15 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
 
 To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |options|, run the following steps:
 
-1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"] if it exists, otherwise undefined.
-
-1. If |expires| is not undefined, and is less than or equal to the [=current monotonic time=], then return failure.
+1. Let |expires| be undefined.
+    
+1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
+    
+    1. Let |expires| be the result of [=parse a duration string=] from |options|["{{StorageBucketOptions/expires}}"]
+    
+    1. If |expires| is not a [=duration=], then return failure.
+    
+    1. If |expires| is less than or equal to the [=current monotonic time=], then return failure.
 
 1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists, otherwise undefined.
 
@@ -398,7 +404,7 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
-A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=moment=], initially null.
+A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=duration=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
 User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
