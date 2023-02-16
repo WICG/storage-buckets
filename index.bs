@@ -379,13 +379,11 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]:
+1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
-
-    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
+1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
 
 1. Return |p|.
 
