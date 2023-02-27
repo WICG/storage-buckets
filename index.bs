@@ -98,15 +98,19 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     
 1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
     
-    1. Let |expires| be the result of [=parse a duration string=] from |options|["{{StorageBucketOptions/expires}}"]
+    1. Let |expires| be the result of [=parse a duration string=] from |options|["{{StorageBucketOptions/expires}}"].
     
     1. If |expires| is not a [=duration=], then return failure.
     
     1. If |expires| is less than or equal to the [=current monotonic time=], then return failure.
 
-1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"] if it exists, otherwise undefined.
+1. Let |quota| be undefined.
 
-1. If |quota| is less than or equal to zero, then return failure.
+1. If |options|["{{StorageBucketOptions/quota}}"] exists, then:
+    
+  1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"].
+
+  1. If |quota| is less than or equal to zero, then return failure.
 
 1. Let |persisted| be false.
 
