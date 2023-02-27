@@ -135,6 +135,8 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     1. Set |bucket|'s [=StorageBucket/durability value=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
 
     1. Set |bucket|'s [=StorageBucket/quota value=] to |quota|.
+    
+    1. Set |shelf|'s [=bucket map=][|name|] to |bucket|.
 
 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
