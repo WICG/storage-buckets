@@ -208,10 +208,6 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
 1. Let |environment| be [=/this=]'s [=/relevant settings object=].
 
-1. Let |storageKey| be the result of running [=obtain a storage key=] given |environment|.
-
-1. If |storageKey| is failure, then [=exception/throw=] a "{{SecurityError}}" {{DOMException}} and abort these steps.
-
 1. Let |p| be [=a new promise=].
 
 1. Run the following steps [=in parallel=]:
