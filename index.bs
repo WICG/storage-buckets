@@ -78,21 +78,15 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
     
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
-1. If |shelf| is failure, then [=exception/throw=] a {{TypeError}} and abort these steps.
+1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
 
-1. Let |p| be [=a new promise=].
+1. If the result of [=validate a bucket name=] with |name| is failure,  then return [=a promise rejected with=] a {{TypeError}}.
 
-1. Run the following steps [=in parallel=]:
+1. Let |r| be the result of running [=open a bucket=] with |shelf|, |name|, and |options|.
 
-    1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{TypeError}} and abort these steps.
+1. If |r| is failure, then return [=a promise rejected with=] a {{TypeError}}.
 
-    1. Let |r| be the result of running [=open a bucket=] with |shelf|, |name|, and |options|.
-
-    1. If |r| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
-
-    1. [=/Resolve=] |p| with |r|.
-
-1. Return |p|.
+1. Return [=a promise resolved with=] with |r|.
 
 </div>
 
@@ -296,17 +290,15 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]:
+1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+1. If |bucket| has been removed, then [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
+1. Otherwise,
 
-    1. Otherwise,
+    1. If |bucket|'s [=bucket mode=] is `"persistent"`, then [=/resolve=] |p| with true.
 
-        1. If |bucket|'s [=bucket mode=] is `"persistent"`, then [=/resolve=] |p| with true.
-
-        1. Otherwise, [=/resolve=] |p| with false.
+    1. Otherwise, [=/resolve=] |p| with false.
 
 1. Return |p|.
 
@@ -325,31 +317,29 @@ of the number of bytes used by all of its [=/storage bottle=]s.
 
 The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
-1. Let |p| be [=a new promise=].
-
 1. Let |environment| be [=/this=]'s [=/relevant settings object=].
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] with |environment|.
 
-1. If |shelf| is failure, [=reject=] p with a {{TypeError}}.
+1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
+
+1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+1. If |bucket| has been removed, then return [=a promise rejected with=] an {{InvalidStateError}}.
+
+1. Let |p| be [=a new promise=].
 
 1. Otherwise, run the following steps [=in parallel=]:
 
-    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+    1. Let |quota| be [=storage quota=] for |shelf|.
 
-    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
+    1. Set |quota| to |bucket|'s [=StorageBucket/quota value=] if it is non-null.
 
-    1. Otherwise,
+    1. Let |usage| be [=storage usage=] for |bucket|.
 
-        1. Let |quota| be [=storage quota=] for |shelf|.
+    1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
 
-        1. Set |quota| to |bucket|'s [=StorageBucket/quota value=] if it is non-null.
-
-        1. Let |usage| be [=storage usage=] for |bucket|.
-
-        1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
-
-        1. [=/Resolve=] |p| with |dictionary|.
+    1. [=/Resolve=] |p| with |dictionary|.
 
 1. Return |p|.
 
@@ -415,13 +405,11 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]:
+1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
-
-    1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
+1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -433,13 +421,11 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]:
+1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. Let |bucket| be [=this=]'s [=/storage bucket=].
+1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
-
-    1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
+1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
 
 1. Return |p|.
 
