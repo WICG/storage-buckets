@@ -78,7 +78,7 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
     
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
-1. If |shelf| is failure, then [=exception/throw=] an "{{UnknownError}}" {{DOMException}} and abort these steps.
+1. If |shelf| is failure, then [=exception/throw=] a {{TypeError}} and abort these steps.
 
 1. Let |p| be [=a new promise=].
 
@@ -179,7 +179,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
-1. If |shelf| is failure, then [=exception/throw=] an "{{UnknownError}}" {{DOMException}} and abort these steps.
+1. If |shelf| is failure, then [=exception/throw=] a {{TypeError}} and abort these steps.
 
 1. Let |p| be [=a new promise=].
 
@@ -218,7 +218,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. Let |shelf| be the result of running [=obtain a local storage shelf=].
 
-    1. If |shelf| is failure, [=reject=] p with an {{UnknownError}} and abort these steps.
+    1. If |shelf| is failure, [=reject=] p with a {{TypeError}} and abort these steps.
 
     1. Let |keys| be a new [=/list=].
 
@@ -335,7 +335,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] with |environment|.
 
-1. If |shelf| is failure, [=reject=] p with an {{UnknownError}}.
+1. If |shelf| is failure, [=reject=] p with a {{TypeError}}.
 
 1. Otherwise, run the following steps [=in parallel=]:
 
@@ -571,7 +571,7 @@ To <dfn>clear data with buckets</dfn>, execute the following steps:
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
-1. If |shelf| is failure, then [=exception/throw=] an "{{UnknownError}}" {{DOMException}} and abort these steps.
+1. If |shelf| is failure, then [=exception/throw=] a {{TypeError}} and abort these steps.
 
 1. For each |type| in |types|, execute the following steps:
 
