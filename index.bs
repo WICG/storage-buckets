@@ -208,7 +208,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. Let |shelf| be the result of running [=obtain a local storage shelf=].
 
-    1. If |shelf| is failure, [=reject=] p with a {{TypeError}} and abort these steps.
+    1. If |shelf| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
 
     1. Let |keys| be a new [=/list=].
 
@@ -310,7 +310,7 @@ A [=/storage bucket=] has a <dfn for=StorageBucket>quota value</dfn>, a number-o
 Specifies the upper limit of usage in bytes which can be used by the bucket. The user agent MAY further
 limit the realized storage space.
 
-The <dfn>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
+The <dfn for=storage bucket>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
 of the number of bytes used by all of its [=/storage bottle=]s.
 
 <div algorithm>
