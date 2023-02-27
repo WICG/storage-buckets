@@ -102,7 +102,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     
     1. If |expires| is not a [=duration=], then return failure.
     
-    1. If |expires| is less than or equal to the [=current monotonic time=], then return failure.
+    1. If |expires| is less than or equal to the [=current wall time=], then return failure.
 
 1. Let |quota| be undefined.
 
@@ -122,7 +122,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
 
-1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current monotonic time=], then:
+1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
 
     1. Remove |bucket|.
 
@@ -218,7 +218,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
 
-    1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current monotonic time=], remove |bucket|.
+    1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current wall time=], remove |bucket|.
 
     1. Otherwise, [=list/append=] |key| to |keys|.
 
