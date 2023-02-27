@@ -173,7 +173,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
-1. If |shelf| is failure, then [=exception/throw=] a {{TypeError}} and abort these steps.
+1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
 
 1. Let |p| be [=a new promise=].
 
@@ -202,25 +202,23 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
 1. Let |environment| be [=/this=]'s [=/relevant settings object=].
 
+1. Let |shelf| be the result of running [=obtain a local storage shelf=].
+
+1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
+
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]:
+1. Let |keys| be a new [=/list=].
 
-    1. Let |shelf| be the result of running [=obtain a local storage shelf=].
+1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
 
-    1. If |shelf| is failure, then [=reject=] |p| with a {{TypeError}} and abort these steps.
+    1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
 
-    1. Let |keys| be a new [=/list=].
+    1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current monotonic time=], remove |bucket|.
 
-    1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
+    1. Otherwise, [=list/append=] |key| to |keys|.
 
-        1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
-
-        1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current monotonic time=], remove |bucket|.
-
-        1. Otherwise, [=list/append=] |key| to |keys|.
-
-    1. [=/Resolve=] |p| with |keys|.
+1. [=/Resolve=] |p| with |keys|.
 
 1. Return |p|.
 
