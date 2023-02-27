@@ -396,8 +396,8 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=duration=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
-User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys}} is called.
-User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}.
+User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys()}} is called, regardless of the [=/bucket mode=].
+User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}, regardless of the [=/bucket mode=].
 User agents MAY clear buckets whose [=/bucket mode=] is `"best-effort"` before the
 specified timestamp when faced with storage pressure.
 
