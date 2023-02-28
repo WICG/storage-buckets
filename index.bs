@@ -108,9 +108,9 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |options|["{{StorageBucketOptions/quota}}"] exists, then:
     
-  1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"].
+    1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"].
 
-  1. If |quota| is less than or equal to zero, then return failure.
+    1. If |quota| is less than or equal to zero, then return failure.
 
 1. Let |persisted| be false.
 
