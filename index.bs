@@ -187,18 +187,35 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise [=/resolve] |p| and abort these steps.
+    1. Let |r| be the result of running [=remove a bucket=] with |shelf| and |name|.
+    
+    1. If |r| is failure, then [=/reject=] |p| with {{Type Error}}.
 
-    1. Remove |bucket|.
-
-    1. [=/Resolve=] |p|.
+    1. Otherwise, [=/resolve=] |p|.
 
 1. Return |p|.
 
 </div>
+    
+<div algorithm>
 
-Issue: [[Storage]] needs to define bucket removal. The bucket needs to be internally marked as
-removed and subsequent attempts to access it (through associated storage endpoints) should fail.
+To <dfn>remove a bucket</dfn> on a |shelf| given a bucket |name|, run the following steps:
+
+1. Let |bucket| be |shelf|’s [=bucket map=][|name|] if exists. Otherwise return.
+
+1. Remove [=map/key=] |name| in |shelf|'s [=bucket map=].
+
+1. Mark |bucket|'s [=storage bucket/removed=] flag as true.
+
+1. Return.
+
+<aside class="note">
+
+Specific storage endpoints may need to run additional actions to remove data when a storage bucket is marked as removed.
+
+</aside>
+
+</div>
 
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
 
@@ -255,6 +272,9 @@ interface StorageBucket {
 </xmp>
 
 A {{StorageBucket}} has an associated [=/storage bucket=].
+
+
+A [=/storage bucket=] has an associated <dfn for="storage bucket=">removed</dfn> flag, which is marked as true when a [=/storage bucket=] is deleted. 
 
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
