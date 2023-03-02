@@ -274,7 +274,7 @@ interface StorageBucket {
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
 
-A [=/storage bucket=] has an associated <dfn for="storage bucket=">removed</dfn> flag, which is marked as true when a [=/storage bucket=] is deleted. 
+A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is marked as true when a [=/storage bucket=] is deleted. 
 
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
@@ -334,7 +334,7 @@ A [=/storage bucket=] has a <dfn for=StorageBucket>quota value</dfn>, a number-o
 Specifies the upper limit of usage in bytes which can be used by the bucket. The user agent MAY further
 limit the realized storage space.
 
-The <dfn for=storage bucket>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
+The <dfn for="storage bucket">storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
 of the number of bytes used by all of its [=/storage bottle=]s.
 
 <div algorithm>
@@ -349,13 +349,13 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| has been removed, then return [=a promise rejected with=] an {{InvalidStateError}}.
+1. If |bucket| is marked as [=storage bucket/removed=], then return [=a promise rejected with=] an {{InvalidStateError}}.
 
 1. Let |p| be [=a new promise=].
 
 1. Otherwise, run the following steps [=in parallel=]:
 
-    1. Let |quota| be [=storage quota=] for |shelf|.
+    1. Let |quota| be [=storage bucket/storage quota=] for |shelf|.
 
     1. Set |quota| to |bucket|'s [=StorageBucket/quota value=] if it is non-null.
 
