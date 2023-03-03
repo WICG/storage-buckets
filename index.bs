@@ -206,7 +206,7 @@ To <dfn>remove a bucket</dfn> on a |shelf| given a bucket |name|, run the follow
 
 1. Remove [=map/key=] |name| in |shelf|'s [=bucket map=].
 
-1. Mark |bucket|'s [=storage bucket/removed=] flag as true.
+1. Mark |bucket|'s [=storage bucket/removed=] as true.
 
 1. Return.
 
@@ -275,7 +275,7 @@ interface StorageBucket {
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
 
-A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is marked as true when a [=/storage bucket=] is deleted. 
+A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Marked as true when a [=/storage bucket=] is deleted. 
 
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
@@ -291,7 +291,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| is marked as [=storage bucket/removed=], [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket|'s [=storage bucket/removed=] is true, [=reject=] |p| with {{InvalidStateError}}.
     
     1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=/resolve=] |p| with true.
 
@@ -317,7 +317,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| is marked as [=storage bucket/removed=], then [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] is true, then [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise,
 
@@ -350,7 +350,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| is marked as [=storage bucket/removed=], then return [=a promise rejected with=] an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, then return [=a promise rejected with=] an {{InvalidStateError}}.
 
 1. Let |p| be [=a new promise=].
 
@@ -392,7 +392,7 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| is marked as [=storage bucket/removed=], [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
 
@@ -432,7 +432,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| is marked as [=storage bucket/removed=], [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
 
@@ -448,7 +448,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| is marked as [=storage bucket/removed=], [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
 
