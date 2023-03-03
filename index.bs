@@ -291,7 +291,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket|'s [=storage bucket/removed=] is true, [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with {{InvalidStateError}}.
     
     1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=/resolve=] |p| with true.
 
@@ -317,7 +317,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket|'s [=storage bucket/removed=] is true, then [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise,
 
