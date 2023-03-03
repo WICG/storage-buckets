@@ -24,6 +24,7 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: storage bottle; url: storage-bottle
         text: storage bucket; url: storage-bucket
         text: storage key; url: storage-key
+        text: storage quota; url: storage-quota
         text: storage shelf; url: storage-shelf
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     type: dfn
@@ -187,18 +188,35 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise [=/resolve] |p| and abort these steps.
+    1. Let |r| be the result of running [=remove a bucket=] with |shelf| and |name|.
+    
+    1. If |r| is failure, then [=/reject=] |p| with {{Type Error}}.
 
-    1. Remove |bucket|.
-
-    1. [=/Resolve=] |p|.
+    1. Otherwise, [=/resolve=] |p|.
 
 1. Return |p|.
 
 </div>
+    
+<div algorithm>
 
-Issue: [[Storage]] needs to define bucket removal. The bucket needs to be internally marked as
-removed and subsequent attempts to access it (through associated storage endpoints) should fail.
+To <dfn>remove a bucket</dfn> on a |shelf| given a bucket |name|, run the following steps:
+
+1. Let |bucket| be |shelf|’s [=bucket map=][|name|] if exists. Otherwise return.
+
+1. Remove [=map/key=] |name| in |shelf|'s [=bucket map=].
+
+1. Mark |bucket|'s [=storage bucket/removed=] as true.
+
+1. Return.
+
+<aside class="note">
+
+Specific storage endpoints may need to run additional actions to remove data when a storage bucket is marked as removed.
+
+</aside>
+
+</div>
 
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
 
@@ -256,6 +274,9 @@ interface StorageBucket {
 
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
+
+A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Marked as true when a [=/storage bucket=] is deleted. 
+
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
 Issue: Merge with [[Storage#buckets]] which already defines [=bucket mode=].
@@ -270,7 +291,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket| has been removed, [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with {{InvalidStateError}}.
     
     1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=/resolve=] |p| with true.
 
@@ -296,7 +317,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| has been removed, then [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise,
 
@@ -314,7 +335,7 @@ A [=/storage bucket=] has a <dfn for=StorageBucket>quota value</dfn>, a number-o
 Specifies the upper limit of usage in bytes which can be used by the bucket. The user agent MAY further
 limit the realized storage space.
 
-The <dfn for=storage bucket>storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
+The <dfn for="storage bucket">storage usage</dfn> of a [=/storage bucket=] is an [=implementation-defined=] rough estimate
 of the number of bytes used by all of its [=/storage bottle=]s.
 
 <div algorithm>
@@ -329,17 +350,17 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| has been removed, then return [=a promise rejected with=] an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, then return [=a promise rejected with=] an {{InvalidStateError}}.
 
 1. Let |p| be [=a new promise=].
 
 1. Otherwise, run the following steps [=in parallel=]:
 
-    1. Let |quota| be [=storage quota=] for |shelf|.
+    1. Let |quota| be [=/storage quota=] for |shelf|.
 
     1. Set |quota| to |bucket|'s [=StorageBucket/quota value=] if it is non-null.
 
-    1. Let |usage| be [=storage usage=] for |bucket|.
+    1. Let |usage| be [=storage bucket/storage usage=] for |bucket|.
 
     1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
 
@@ -371,7 +392,7 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
 
@@ -411,7 +432,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
 
@@ -427,7 +448,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket| has been removed, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
 
