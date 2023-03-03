@@ -216,6 +216,12 @@ Specific storage endpoints may need to run additional actions to remove data whe
 
 </aside>
 
+Issue: [[IndexedDB-3]] needs to define how deletion occurs when data is evicted by quota.
+
+Issue: [[FS]] needs to define how deletion occurs for Origin Private File System when data is evicted by quota.
+
+Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage when data is evicted by quota.
+
 </div>
 
 <h3 id="storage-bucket-keys">Enumerating buckets</h3>
