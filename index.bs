@@ -99,10 +99,8 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     
 1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
     
-    1. Let |expires| be the result of [=parse a duration string=] from |options|["{{StorageBucketOptions/expires}}"].
-    
-    1. If |expires| is not a [=duration=], then return failure.
-    
+    1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"].
+
     1. If |expires| is less than or equal to the [=current wall time=], then return failure.
 
 1. Let |quota| be undefined.
@@ -125,7 +123,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
 
-    1. Remove |bucket|.
+    1. Mark |bucket|'s [=storage bucket/removed=] as true.
 
     1. Set |bucket| to null.
 
@@ -220,7 +218,7 @@ Issue: [[IndexedDB-3]] needs to define how deletion occurs when data is evicted 
 
 Issue: [[FS]] needs to define how deletion occurs for Origin Private File System when data is evicted by quota.
 
-Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage when data is evicted by quota.
+Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage and Service Workers when data is evicted by quota.
 
 </div>
 
