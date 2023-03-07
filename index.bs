@@ -99,10 +99,8 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     
 1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
     
-    1. Let |expires| be the result of [=parse a duration string=] from |options|["{{StorageBucketOptions/expires}}"].
-    
-    1. If |expires| is not a [=duration=], then return failure.
-    
+    1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"].
+
     1. If |expires| is less than or equal to the [=current wall time=], then return failure.
 
 1. Let |quota| be undefined.
@@ -121,13 +119,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
 
-1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
-
-1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
-
-    1. Remove |bucket|.
-
-    1. Set |bucket| to null.
+1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |name|. 
 
 1. If |bucket| is null, then:
 
@@ -162,6 +154,20 @@ To <dfn>validate a bucket name</dfn> given string |name|, run the following step
 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
 
 1. Return.
+
+</div>
+
+To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the following steps:
+
+1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return null.
+
+1. If |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
+
+    1. Mark |bucket|'s [=storage bucket/removed=] as true.
+    
+    1. Return null.
+
+1. Return |bucket|.
 
 </div>
 
@@ -220,7 +226,7 @@ Issue: [[IndexedDB-3]] needs to define how deletion occurs when data is evicted 
 
 Issue: [[FS]] needs to define how deletion occurs for Origin Private File System when data is evicted by quota.
 
-Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage when data is evicted by quota.
+Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage and Service Workers when data is evicted by quota.
 
 </div>
 
@@ -242,11 +248,9 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
 1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
 
-    1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
+    1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |key|. 
 
-    1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current wall time=], remove |bucket|.
-
-    1. Otherwise, [=list/append=] |key| to |keys|.
+    1. If |bucket| is non-null, [=list/append=] |key| to |keys|.
 
 1. [=/Resolve=] |p| with |keys|.
 
@@ -422,13 +426,14 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
-A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=duration=], initially null.
+A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=moment=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
-User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys()}} is called, regardless of the [=/bucket mode=].
-User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}, regardless of the [=/bucket mode=].
+User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys()}} is called.
+User agents MUST remove a bucket that has expired when it is opened via {{StorageBucketManager/open()}}.
 User agents MAY clear buckets whose [=/bucket mode=] is `"best-effort"` before the
 specified timestamp when faced with storage pressure.
+User agents MAY remove any buckets before {{StorageBucketManager/open()}} or {{StorageBucketManager/keys()}} is called when the expiration is reached regardless of the [=/bucket mode=] 
 
 <div algorithm>
 
