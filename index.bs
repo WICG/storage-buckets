@@ -119,13 +119,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
 
-1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists or null otherwise.
-
-1. If |bucket| is non-null and |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
-
-    1. Mark |bucket|'s [=storage bucket/removed=] as true.
-
-    1. Set |bucket| to null.
+1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |name|. 
 
 1. If |bucket| is null, then:
 
@@ -160,6 +154,20 @@ To <dfn>validate a bucket name</dfn> given string |name|, run the following step
 1. If |name| begins with U+005F (_) or U+002D(-), then return failure.
 
 1. Return.
+
+</div>
+
+To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the following steps:
+
+1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return null.
+
+1. If |bucket|'s expiration [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
+
+    1. Mark |bucket|'s [=storage bucket/removed=] as true.
+    
+    1. Return null.
+
+1. Return |bucket|.
 
 </div>
 
@@ -240,11 +248,9 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
 1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
 
-    1. Let |bucket| be |shelf|'s [=bucket map=][|key|].
+    1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |key|. 
 
-    1. If |bucket|'s [=StorageBucket/expiration value=] is less than or equal the [=current wall time=], remove |bucket|.
-
-    1. Otherwise, [=list/append=] |key| to |keys|.
+    1. If |bucket| is non-null, [=list/append=] |key| to |keys|.
 
 1. [=/Resolve=] |p| with |keys|.
 
