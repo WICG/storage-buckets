@@ -161,7 +161,7 @@ To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the f
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return null.
 
-1. If |bucket|'s expiration [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
+1. If |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
 
     1. Mark |bucket|'s [=storage bucket/removed=] as true.
     
