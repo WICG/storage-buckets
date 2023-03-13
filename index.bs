@@ -426,7 +426,7 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
-A [=/storage bucket=] has an <dfn for="StorageBucket">expiration time</dfn>, which is either null or a [=moment=], initially null.
+A [=/storage bucket=] has an <dfn for="StorageBucket">expiration time</dfn>, which is either null or a [=moment=] on the [=wall clock=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
 User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys()}} is called.
