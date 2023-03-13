@@ -133,7 +133,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
-1. Set |bucket|'s [=StorageBucket/expiration value|expiration=] to |expires|.
+1. Set |bucket|'s [=StorageBucket/expiration time|expiration=] to |expires|.
 
 1. Let |storageBucket| be a new {{StorageBucket}}.
 
@@ -161,7 +161,7 @@ To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the f
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return null.
 
-1. If |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
+1. If |bucket|'s [=StorageBucket/expiration time=] is non-null and less than or equal the [=current wall time=], then:
 
     1. Mark |bucket|'s [=storage bucket/removed=] as true.
     
@@ -426,7 +426,7 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
-A [=/storage bucket=] has an <dfn for="StorageBucket">expiration value</dfn>, which is either null or a [=moment=], initially null.
+A [=/storage bucket=] has an <dfn for="StorageBucket">expiration time</dfn>, which is either null or a [=moment=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
 User agents MUST remove any bucket that has expired when {{StorageBucketManager/keys()}} is called.
@@ -445,7 +445,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
 1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
+1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=] and [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -461,7 +461,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
+1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration time=].
 
 1. Return |p|.
 
