@@ -101,7 +101,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     
     1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"].
 
-    1. If |expires| is less than or equal to the [=current wall time=], then return failure.
+    1. If |expires| milliseconds after the [=Unix epoch=] is less than or equal to the [=relevant settings object=]'s [=environment settings object/current wall time=], then return failure.
 
 1. Let |quota| be undefined.
 
@@ -161,7 +161,7 @@ To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the f
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return null.
 
-1. If |bucket|'s [=StorageBucket/expiration time=] is non-null and less than or equal the [=current wall time=], then:
+1. If |bucket|'s [=StorageBucket/expiration time=] is non-null and less than or equal the [=relevant settings object=]'s [=environment settings object/current wall time=], then:
 
     1. Set |bucket|'s [=storage bucket/removed=] to true.
     
