@@ -163,7 +163,7 @@ To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the f
 
 1. If |bucket|'s [=StorageBucket/expiration time=] is non-null and less than or equal the [=current wall time=], then:
 
-    1. Mark |bucket|'s [=storage bucket/removed=] as true.
+    1. Set |bucket|'s [=storage bucket/removed=] to true.
     
     1. Return null.
 
@@ -212,13 +212,13 @@ To <dfn>remove a bucket</dfn> on a |shelf| given a bucket |name|, run the follow
 
 1. Remove [=map/key=] |name| in |shelf|'s [=bucket map=].
 
-1. Mark |bucket|'s [=storage bucket/removed=] as true.
+1. Set |bucket|'s [=storage bucket/removed=] to true.
 
 1. Return.
 
 <aside class="note">
 
-Specific storage endpoints may need to run additional actions to remove data when a storage bucket is marked as removed.
+Specific storage endpoints may need to run additional actions to remove data when a storage bucket is set as removed.
 
 </aside>
 
@@ -285,7 +285,7 @@ interface StorageBucket {
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
 
-A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Marked as true when a [=/storage bucket=] is deleted. 
+A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Set as true when a [=/storage bucket=] is deleted. 
 
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
