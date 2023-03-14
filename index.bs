@@ -133,7 +133,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
-1. Set |bucket|'s [=StorageBucket/expiration time|expiration=] to |expires|.
+1. Set |bucket|'s [=StorageBucket/expiration time|expiration=] to |expires| milliseconds after the [=Unix epoch=].
 
 1. Let |storageBucket| be a new {{StorageBucket}}.
 
