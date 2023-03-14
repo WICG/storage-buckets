@@ -101,7 +101,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
     
     1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"].
 
-    1. If |expires| is less than or equal to the [=current wall time=], then return failure.
+    1. If |expires| milliseconds after the [=Unix epoch=] is less than or equal to the [=relevant settings object=]'s [=environment settings object/current wall time=], then return failure.
 
 1. Let |quota| be undefined.
 
@@ -133,7 +133,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |persisted| is true, set |bucket|'s [=/bucket mode=] to `"persistent"`.
 
-1. Set |bucket|'s [=StorageBucket/expiration value|expiration=] to |expires|.
+1. Set |bucket|'s [=StorageBucket/expiration time|expiration=] to |expires| milliseconds after the [=Unix epoch=].
 
 1. Let |storageBucket| be a new {{StorageBucket}}.
 
@@ -161,9 +161,9 @@ To <dfn>get or expire a bucket</dfn> on a |shelf| given string |name|, run the f
 
 1. Let |bucket| be |shelf|'s [=bucket map=][|name|] if exists. Otherwise return null.
 
-1. If |bucket|'s [=StorageBucket/expiration value=] is non-null and less than or equal the [=current wall time=], then:
+1. If |bucket|'s [=StorageBucket/expiration time=] is non-null and less than or equal the [=relevant settings object=]'s [=environment settings object/current wall time=], then:
 
-    1. Mark |bucket|'s [=storage bucket/removed=] as true.
+    1. Set |bucket|'s [=storage bucket/removed=] to true.
     
     1. Return null.
 
@@ -212,13 +212,13 @@ To <dfn>remove a bucket</dfn> on a |shelf| given a bucket |name|, run the follow
 
 1. Remove [=map/key=] |name| in |shelf|'s [=bucket map=].
 
-1. Mark |bucket|'s [=storage bucket/removed=] as true.
+1. Set |bucket|'s [=storage bucket/removed=] to true.
 
 1. Return.
 
 <aside class="note">
 
-Specific storage endpoints may need to run additional actions to remove data when a storage bucket is marked as removed.
+Specific storage endpoints may need to run additional actions to remove data when a storage bucket is set as removed.
 
 </aside>
 
@@ -285,7 +285,7 @@ interface StorageBucket {
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
 
-A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Marked as true when a [=/storage bucket=] is deleted. 
+A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Set as true when a [=/storage bucket=] is deleted. 
 
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
@@ -426,7 +426,7 @@ The {{StorageBucket/durability()}} method should report what the user agent will
 
 <h3 id="storage-bucket-expiration">Expiration</h3>
 
-A [=/storage bucket=] has an <dfn for="StorageBucket">expiration time</dfn>, which is either null or a [=moment=], initially null.
+A [=/storage bucket=] has an <dfn for="StorageBucket">expiration time</dfn>, which is either null or a [=moment=] on the [=wall clock=], initially null.
 Specifies the upper limit of a bucket lifetime.
 
 The [=get or expire a bucket=] algorithm removes expired buckets when {{StorageBucketManager/keys()}} or {{StorageBucketManager/open()}} is called.
@@ -444,7 +444,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
 1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, set |bucket|'s [=StorageBucket/expiration value=] to |expires| and [=/resolve=] |p|.
+1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=] and [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -460,7 +460,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration value=].
+1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration time=].
 
 1. Return |p|.
 
