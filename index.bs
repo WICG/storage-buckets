@@ -287,6 +287,12 @@ A {{StorageBucket}} has an associated [=/storage bucket=].
 
 A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Set as true when a [=/storage bucket=] is deleted. 
 
+<aside class="note">
+
+Browsers will probably have IPC and disk accesses that make operations asynchronous. Promises are resolved from tasks to permit this kind of work.
+
+</aside>
+
 <h3 id="storage-bucket-persistence">Persistence</h3>
 
 Issue: Merge with [[Storage#buckets]] which already defines [=bucket mode=].
