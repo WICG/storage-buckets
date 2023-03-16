@@ -295,25 +295,25 @@ Issue: Merge with [[Storage#buckets]] which already defines [=bucket mode=].
 
 The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
+1. Let |bucket| be [=this=]'s [=/storage bucket=].
+
+1. Let |environment| be [=/this=]'s [=/relevant settings object=].
+
 1. Let |p| be [=a new promise=].
 
 1. Run the following steps [=in parallel=]:
 
-    1. Let |bucket| be [=this=]'s [=/storage bucket=].
-
-    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a task=] to [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with {{InvalidStateError}}.
     
-    1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=queue a task=] to [=/resolve=] |p| with true.
+    1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=/resolve=] |p| with true.
 
     1. Otherwise,
-
-        1. Let |environment| be [=/this=]'s [=/relevant settings object=].
 
         1. Let |permission| be the result of [=getting the current permission state=] with `"persistent-storage"` and |environment|.
 
         1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=queue a task=] to [=/resolve=] |p| with true.
 
-        1. Otherwise, [=queue a task=] to [=/resolve=] |p| with false.
+        1. Otherwise, [=/resolve=] |p| with false.
 
 1. Return |p|.
 
