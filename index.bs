@@ -252,7 +252,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. If |bucket| is non-null, [=list/append=] |key| to |keys|.
 
-1. [=/Resolve=] |p| with |keys|.
+1. [=Queue a task=] to [=/resolve=] |p| with |keys|.
 
 1. Return |p|.
 
@@ -458,7 +458,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise, [=queue a task=] to [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration time=].
 
