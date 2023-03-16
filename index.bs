@@ -252,7 +252,7 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
     1. If |bucket| is non-null, [=list/append=] |key| to |keys|.
 
-1. [=/Resolve=] |p| with |keys|.
+1. [=Queue a task=] to [=/resolve=] |p| with |keys|.
 
 1. Return |p|.
 
@@ -301,9 +301,9 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a task=] to [=reject=] |p| with {{InvalidStateError}}.
     
-    1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=/resolve=] |p| with true.
+    1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=queue a task=] to [=/resolve=] |p| with true.
 
     1. Otherwise,
 
@@ -311,9 +311,9 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
         1. Let |permission| be the result of [=getting the current permission state=] with `"persistent-storage"` and |environment|.
 
-        1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=/resolve=] |p| with true.
+        1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=queue a task=] to [=/resolve=] |p| with true.
 
-        1. Otherwise, [=/resolve=] |p| with false.
+        1. Otherwise, [=queue a task=] to [=/resolve=] |p| with false.
 
 1. Return |p|.
 
@@ -327,13 +327,13 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=queue a task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
 1. Otherwise,
 
-    1. If |bucket|'s [=bucket mode=] is `"persistent"`, then [=/resolve=] |p| with true.
+    1. If |bucket|'s [=bucket mode=] is `"persistent"`, then [=queue a task=] to [=/resolve=] |p| with true.
 
-    1. Otherwise, [=/resolve=] |p| with false.
+    1. Otherwise, [=queue a task=] to [=/resolve=] |p| with false.
 
 1. Return |p|.
 
@@ -402,9 +402,9 @@ The <dfn method for="StorageBucket">durability()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
+1. Otherwise, [=queue a task=] to [=/resolve=] |p| with |bucket|'s [=StorageBucket/durability value=].
 
 1. Return |p|.
 
@@ -442,9 +442,9 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=] and [=/resolve=] |p|.
+1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=] and [=queue a task=] to [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -458,9 +458,9 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
 1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
-1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with an {{InvalidStateError}}.
+1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
-1. Otherwise, [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration time=].
+1. Otherwise, [=queue a task=] to [=/resolve=] |p| with |bucket|'s [=StorageBucket/expiration time=].
 
 1. Return |p|.
 
