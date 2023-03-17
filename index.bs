@@ -196,7 +196,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. Let |r| be the result of running [=remove a bucket=] with |shelf| and |name|.
     
-    1. If |r| is failure, then [=/reject=] |p| with {{Type Error}}.
+    1. If |r| is failure, then [=/reject=] |p| with {{TypeError}}.
 
     1. Otherwise, [=/resolve=] |p|.
 
@@ -563,7 +563,7 @@ Issue: Update [[clear-site-data#header]].
 : "<dfn grammar>`storage:bucket-name`</dfn>"
 
   ::  If the type string starts with "`storage:`" then the remaining characters after the
-      `:` will be taken to refer to a specific [=storage bucket=] in the [=origin=] of a
+      `:` will be taken to refer to a specific [=storage bucket=] in the [=environment settings object/origin=] of a
       particular response's URL.
 
 Issue: add the steps below to the algorithm in [[clear-site-data#parsing]].
