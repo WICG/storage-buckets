@@ -236,8 +236,6 @@ Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage 
 
 The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
-1. Let |environment| be [=/this=]'s [=/relevant settings object=].
-
 1. Let |shelf| be the result of running [=obtain a local storage shelf=].
 
 1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
@@ -530,7 +528,7 @@ A {{StorageBucket}} has a {{CacheStorage}} object, initially null. The <dfn attr
 
     1. Set the <a spec="service-workers">relevant name to cache map</a> for |cacheStorage| to |bottle map|.
 
-    1. Set [=this=]'s [=StorageBucket/caches=] to |caches|.
+    1. Set [=this=]'s [=StorageBucket/caches=] to |cacheStorage|.
 
 1. Return [=this=]'s [=StorageBucket/caches=].
 
@@ -574,15 +572,15 @@ Issue: add the steps below to the algorithm in [[clear-site-data#parsing]].
 
 To <dfn>parse a Clear-Site-Data header with buckets</dfn>, execute the following steps:
 
-1. For each |type| in |header|, execute the following steps:
+1. For each |type| in <var ignore>header</var>, execute the following steps:
 
     1. If |type| does not [=string/start with=] `"storage:"`, abort these steps.
 
-    1. Let |bucket name| be the [=code-unit-substring-by-positions|code unit substring=] from 8 to |end| of |type|.
+    1. Let |bucket name| be the [=code-unit-substring-by-positions|code unit substring=] from 8 to end of |type|.
 
     1. If the result of [=validate a bucket name=] with |bucket name| is failure, then abort these steps.
 
-    1. Append a [=tuple=] consisting of (`"storage-bucket"`, |bucket name|) to |types|.
+    1. Append a [=tuple=] consisting of (`"storage-bucket"`, |bucket name|) to <var ignore>types</var>
 
 </div>
 
@@ -590,13 +588,15 @@ Issue: add the steps below to the algorithm in [[clear-site-data#clear-response]
 
 <div algorithm>
 
-To <dfn>clear data with buckets</dfn>, execute the following steps:
+To <dfn>clear data with buckets</dfn> given a |bucket name|, execute the following steps:
+
+1. Let |environment| be [=/this=]'s [=/relevant settings object=].
 
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
 1. If |shelf| is failure, then [=exception/throw=] a {{TypeError}} and abort these steps.
 
-1. For each |type| in |types|, execute the following steps:
+1. For each |type| in <var ignore>types</var>, execute the following steps:
 
     1. If |type| is not a [=tuple=] or |type|[0] is not `"storage-bucket"`, abort these steps.
 
