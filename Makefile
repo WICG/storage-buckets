@@ -22,6 +22,6 @@ clean:
 update-explainer-toc: README.md Makefile
 	doctoc $< > /dev/null
 
-index.html: spec.bs Makefile
+index.html: index.bs Makefile
 	mkdir -p build
 	bikeshed --die-on=warning spec $< $@
