@@ -29,6 +29,9 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     type: dfn
         text: parse a duration string; url: common-microsyntaxes.html#parse-a-duration-string
+spec: infra; urlPrefix: https://infra.spec.whatwg.org/
+    type: dfn
+        text: code point substring by positions; url: code-point-substring-by-positions
 </pre>
 
 <h2 id="storage-bucket-manager">The {{StorageBucketManager}} interface</h2>
@@ -576,7 +579,7 @@ To <dfn>parse a Clear-Site-Data header with buckets</dfn>, execute the following
 
     1. If |type| does not [=string/start with=] `"storage:"`, abort these steps.
 
-    1. Let |bucket name| be the [=code-unit-substring-by-positions|code unit substring=] from 8 to end of |type|.
+    1. Let |bucket name| be the [=code unit substring by positions|code unit substring=] from 8 to end of |type|.
 
     1. If the result of [=validate a bucket name=] with |bucket name| is failure, then abort these steps.
 
