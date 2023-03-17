@@ -68,7 +68,7 @@ dictionary StorageBucketOptions {
   boolean? persisted = null;
   StorageBucketDurability? durability = null;
   unsigned long long? quota = null;
-  DOMHighResTimestamp? expires = null;
+  DOMHighResTimeStamp? expires = null;
 };
 </xmp>
 
