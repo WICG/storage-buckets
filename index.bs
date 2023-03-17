@@ -482,7 +482,7 @@ Issue: {{IDBFactory}} methods need to take a storage bottle map rather than a st
 
 A {{StorageBucket}} has an {{IDBFactory}} object, initially null. The <dfn attribute for=StorageBucket>indexedDB</dfn> getter steps are:
 
-1. If [=this=]'s [=StorageBucket/indexedDB=] is null, run the following steps:
+1. If [=this=]'s {{StorageBucket/indexedDB}} is null, run the following steps:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
@@ -492,9 +492,9 @@ A {{StorageBucket}} has an {{IDBFactory}} object, initially null. The <dfn attri
 
     1. Set the [=bottle map=] for |indexedDB| to |bottle map|.
 
-    1. Set [=this=]'s [=StorageBucket/indexedDB=] to |indexedDB|.
+    1. Set [=this=]'s {{StorageBucket/indexedDB}} to |indexedDB|.
 
-1. Return [=this=]'s [=StorageBucket/indexedDB=].
+1. Return [=this=]'s {{StorageBucket/indexedDB}}.
 
 </div>
 
@@ -518,7 +518,7 @@ of an {{IDBTransaction}} |transaction|. To <dfn>calculate the effective <a spec=
 
 A {{StorageBucket}} has a {{CacheStorage}} object, initially null. The <dfn attribute for=StorageBucket>caches</dfn> getter steps are:
 
-1. If [=this=]'s [=StorageBucket/caches=] is null, run the following steps:
+1. If [=this=]'s {{StorageBucket/caches}} is null, run the following steps:
 
     1. Let |bucket| be [=this=]'s [=/storage bucket=].
 
@@ -528,9 +528,9 @@ A {{StorageBucket}} has a {{CacheStorage}} object, initially null. The <dfn attr
 
     1. Set the <a spec="service-workers">relevant name to cache map</a> for |cacheStorage| to |bottle map|.
 
-    1. Set [=this=]'s [=StorageBucket/caches=] to |cacheStorage|.
+    1. Set [=this=]'s {{StorageBucket/caches}} to |cacheStorage|.
 
-1. Return [=this=]'s [=StorageBucket/caches=].
+1. Return [=this=]'s {{StorageBucket/caches}}.
 
 </div>
 
