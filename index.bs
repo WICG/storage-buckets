@@ -22,6 +22,7 @@ spec: storage; urlPrefix: https://storage.spec.whatwg.org/
         text: bucket mode; url: bucket-mode
         text: obtain a local storage shelf; url: obtain-a-local-storage-shelf
         text: storage bottle; url: storage-bottle
+        text: storage bottle map; url: storage-bottle-map
         text: storage bucket; url: storage-bucket
         text: storage key; url: storage-key
         text: storage quota; url: storage-quota
@@ -496,7 +497,7 @@ A {{StorageBucket}} has an {{IDBFactory}} object, initially null. The <dfn attri
 
     1. Let |indexedDB| be an {{IDBFactory}} object.
 
-    1. Set the [=bottle map=] for |indexedDB| to |bottle map|.
+    1. Set the [=storage bottle map=] for |indexedDB| to |bottle map|.
 
     1. Set [=this=]'s {{StorageBucket/indexedDB}} to |indexedDB|.
 
