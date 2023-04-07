@@ -79,7 +79,7 @@ dictionary StorageBucketOptions {
 The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method steps are:
 
 1. Let |environment| be [=/this=]'s [=/relevant settings object=].
-    
+
 1. Let |shelf| be the result of running [=obtain a local storage shelf=] given |environment|.
 
 1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
@@ -99,9 +99,9 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
 To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |options|, run the following steps:
 
 1. Let |expires| be undefined.
-    
+
 1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
-    
+
     1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"].
 
     1. If |expires| milliseconds after the [=Unix epoch=] is before the [=relevant settings object=]'s [=environment settings object/current wall time=], then return failure.
@@ -109,7 +109,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 1. Let |quota| be undefined.
 
 1. If |options|["{{StorageBucketOptions/quota}}"] exists, then:
-    
+
     1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"].
 
     1. If |quota| is less than or equal to zero, then return failure.
@@ -122,7 +122,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
     1. If |permission| is "{{PermissionState/granted}}", then set |persisted| to true.
 
-1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |name|. 
+1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |name|.
 
 1. If |bucket| is null, then:
 
@@ -265,6 +265,8 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 [Exposed=(Window,Worker),
  SecureContext]
 interface StorageBucket {
+  readonly attribute DOMString name;
+
   [Exposed=Window] Promise<boolean> persist();
   Promise<boolean> persisted();
 
@@ -285,8 +287,9 @@ interface StorageBucket {
 
 A {{StorageBucket}} has an associated [=/storage bucket=].
 
+A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Set as true when a [=/storage bucket=] is deleted.
 
-A [=/storage bucket=] has an associated <dfn for="storage bucket">removed</dfn> flag, which is a boolean, initially false. Set as true when a [=/storage bucket=] is deleted. 
+A {{StorageBucket}} has a {{DOMString}} object <dfn attribute for=StorageBucket>name</dfn> which is the key in the [=bucket map=] that maps to the [=/storage bucket=].
 
 <aside class="note">
 
@@ -311,7 +314,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 1. Run the following steps [=in parallel=]:
 
     1. If |bucket|'s [=storage bucket/removed=] flag is true, [=reject=] |p| with {{InvalidStateError}}.
-    
+
     1. If |bucket|'s [=bucket mode=] is `"persistent"`, [=/resolve=] |p| with true.
 
     1. Otherwise,
