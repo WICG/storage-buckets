@@ -4,9 +4,9 @@
   <title>Storage Buckets API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d9f9c3533, updated Fri Mar 10 11:31:29 2023 -0800" name="generator">
+  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="fbfe27a1dfe2daef6186a653a52e000883d8ba3d" name="document-revision">
+  <meta content="cac41a4b3433809568c34d610f22698b66b1190f" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -598,7 +598,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Storage Buckets API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-17">17 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-07">7 April 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -903,6 +903,8 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->),
  <a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext" id="ref-for-SecureContext②"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="storagebucket"><code><c- g>StorageBucket</c-></code></dfn> {
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString③"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-storagebucket-name" id="ref-for-dom-storagebucket-name"><c- g>name</c-></a>;
+
   [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=<c- n>Window</c->] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise③"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-storagebucket-persist" id="ref-for-dom-storagebucket-persist"><c- g>persist</c-></a>();
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise④"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean②"><c- b>boolean</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-storagebucket-persisted" id="ref-for-dom-storagebucket-persisted"><c- g>persisted</c-></a>();
 
@@ -922,6 +924,7 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
 </pre>
    <p>A <code class="idl"><a data-link-type="idl" href="#storagebucket" id="ref-for-storagebucket④">StorageBucket</a></code> has an associated <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket②">storage bucket</a>.</p>
    <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket③">storage bucket</a> has an associated <dfn class="dfn-paneled" data-dfn-for="storage bucket" data-dfn-type="dfn" data-noexport id="storage-bucket-removed">removed</dfn> flag, which is a boolean, initially false. Set as true when a <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket④">storage bucket</a> is deleted.</p>
+   <p>A <code class="idl"><a data-link-type="idl" href="#storagebucket" id="ref-for-storagebucket⑤">StorageBucket</a></code> has a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString④">DOMString</a></code> object <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="attribute" data-export id="dom-storagebucket-name"><code>name</code></dfn> which is the key in the <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-map" id="ref-for-bucket-map⑤">bucket map</a> that maps to the <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑤">storage bucket</a>.</p>
    <aside class="note">
     <p>Browsers will probably have IPC and disk accesses that make operations asynchronous. Promises are resolved from tasks to permit this kind of work.</p>
    </aside>
@@ -931,7 +934,7 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
     <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="method" data-export id="dom-storagebucket-persist"><code>persist()</code></dfn> method steps are:</p>
     <ol>
      <li data-md>
-      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑤">storage bucket</a>.</p>
+      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑥">storage bucket</a>.</p>
      <li data-md>
       <p>Let <var>environment</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑤">relevant settings object</a>.</p>
      <li data-md>
@@ -964,7 +967,7 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
      <li data-md>
       <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise③">a new promise</a>.</p>
      <li data-md>
-      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑥">storage bucket</a>.</p>
+      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑦">storage bucket</a>.</p>
      <li data-md>
       <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed③">removed</a> flag is true, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task②">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror①">InvalidStateError</a></code>.</p>
      <li data-md>
@@ -980,10 +983,10 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
     </ol>
    </div>
    <h3 class="heading settled" data-level="2.2" id="storage-bucket-quota"><span class="secno">2.2. </span><span class="content">Quota</span><a class="self-link" href="#storage-bucket-quota"></a></h3>
-   <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑦">storage bucket</a> has a <dfn class="dfn-paneled" data-dfn-for="StorageBucket" data-dfn-type="dfn" data-noexport id="storagebucket-quota-value">quota value</dfn>, a number-or-null, initially null.
+   <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑧">storage bucket</a> has a <dfn class="dfn-paneled" data-dfn-for="StorageBucket" data-dfn-type="dfn" data-noexport id="storagebucket-quota-value">quota value</dfn>, a number-or-null, initially null.
 Specifies the upper limit of usage in bytes which can be used by the bucket. The user agent MAY further
 limit the realized storage space.</p>
-   <p>The <dfn class="dfn-paneled" data-dfn-for="storage bucket" data-dfn-type="dfn" data-noexport id="storage-bucket-storage-usage">storage usage</dfn> of a <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑧">storage bucket</a> is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> rough estimate
+   <p>The <dfn class="dfn-paneled" data-dfn-for="storage bucket" data-dfn-type="dfn" data-noexport id="storage-bucket-storage-usage">storage usage</dfn> of a <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑨">storage bucket</a> is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> rough estimate
 of the number of bytes used by all of its <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bottle" id="ref-for-storage-bottle">storage bottle</a>s.</p>
    <div class="algorithm" data-algorithm="estimate()" data-algorithm-for="StorageBucket">
     <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="method" data-export id="dom-storagebucket-estimate"><code>estimate()</code></dfn> method steps are:</p>
@@ -995,7 +998,7 @@ of the number of bytes used by all of its <a data-link-type="dfn" href="https://
      <li data-md>
       <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑤">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑥">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑨">storage bucket</a>.</p>
+      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⓪">storage bucket</a>.</p>
      <li data-md>
       <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed④">removed</a> flag is true, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑥">a promise rejected with</a> an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror②">InvalidStateError</a></code>.</p>
      <li data-md>
@@ -1023,7 +1026,7 @@ of the number of bytes used by all of its <a data-link-type="dfn" href="https://
 Its intended use is to keep a specific bucket from using up the entire site’s storage space.</p>
    </aside>
    <h3 class="heading settled" data-level="2.3" id="storage-bucket-durability"><span class="secno">2.3. </span><span class="content">Durability</span><a class="self-link" href="#storage-bucket-durability"></a></h3>
-   <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⓪">storage bucket</a> has a <dfn class="dfn-paneled" data-dfn-for="StorageBucket" data-dfn-type="dfn" data-noexport id="storagebucket-durability-value">durability value</dfn>, a <code class="idl"><a data-link-type="idl" href="#enumdef-storagebucketdurability" id="ref-for-enumdef-storagebucketdurability②">StorageBucketDurability</a></code>.
+   <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①①">storage bucket</a> has a <dfn class="dfn-paneled" data-dfn-for="StorageBucket" data-dfn-type="dfn" data-noexport id="storagebucket-durability-value">durability value</dfn>, a <code class="idl"><a data-link-type="idl" href="#enumdef-storagebucketdurability" id="ref-for-enumdef-storagebucketdurability②">StorageBucketDurability</a></code>.
 The user agent MAY initialize this value to "<code class="idl"><a data-link-type="idl" href="#dom-storagebucketdurability-strict" id="ref-for-dom-storagebucketdurability-strict">strict</a></code>" or
 "<code class="idl"><a data-link-type="idl" href="#dom-storagebucketdurability-relaxed" id="ref-for-dom-storagebucketdurability-relaxed">relaxed</a></code>". The user agent SHOULD ignore the <a data-link-type="dfn" href="#storagebucket-durability-value" id="ref-for-storagebucket-durability-value③">durability value</a> for operations that otherwise specify durability behavior.</p>
    <div class="algorithm" data-algorithm="durability()" data-algorithm-for="StorageBucket">
@@ -1032,7 +1035,7 @@ The user agent MAY initialize this value to "<code class="idl"><a data-link-type
      <li data-md>
       <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
      <li data-md>
-      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①①">storage bucket</a>.</p>
+      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①②">storage bucket</a>.</p>
      <li data-md>
       <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑤">removed</a> flag is true, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑤">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror③">InvalidStateError</a></code>.</p>
      <li data-md>
@@ -1055,7 +1058,7 @@ The <code class="idl"><a data-link-type="idl" href="#dom-storagebucket-durabilit
     </dl>
    </aside>
    <h3 class="heading settled" data-level="2.4" id="storage-bucket-expiration"><span class="secno">2.4. </span><span class="content">Expiration</span><a class="self-link" href="#storage-bucket-expiration"></a></h3>
-   <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①②">storage bucket</a> has an <dfn class="dfn-paneled" data-dfn-for="StorageBucket" data-dfn-type="dfn" data-noexport id="storagebucket-expiration-time">expiration time</dfn>, which is either null or a <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-moment" id="ref-for-dfn-moment">moment</a> on the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-wall-clock" id="ref-for-dfn-wall-clock">wall clock</a>, initially null.
+   <p>A <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①③">storage bucket</a> has an <dfn class="dfn-paneled" data-dfn-for="StorageBucket" data-dfn-type="dfn" data-noexport id="storagebucket-expiration-time">expiration time</dfn>, which is either null or a <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-moment" id="ref-for-dfn-moment">moment</a> on the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-wall-clock" id="ref-for-dfn-wall-clock">wall clock</a>, initially null.
 Specifies the upper limit of a bucket lifetime.</p>
    <p>The <a data-link-type="dfn" href="#get-or-expire-a-bucket" id="ref-for-get-or-expire-a-bucket②">get or expire a bucket</a> algorithm removes expired buckets when <code class="idl"><a data-link-type="idl" href="#dom-storagebucketmanager-keys" id="ref-for-dom-storagebucketmanager-keys①">keys()</a></code> or <code class="idl"><a data-link-type="idl" href="#dom-storagebucketmanager-open" id="ref-for-dom-storagebucketmanager-open①">open()</a></code> is called.
 User agents MAY clear buckets whose <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode⑤">bucket mode</a> is <code>"best-effort"</code> before their <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time②">expiration time</a> when faced with storage pressure.
@@ -1066,7 +1069,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li data-md>
       <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
      <li data-md>
-      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①③">storage bucket</a>.</p>
+      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①④">storage bucket</a>.</p>
      <li data-md>
       <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑥">removed</a> flag is true, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑦">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror④">InvalidStateError</a></code>.</p>
      <li data-md>
@@ -1081,7 +1084,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li data-md>
       <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑦">a new promise</a>.</p>
      <li data-md>
-      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①④">storage bucket</a>.</p>
+      <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑤">storage bucket</a>.</p>
      <li data-md>
       <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑦">removed</a> flag is true, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑨">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑥">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror⑤">InvalidStateError</a></code>.</p>
      <li data-md>
@@ -1095,13 +1098,13 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <h4 class="heading settled" data-level="2.5.1" id="storage-bucket-indexeddb"><span class="secno">2.5.1. </span><span class="content">Using Indexed Database</span><a class="self-link" href="#storage-bucket-indexeddb"></a></h4>
    <p class="issue" id="issue-4f9abb58"><a class="self-link" href="#issue-4f9abb58"></a> <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory①">IDBFactory</a></code> methods need to take a storage bottle map rather than a storageKey.</p>
    <div class="algorithm" data-algorithm="indexedDB" data-algorithm-for="StorageBucket">
-    <p>A <code class="idl"><a data-link-type="idl" href="#storagebucket" id="ref-for-storagebucket⑤">StorageBucket</a></code> has an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory②">IDBFactory</a></code> object, initially null. The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="attribute" data-export id="dom-storagebucket-indexeddb"><code>indexedDB</code></dfn> getter steps are:</p>
+    <p>A <code class="idl"><a data-link-type="idl" href="#storagebucket" id="ref-for-storagebucket⑥">StorageBucket</a></code> has an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory②">IDBFactory</a></code> object, initially null. The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="attribute" data-export id="dom-storagebucket-indexeddb"><code>indexedDB</code></dfn> getter steps are:</p>
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-storagebucket-indexeddb" id="ref-for-dom-storagebucket-indexeddb①">indexedDB</a></code> is null, run the following steps:</p>
       <ol>
        <li data-md>
-        <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑤">storage bucket</a>.</p>
+        <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑥">storage bucket</a>.</p>
        <li data-md>
         <p>Let <var>bottle map</var> be the result of <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map" id="ref-for-obtain-a-local-storage-bottle-map">obtain a local storage bottle map</a> with <var>bucket</var> and <code>"indexedDB"</code>.</p>
        <li data-md>
@@ -1128,13 +1131,13 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    </div>
    <h4 class="heading settled" data-level="2.5.2" id="storage-bucket-caches"><span class="secno">2.5.2. </span><span class="content">Using CacheStorage</span><a class="self-link" href="#storage-bucket-caches"></a></h4>
    <div class="algorithm" data-algorithm="caches" data-algorithm-for="StorageBucket">
-    <p>A <code class="idl"><a data-link-type="idl" href="#storagebucket" id="ref-for-storagebucket⑥">StorageBucket</a></code> has a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#cachestorage" id="ref-for-cachestorage①">CacheStorage</a></code> object, initially null. The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="attribute" data-export id="dom-storagebucket-caches"><code>caches</code></dfn> getter steps are:</p>
+    <p>A <code class="idl"><a data-link-type="idl" href="#storagebucket" id="ref-for-storagebucket⑦">StorageBucket</a></code> has a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#cachestorage" id="ref-for-cachestorage①">CacheStorage</a></code> object, initially null. The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="attribute" data-export id="dom-storagebucket-caches"><code>caches</code></dfn> getter steps are:</p>
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑤">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-storagebucket-caches" id="ref-for-dom-storagebucket-caches①">caches</a></code> is null, run the following steps:</p>
       <ol>
        <li data-md>
-        <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑥">storage bucket</a>.</p>
+        <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑦">storage bucket</a>.</p>
        <li data-md>
         <p>Let <var>bottle map</var> be the result of <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map" id="ref-for-obtain-a-local-storage-bottle-map①">obtain a local storage bottle map</a> with <var>bucket</var> and <code>"cacheStorage"</code>.</p>
        <li data-md>
@@ -1155,7 +1158,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="method" data-export id="dom-storagebucket-getdirectory"><code>getDirectory()</code></dfn> steps are:</p>
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the result of <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map" id="ref-for-obtain-a-local-storage-bottle-map②">obtain a local storage bottle map</a> with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑦">storage bucket</a> and <code>"fileSystem"</code>.</p>
+      <p>Let <var>map</var> be the result of <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map" id="ref-for-obtain-a-local-storage-bottle-map②">obtain a local storage bottle map</a> with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑧">storage bucket</a> and <code>"fileSystem"</code>.</p>
      <li data-md>
       <p>Return the result of <code class="idl"><a data-link-type="idl" href="https://fs.spec.whatwg.org/#dom-storagemanager-getdirectory" id="ref-for-dom-storagemanager-getdirectory">getDirectory</a></code> with <var>map</var>.</p>
     </ol>
@@ -1168,7 +1171,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <dl>
     <dt data-md>"<dfn data-dfn-type="grammar" data-export id="grammardef-storagebucket-name"><code>storage:bucket-name</code><a class="self-link" href="#grammardef-storagebucket-name"></a></dfn>"
     <dd data-md>
-     <p>If the type string starts with "<code>storage:</code>" then the remaining characters after the <code>:</code> will be taken to refer to a specific <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑧">storage bucket</a> in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a> of a
+     <p>If the type string starts with "<code>storage:</code>" then the remaining characters after the <code>:</code> will be taken to refer to a specific <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑨">storage bucket</a> in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a> of a
   particular response’s URL.</p>
    </dl>
    <p class="issue" id="issue-99223a67"><a class="self-link" href="#issue-99223a67"></a> add the steps below to the algorithm in <a href="https://w3c.github.io/webappsec-clear-site-data/#parsing"><cite>Clear Site Data</cite> § 4.1 Parsing</a>.</p>
@@ -1205,7 +1208,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
        <li data-md>
         <p>If <var>type</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#tuple" id="ref-for-tuple①">tuple</a> or <var>type</var>[0] is not <code>"storage-bucket"</code>, abort these steps.</p>
        <li data-md>
-        <p>Let <var>bucket</var> be <var>shelf</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-map" id="ref-for-bucket-map⑤">bucket map</a>[<var>bucket name</var>] if one exists. Otherwise abort these steps</p>
+        <p>Let <var>bucket</var> be <var>shelf</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-map" id="ref-for-bucket-map⑥">bucket map</a>[<var>bucket name</var>] if one exists. Otherwise abort these steps</p>
        <li data-md>
         <p>Remove <var>bucket</var>.</p>
       </ol>
@@ -1273,6 +1276,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <li><a href="#get-or-expire-a-bucket">get or expire a bucket</a><span>, in § 1.1</span>
    <li><a href="#dom-storagebucket-indexeddb">indexedDB</a><span>, in § 2.5.1</span>
    <li><a href="#dom-storagebucketmanager-keys">keys()</a><span>, in § 1.3</span>
+   <li><a href="#dom-storagebucket-name">name</a><span>, in § 2</span>
    <li><a href="#navigatorstoragebuckets">NavigatorStorageBuckets</a><span>, in § 1</span>
    <li><a href="#open-a-bucket">open a bucket</a><span>, in § 1.1</span>
    <li><a href="#dom-storagebucketmanager-open">open(name)</a><span>, in § 1.1</span>
@@ -1548,7 +1552,8 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <li><a href="#ref-for-bucket-map">1.1. Creating a bucket</a> <a href="#ref-for-bucket-map①">(2)</a>
     <li><a href="#ref-for-bucket-map②">1.2. Deleting a bucket</a> <a href="#ref-for-bucket-map③">(2)</a>
     <li><a href="#ref-for-bucket-map④">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-bucket-map⑤">2.6. Clear Site Data integration</a>
+    <li><a href="#ref-for-bucket-map⑤">2. The StorageBucket interface</a>
+    <li><a href="#ref-for-bucket-map⑥">2.6. Clear Site Data integration</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-a2029738b4b98c5e9e75d6e1a17c8d5b" class="dfn-panel" data-for="a2029738b4b98c5e9e75d6e1a17c8d5b" id="infopanel-for-a2029738b4b98c5e9e75d6e1a17c8d5b">
@@ -1593,15 +1598,15 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <span id="infopaneltitle-for-dcb2985190de22ddc1fac361fc18de5a" style="display:none">Info about the 'storage bucket' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-bucket">https://storage.spec.whatwg.org/#storage-bucket</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-storage-bucket">1.1. Creating a bucket</a> <a href="#ref-for-storage-bucket①">(2)</a>
-    <li><a href="#ref-for-storage-bucket②">2. The StorageBucket interface</a> <a href="#ref-for-storage-bucket③">(2)</a> <a href="#ref-for-storage-bucket④">(3)</a>
-    <li><a href="#ref-for-storage-bucket⑤">2.1. Persistence</a> <a href="#ref-for-storage-bucket⑥">(2)</a>
-    <li><a href="#ref-for-storage-bucket⑦">2.2. Quota</a> <a href="#ref-for-storage-bucket⑧">(2)</a> <a href="#ref-for-storage-bucket⑨">(3)</a>
-    <li><a href="#ref-for-storage-bucket①⓪">2.3. Durability</a> <a href="#ref-for-storage-bucket①①">(2)</a>
-    <li><a href="#ref-for-storage-bucket①②">2.4. Expiration</a> <a href="#ref-for-storage-bucket①③">(2)</a> <a href="#ref-for-storage-bucket①④">(3)</a>
-    <li><a href="#ref-for-storage-bucket①⑤">2.5.1. Using Indexed Database</a>
-    <li><a href="#ref-for-storage-bucket①⑥">2.5.2. Using CacheStorage</a>
-    <li><a href="#ref-for-storage-bucket①⑦">2.5.3. Using an Origin Private File System</a>
-    <li><a href="#ref-for-storage-bucket①⑧">2.6. Clear Site Data integration</a>
+    <li><a href="#ref-for-storage-bucket②">2. The StorageBucket interface</a> <a href="#ref-for-storage-bucket③">(2)</a> <a href="#ref-for-storage-bucket④">(3)</a> <a href="#ref-for-storage-bucket⑤">(4)</a>
+    <li><a href="#ref-for-storage-bucket⑥">2.1. Persistence</a> <a href="#ref-for-storage-bucket⑦">(2)</a>
+    <li><a href="#ref-for-storage-bucket⑧">2.2. Quota</a> <a href="#ref-for-storage-bucket⑨">(2)</a> <a href="#ref-for-storage-bucket①⓪">(3)</a>
+    <li><a href="#ref-for-storage-bucket①①">2.3. Durability</a> <a href="#ref-for-storage-bucket①②">(2)</a>
+    <li><a href="#ref-for-storage-bucket①③">2.4. Expiration</a> <a href="#ref-for-storage-bucket①④">(2)</a> <a href="#ref-for-storage-bucket①⑤">(3)</a>
+    <li><a href="#ref-for-storage-bucket①⑥">2.5.1. Using Indexed Database</a>
+    <li><a href="#ref-for-storage-bucket①⑦">2.5.2. Using CacheStorage</a>
+    <li><a href="#ref-for-storage-bucket①⑧">2.5.3. Using an Origin Private File System</a>
+    <li><a href="#ref-for-storage-bucket①⑨">2.6. Clear Site Data integration</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-02d1b826437e77c1f657e442ab4b6d22" class="dfn-panel" data-for="02d1b826437e77c1f657e442ab4b6d22" id="infopanel-for-02d1b826437e77c1f657e442ab4b6d22">
@@ -1626,6 +1631,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <span id="infopaneltitle-for-d0f238a61de9310f1738a214749fab18" style="display:none">Info about the 'DOMString' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMString">https://webidl.spec.whatwg.org/#idl-DOMString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-DOMString">1. The StorageBucketManager interface</a> <a href="#ref-for-idl-DOMString①">(2)</a> <a href="#ref-for-idl-DOMString②">(3)</a>
+    <li><a href="#ref-for-idl-DOMString③">2. The StorageBucket interface</a> <a href="#ref-for-idl-DOMString④">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" class="dfn-panel" data-for="dde049eb112f043fc45407ec0d4cb457" id="infopanel-for-dde049eb112f043fc45407ec0d4cb457">
@@ -1938,6 +1944,8 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->),
  <a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <a href="#storagebucket"><code><c- g>StorageBucket</c-></code></a> {
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-storagebucket-name"><c- g>name</c-></a>;
+
   [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-storagebucket-persist"><c- g>persist</c-></a>();
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-storagebucket-persisted"><c- g>persisted</c-></a>();
 
@@ -2091,9 +2099,9 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <ul>
     <li><a href="#ref-for-storagebucket">1. The StorageBucketManager interface</a>
     <li><a href="#ref-for-storagebucket①">1.1. Creating a bucket</a> <a href="#ref-for-storagebucket②">(2)</a>
-    <li><a href="#ref-for-storagebucket③">2. The StorageBucket interface</a> <a href="#ref-for-storagebucket④">(2)</a>
-    <li><a href="#ref-for-storagebucket⑤">2.5.1. Using Indexed Database</a>
-    <li><a href="#ref-for-storagebucket⑥">2.5.2. Using CacheStorage</a>
+    <li><a href="#ref-for-storagebucket③">2. The StorageBucket interface</a> <a href="#ref-for-storagebucket④">(2)</a> <a href="#ref-for-storagebucket⑤">(3)</a>
+    <li><a href="#ref-for-storagebucket⑥">2.5.1. Using Indexed Database</a>
+    <li><a href="#ref-for-storagebucket⑦">2.5.2. Using CacheStorage</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-storage-bucket-removed" class="dfn-panel" data-for="storage-bucket-removed" id="infopanel-for-storage-bucket-removed">
@@ -2105,6 +2113,12 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <li><a href="#ref-for-storage-bucket-removed④">2.2. Quota</a>
     <li><a href="#ref-for-storage-bucket-removed⑤">2.3. Durability</a>
     <li><a href="#ref-for-storage-bucket-removed⑥">2.4. Expiration</a> <a href="#ref-for-storage-bucket-removed⑦">(2)</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-name" class="dfn-panel" data-for="dom-storagebucket-name" id="infopanel-for-dom-storagebucket-name">
+   <span id="infopaneltitle-for-dom-storagebucket-name" style="display:none">Info about the 'name' definition.</span><b><a href="#dom-storagebucket-name">#dom-storagebucket-name</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-storagebucket-name">2. The StorageBucket interface</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-persist" class="dfn-panel" data-for="dom-storagebucket-persist" id="infopanel-for-dom-storagebucket-persist">
