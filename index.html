@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="befd38edc5e6621adfe779608b29a2a36140c29b" name="document-revision">
+  <meta content="e8b2dc96876b5797f39401dedebebb917bb66a59" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1109,7 +1109,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
        <li data-md>
         <p>Let <var>indexedDB</var> be an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory③">IDBFactory</a></code> object.</p>
        <li data-md>
-        <p>Set the <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bottle-map" id="ref-for-bottle-map">bottle map</a> for <var>indexedDB</var> to <var>bottle map</var>.</p>
+        <p>Set the <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bottle-map" id="ref-for-storage-bottle-map">storage bottle map</a> for <var>indexedDB</var> to <var>bottle map</var>.</p>
        <li data-md>
         <p>Set <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①③">this</a>'s <code class="idl"><a data-link-type="idl" href="#dom-storagebucket-indexeddb" id="ref-for-dom-storagebucket-indexeddb②">indexedDB</a></code> to <var>indexedDB</var>.</p>
       </ol>
@@ -1525,12 +1525,6 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <li><a href="#ref-for-dictdef-storageestimate①">2.2. Quota</a>
    </ul>
   </aside>
-  <aside aria-labelledby="infopaneltitle-for-8c2b9baa2bcf87b7479bc5d28f0c925a" class="dfn-panel" data-for="8c2b9baa2bcf87b7479bc5d28f0c925a" id="infopanel-for-8c2b9baa2bcf87b7479bc5d28f0c925a">
-   <span id="infopaneltitle-for-8c2b9baa2bcf87b7479bc5d28f0c925a" style="display:none">Info about the 'bottle map' external reference.</span><a href="https://storage.spec.whatwg.org/#bottle-map">https://storage.spec.whatwg.org/#bottle-map</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-bottle-map">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
   <aside aria-labelledby="infopaneltitle-for-7bed712fb187b01e9a5fb930d421c3c9" class="dfn-panel" data-for="7bed712fb187b01e9a5fb930d421c3c9" id="infopanel-for-7bed712fb187b01e9a5fb930d421c3c9">
    <span id="infopaneltitle-for-7bed712fb187b01e9a5fb930d421c3c9" style="display:none">Info about the 'bucket map' external reference.</span><a href="https://storage.spec.whatwg.org/#bucket-map">https://storage.spec.whatwg.org/#bucket-map</a><b>Referenced in:</b>
    <ul>
@@ -1577,6 +1571,12 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <span id="infopaneltitle-for-762beba33f3ad0dfbf19a9c82f4ec357" style="display:none">Info about the 'storage bottle' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-bottle">https://storage.spec.whatwg.org/#storage-bottle</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-storage-bottle">2.2. Quota</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-f39300b06adfbcf11de5475b3c7ebad9" class="dfn-panel" data-for="f39300b06adfbcf11de5475b3c7ebad9" id="infopanel-for-f39300b06adfbcf11de5475b3c7ebad9">
+   <span id="infopaneltitle-for-f39300b06adfbcf11de5475b3c7ebad9" style="display:none">Info about the 'storage bottle map' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-bottle-map">https://storage.spec.whatwg.org/#storage-bottle-map</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-storage-bottle-map">2.5.1. Using Indexed Database</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-dcb2985190de22ddc1fac361fc18de5a" class="dfn-panel" data-for="dcb2985190de22ddc1fac361fc18de5a" id="infopanel-for-dcb2985190de22ddc1fac361fc18de5a">
@@ -1836,13 +1836,13 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <a data-link-type="biblio">[Storage]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="907504f20c39c9094e157d0c50797ed3">StorageEstimate</span>
-     <li><span class="dfn-paneled" id="8c2b9baa2bcf87b7479bc5d28f0c925a">bottle map</span>
      <li><span class="dfn-paneled" id="7bed712fb187b01e9a5fb930d421c3c9">bucket map</span>
      <li><span class="dfn-paneled" id="a2029738b4b98c5e9e75d6e1a17c8d5b">bucket mode</span>
      <li><span class="dfn-paneled" id="0dff98041f99c7938aefcb7c640726e6">obtain a local storage bottle map</span>
      <li><span class="dfn-paneled" id="d268e8ee411fa1fd044b01a51a37e88e">obtain a local storage shelf</span>
      <li><span class="dfn-paneled" id="b678ffee39221ea20e1447cfa42542ff">quota</span>
      <li><span class="dfn-paneled" id="762beba33f3ad0dfbf19a9c82f4ec357">storage bottle</span>
+     <li><span class="dfn-paneled" id="f39300b06adfbcf11de5475b3c7ebad9">storage bottle map</span>
      <li><span class="dfn-paneled" id="dcb2985190de22ddc1fac361fc18de5a">storage bucket</span>
      <li><span class="dfn-paneled" id="02d1b826437e77c1f657e442ab4b6d22">storage quota</span>
      <li><span class="dfn-paneled" id="4ae96685c778dd1d6d81ae3c132bce0e">storage shelf</span>
