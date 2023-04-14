@@ -75,10 +75,10 @@ This explainer proposes changes to
 [the Storage Standard](https://storage.spec.whatwg.org/).
 
 The core of the proposal is granting sites the ability to create multiple
-[storage buckets](https://storage.spec.whatwg.org/#buckets), where the
-user agent may choose to delete each bucket independently of other buckets. By
-contrast, today's user agents have a binary choice of either persisting or
-deleting all the data stored by a site.
+[storage buckets](https://storage.spec.whatwg.org/#buckets),
+user agent or site may choose to delete each bucket independently of other
+buckets. By contrast, today's user agents have a binary choice of either persisting or
+deleting all the data stored by a site when faced with storage pressure.
 
 This proposal also entails designating buckets as the recommended unit for
 managing existing storage policy (quota) and new storage policies, such as
@@ -93,23 +93,22 @@ for specifying the policies for each individual API.
 
 * Allow web applications to evict slices of data
 
-* Allow web developers to specify eviction prioritization
+* Allow web applications to specify eviction prioritization
 
 * Allow web applications to easily evict service workers without clearing data
   for the entire domain
 
-* Allow web developers to express performance, durability and other trade-off
+* Allow web applications to express performance, durability and other trade-off
   decisions on slices of data
 
 ## Non-goals
 
 * Integration with storage mechanisms that don't follow the same origin policy, such as cookies
 
-* Behavior in third-party contexts is deferred to future work, to keep this explainer manageable
-
 * Standardizing user agent behavior around storage eviction
 
-* Allowing users to have control over which data to evict
+* Allowing end users to have control over which data to evict, or exposing the existence of
+  storage buckets to end users in any way
 
 ## Use Cases
 
@@ -194,7 +193,7 @@ properties will be shown in future sections.
 User agents may add entry points to the following storage APIs if they choose
 to implement them.
 
-Each storage bucket can have an entry point to the
+Each storage bucket provides an entry point to the
 [Cache storage API](https://w3c.github.io/ServiceWorker/#cache-objects). The
 entry point matches `WindowOrWorkerGlobalScope.caches` in
 [the Service Worker spec](https://w3c.github.io/ServiceWorker/#self-caches).
@@ -204,7 +203,7 @@ const inboxCache = await inboxBucket.caches.open("attachments");
 const draftsCache = await draftsBucket.caches.open("attachments");
 ```
 
-Each storage bucket can also have an entry point to the
+Each storage bucket provides an entry point to the
 [IndexedDB API](https://w3c.github.io/IndexedDB/). The entry point matches
 `WindowOrWorkerGlobalScope.indexedDB` in
 [the IndexedDB spec](https://w3c.github.io/IndexedDB/#factory-interface).
@@ -224,25 +223,7 @@ const draftsDb = await new Promise(resolve => {
 });
 ```
 
-Each storage bucket can also have an entry point to
-[the File API](https://w3c.github.io/FileAPI/). The entry points are
-asynchronous versions of
-[the Blob constructor](https://w3c.github.io/FileAPI/#dom-blob-blob) and
-[the File constructor](https://w3c.github.io/FileAPI/#dom-file-file). File API
-object created in a bucket are charged against the bucket's quota.
-
-```javascript
-const draftBlob = await draftsBucket.createBlob(
-    ["Message text."], { type: "text/plain" });
-const draftFile = await draftsBucket.createFile(
-    ["Attachment data"], "attachment.txt",
-    { type: "text/plain", lastModified: Date.now() });
-```
-
-TODO: Update the text here with the resolution of
-https://github.com/w3c/FileAPI/issues/157.
-
-Each storage bucket can also have an entry point to the origin-private file
+Each storage bucket provides an entry point to the origin-private file
 system in the
 [File System Access API](https://wicg.github.io/file-system-access/).
 The entry point matches `StorageManager.getDirectory()`
@@ -253,7 +234,7 @@ const inboxTestDir = await inboxBucket.getDirectory();
 const draftsTestDir = await draftsBucket.getDirectory();
 ```
 
-Each storage bucket can also have an entry point to
+Each storage bucket provides also have an entry point to
 [the Web Locks API](https://wicg.github.io/web-locks/).
 The entry point matches `NavigatorLocks.locks` in
 [the Web Locks API spec](https://wicg.github.io/web-locks/#lockmanager).
@@ -268,6 +249,10 @@ inboxBucket.locks.request("cache", lock => {
   });
 });
 ```
+
+> Note: the Web Locks integration with Storage Buckets is in danger of
+> being removed and is not presently available by default in Chromium.
+> Feedback welcome.
 
 ## Deleting buckets
 
@@ -286,16 +271,12 @@ be force-closed.
 
 ## Enumerating buckets
 
-An origin can get a list of all its storage buckets.
+An origin can get a list of all its storage buckets (aside from the default).
 
 ```javascript
 const bucketNames = await navigator.storageBuckets.keys();
 console.log(bucketNames);  // [ "drafts", "inbox" ]
 ```
-
-This function is provided for debugging / logging purposes, and may have
-significant performance implications.
-
 
 ## Getting a bucket's quota usage
 
@@ -322,10 +303,6 @@ when the user agent experiences
 may also distinguish persistent buckets in their storage management UIs. For
 example, Chrome presents an additional warning when a user chooses to delete
 persistent storage.
-
-This explainer proposes replacing the internal mode concept with a persistence
-policy, in the interest of arriving at a uniform model for bucket behaviors. We
-also propose the following API for operating on a bucket's persistence policy.
 
 A bucket's persistence policy is specified at bucket creation time.
 
@@ -473,8 +450,8 @@ guaranteed to cause the deletion of an expired bucket.
 ## The default bucket
 
 The following existing APIs, if a user agent chooses to support them,
-will operate on the `default` bucket. These APIs create the
-`default` bucket on-demand.
+will operate on the default bucket. These APIs automatically create the
+default bucket on-demand.
 
 * `WindowOrWorkerGlobalScope.indexedDB` in
   [IndexedDB](https://w3c.github.io/IndexedDB/#factory-interface)
@@ -487,56 +464,14 @@ will operate on the `default` bucket. These APIs create the
 * `NavigatorLocks.locks` in
   [Web Locks](https://wicg.github.io/web-locks/#lockmanager)
 
-The default bucket is created with the following options.
-
-```js
-await navigator.storageBuckets.open("default", {
-  durability: "strict", persist: false });
-```
-
-
-## Storage buckets and service workers
-
-TODO: Flesh out this section or move it into a separate explainer.
-
-Each storage bucket can store
-[service worker registrations](https://w3c.github.io/ServiceWorker/#dfn-service-worker-registration).
-When a storage bucket is deleted, all service worker registrations that it
-contains are also evicted, using the same [purge method](https://github.com/w3c/ServiceWorker/pull/1506) used by [Clear-Site-Data](https://www.w3.org/TR/clear-site-data/).
-
-Applications are expected to associate a service worker registration with a
-storage bucket if the service worker would not be able to do its job without
-the data in the bucket. This way the user agent won't have to spend system
-resources on waking up a service worker, only to find out that the service
-worker cannot fulfill the request given to it.
-
-```javascript
-const inboxRegistration = await inboxBucket.serviceWorker.register(
-    "/inbox-sw.js", { scope: "/inbox" });
-const draftsRegistration = await draftsBucket.serviceWorker.register(
-    "/drafts-sw.js", { scope: "/drafts" });
-```
-
-Storage buckets expose access to their service workers via the following subset
-of the
-[ServiceWorkerContainer](https://w3c.github.io/ServiceWorker/#serviceworkercontainer)
-methods.
-
-* [register](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-register)
-* [getRegistration](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistration)
-* [getRegistrations](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistrations)
-
-Storage policies do not affect the service worker registrations of a given bucket.
-
+> The default bucket is not currently directly accessible via `navigator.storageBuckets.open()`.
+> See [discussion](https://github.com/WICG/storage-buckets/issues/91).
 
 ## Storage buckets and the Clear-Site-Data
 
-TODO: Flesh out this section or move it into a separate explainer.
-
 [Clear-Site-Data](https://w3c.github.io/webappsec-clear-site-data/) currently
-supports deleting all DOM-accessible storage via the `storage` type. We propose
-adding the ability to clear individual buckets using a family of types looking
-like `storage:bucket-name`.
+supports deleting all DOM-accessible storage via the `storage` type. A header value
+of the form `storage:bucket-name` can be used to delete an individual bucket.
 
 For example, receiving an HTTP response with the following header would cause
 the `inbox` bucket to be deleted.
@@ -547,7 +482,7 @@ Clear-Site-Data: "storage:inbox"
 
 The above `Clear-Site-Data` storage bucket directive is functionally equivalent to calling `delete()`.
 ```JavaScript
-navigator.storageBuckets.delete("inbox");
+navigator.storageBuckets.delete('inbox');
 ```
 
 ## Key Scenarios
@@ -575,8 +510,6 @@ pressure, and all data should survive power failures at the cost of more
 battery consumption. The `recent` bucket will be evicted first because of its
 low priority since it contains data that can be recovered from the server.
 
-TODO: Add image
-
 ```javascript
 const recentBucket = await navigator.storageBuckets.open("recent",
     { durability: "relaxed", persisted: false });
@@ -594,8 +527,6 @@ account, or however they seem fit.
 
 In this example we will explore a scenario where an email client will
 divide storage using Buckets by user accounts on a shared device.
-
-TODO: Add image
 
 ```javascript
 // Bucket creation per user account.
@@ -1586,6 +1517,48 @@ a problem. However in this case, user agents do not need to block the main threa
 to read the `localStorage` contents. Instead, implementations can read the
 `localStorage` data asynchronously, while processing
 `navigator.storageBuckets.open()`.
+
+### Integrate storage buckets with the File API
+
+[`Blob`s](https://w3c.github.io/FileAPI/#dom-blob-blob) become persisted and
+quota-managed only when they are written to IndexedDB, and each IndexedDB
+database is associated with a bucket, so there's no need to make `Blob`s
+explicitly bucket-linked.
+
+## Storage buckets and service workers
+
+The following text has been removed from the explainer until we have a stronger
+signal that Service Workers should be integrated with storage buckets.
+
+Each storage bucket can store
+[service worker registrations](https://w3c.github.io/ServiceWorker/#dfn-service-worker-registration).
+When a storage bucket is deleted, all service worker registrations that it
+contains are also evicted, using the same [purge method](https://github.com/w3c/ServiceWorker/pull/1506) used by [Clear-Site-Data](https://www.w3.org/TR/clear-site-data/).
+
+Applications are expected to associate a service worker registration with a
+storage bucket if the service worker would not be able to do its job without
+the data in the bucket. This way the user agent won't have to spend system
+resources on waking up a service worker, only to find out that the service
+worker cannot fulfill the request given to it.
+
+```javascript
+const inboxRegistration = await inboxBucket.serviceWorker.register(
+    "/inbox-sw.js", { scope: "/inbox" });
+const draftsRegistration = await draftsBucket.serviceWorker.register(
+    "/drafts-sw.js", { scope: "/drafts" });
+```
+
+Storage buckets expose access to their service workers via the following subset
+of the
+[ServiceWorkerContainer](https://w3c.github.io/ServiceWorker/#serviceworkercontainer)
+methods.
+
+* [register](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-register)
+* [getRegistration](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistration)
+* [getRegistrations](https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-getregistrations)
+
+Storage policies do not affect the service worker registrations of a given bucket.
+
 
 ## Stakeholder Feedback / Opposition
 
