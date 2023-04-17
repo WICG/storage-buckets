@@ -252,7 +252,7 @@ inboxBucket.locks.request("cache", lock => {
 
 > Note: the Web Locks integration with Storage Buckets is in danger of
 > being removed and is not presently available by default in Chromium.
-> Feedback welcome.
+> [Feedback welcome](https://github.com/WICG/storage-buckets/issues/21).
 
 ## Deleting buckets
 
@@ -1521,9 +1521,9 @@ to read the `localStorage` contents. Instead, implementations can read the
 ### Integrate storage buckets with the File API
 
 [`Blob`s](https://w3c.github.io/FileAPI/#dom-blob-blob) become persisted and
-quota-managed only when they are written to IndexedDB, and each IndexedDB
-database is associated with a bucket, so there's no need to make `Blob`s
-explicitly bucket-linked.
+quota-managed only when they are written to IndexedDB or Cache Storage, and
+each IndexedDB database is associated with a bucket, so there's no need to
+make `Blob`s explicitly bucket-linked.
 
 ## Storage buckets and service workers
 
