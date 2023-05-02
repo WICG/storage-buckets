@@ -4,9 +4,9 @@
   <title>Storage Buckets API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
+  <meta content="Bikeshed version 3383f409d, updated Fri Apr 28 15:49:22 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="4d93944126c6cad9e0089a30fc7c9e2e804227ac" name="document-revision">
+  <meta content="5ee9fa9d5944e8e45711060057ed0bbe52c4cb39" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -217,8 +217,7 @@ figcaption:not(.no-marker)::before {
     position: absolute;
     z-index: 35;
     width: 20em;
-    min-width: min-content;
-    max-width: 300px;
+    width: 300px;
     height: auto;
     max-height: 500px;
     overflow: auto;
@@ -235,8 +234,15 @@ figcaption:not(.no-marker)::before {
 .dfn-panel a { color: var(--dfnpanel-text); }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
 .dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0; }
-.dfn-panel li { list-style: inside; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
@@ -247,7 +253,7 @@ figcaption:not(.no-marker)::before {
     max-height: 30vh;
 }
 
-.dfn-paneled { cursor: pointer; }
+.dfn-paneled[role="button"] { cursor: pointer; }
 </style>
 <style>/* style-issues */
 a[href].issue-return {
@@ -392,16 +398,15 @@ c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
 <style>/* style-var-click-highlighting */
-
-    var { cursor: pointer; }
-    var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-    var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-    var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-    var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-    var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-    var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-    var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
-    </style>
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
 <style>/* style-darkmode */
 
 @media (prefers-color-scheme: dark) {
@@ -598,7 +603,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Storage Buckets API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-17">17 April 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-02">2 May 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -745,7 +750,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>Let <var>expires</var> be <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-expires" id="ref-for-dom-storagebucketoptions-expires①">expires</a></code>"].</p>
        <li data-md>
-        <p>If <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch">Unix epoch</a> is before the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>'s <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-current-wall-time" id="ref-for-dfn-current-wall-time">current wall time</a>, then return failure.</p>
+        <p>If <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch">Unix epoch</a> is before the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>'s <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-eso-current-wall-time" id="ref-for-dfn-eso-current-wall-time">current wall time</a>, then return failure.</p>
       </ol>
      <li data-md>
       <p>Let <var>quota</var> be undefined.</p>
@@ -811,7 +816,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p>Let <var>bucket</var> be <var>shelf</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-map" id="ref-for-bucket-map①">bucket map</a>[<var>name</var>] if exists. Otherwise return null.</p>
     <li data-md>
-     <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time①">expiration time</a> is non-null and before the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object③">relevant settings object</a>'s <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-current-wall-time" id="ref-for-dfn-current-wall-time①">current wall time</a>, then:</p>
+     <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time①">expiration time</a> is non-null and before the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object③">relevant settings object</a>'s <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-eso-current-wall-time" id="ref-for-dfn-eso-current-wall-time①">current wall time</a>, then:</p>
      <ol>
       <li data-md>
        <p>Set <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed">removed</a> to true.</p>
@@ -1286,590 +1291,110 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <li><a href="#dom-storagebucketdurability-strict">"strict"</a><span>, in § 1</span>
    <li><a href="#validate-a-bucket-name">validate a bucket name</a><span>, in § 1.1</span>
   </ul>
-  <aside aria-labelledby="infopaneltitle-for-9d8e130057dd59bc8cab4f414e390ebf" class="dfn-panel" data-for="9d8e130057dd59bc8cab4f414e390ebf" id="infopanel-for-9d8e130057dd59bc8cab4f414e390ebf">
-   <span id="infopaneltitle-for-9d8e130057dd59bc8cab4f414e390ebf" style="display:none">Info about the 'FileSystemDirectoryHandle' external reference.</span><a href="https://fs.spec.whatwg.org/#filesystemdirectoryhandle">https://fs.spec.whatwg.org/#filesystemdirectoryhandle</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-filesystemdirectoryhandle">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-eee674a7b8f683464c60fafdbfa9e8ab" class="dfn-panel" data-for="eee674a7b8f683464c60fafdbfa9e8ab" id="infopanel-for-eee674a7b8f683464c60fafdbfa9e8ab">
-   <span id="infopaneltitle-for-eee674a7b8f683464c60fafdbfa9e8ab" style="display:none">Info about the 'getDirectory()' external reference.</span><a href="https://fs.spec.whatwg.org/#dom-storagemanager-getdirectory">https://fs.spec.whatwg.org/#dom-storagemanager-getdirectory</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagemanager-getdirectory">2.5.3. Using an Origin Private File System</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0527034ee7070fda15ffa50c34dbbc63" class="dfn-panel" data-for="0527034ee7070fda15ffa50c34dbbc63" id="infopanel-for-0527034ee7070fda15ffa50c34dbbc63">
-   <span id="infopaneltitle-for-0527034ee7070fda15ffa50c34dbbc63" style="display:none">Info about the 'DOMHighResTimeStamp' external reference.</span><a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">https://w3c.github.io/hr-time/#dom-domhighrestimestamp</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-domhighrestimestamp">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-dom-domhighrestimestamp①">2. The StorageBucket interface</a> <a href="#ref-for-dom-domhighrestimestamp②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-1f78bca61233b6a6957119204c181632" class="dfn-panel" data-for="1f78bca61233b6a6957119204c181632" id="infopanel-for-1f78bca61233b6a6957119204c181632">
-   <span id="infopaneltitle-for-1f78bca61233b6a6957119204c181632" style="display:none">Info about the 'current wall time' external reference.</span><a href="https://w3c.github.io/hr-time/#dfn-current-wall-time">https://w3c.github.io/hr-time/#dfn-current-wall-time</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-current-wall-time">1.1. Creating a bucket</a> <a href="#ref-for-dfn-current-wall-time①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-a33f352de1a9eb5d29cfa3005d40d072" class="dfn-panel" data-for="a33f352de1a9eb5d29cfa3005d40d072" id="infopanel-for-a33f352de1a9eb5d29cfa3005d40d072">
-   <span id="infopaneltitle-for-a33f352de1a9eb5d29cfa3005d40d072" style="display:none">Info about the 'moment' external reference.</span><a href="https://w3c.github.io/hr-time/#dfn-moment">https://w3c.github.io/hr-time/#dfn-moment</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-moment">2.4. Expiration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-c6a6e18a0bfb0f6727343f416cd90c01" class="dfn-panel" data-for="c6a6e18a0bfb0f6727343f416cd90c01" id="infopanel-for-c6a6e18a0bfb0f6727343f416cd90c01">
-   <span id="infopaneltitle-for-c6a6e18a0bfb0f6727343f416cd90c01" style="display:none">Info about the 'unix epoch' external reference.</span><a href="https://w3c.github.io/hr-time/#dfn-unix-epoch">https://w3c.github.io/hr-time/#dfn-unix-epoch</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-unix-epoch">1.1. Creating a bucket</a> <a href="#ref-for-dfn-unix-epoch①">(2)</a>
-    <li><a href="#ref-for-dfn-unix-epoch②">2.4. Expiration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-9ce1d97c81991af84a4cfb8251a89c4e" class="dfn-panel" data-for="9ce1d97c81991af84a4cfb8251a89c4e" id="infopanel-for-9ce1d97c81991af84a4cfb8251a89c4e">
-   <span id="infopaneltitle-for-9ce1d97c81991af84a4cfb8251a89c4e" style="display:none">Info about the 'wall clock' external reference.</span><a href="https://w3c.github.io/hr-time/#dfn-wall-clock">https://w3c.github.io/hr-time/#dfn-wall-clock</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-wall-clock">2.4. Expiration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3c82b19be23a00eb4bb6896ec20cd7aa" class="dfn-panel" data-for="3c82b19be23a00eb4bb6896ec20cd7aa" id="infopanel-for-3c82b19be23a00eb4bb6896ec20cd7aa">
-   <span id="infopaneltitle-for-3c82b19be23a00eb4bb6896ec20cd7aa" style="display:none">Info about the 'Navigator' external reference.</span><a href="https://html.spec.whatwg.org/multipage/system-state.html#navigator">https://html.spec.whatwg.org/multipage/system-state.html#navigator</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-navigator">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f9c60134d1166b5cbe490d111703a3b0" class="dfn-panel" data-for="f9c60134d1166b5cbe490d111703a3b0" id="infopanel-for-f9c60134d1166b5cbe490d111703a3b0">
-   <span id="infopaneltitle-for-f9c60134d1166b5cbe490d111703a3b0" style="display:none">Info about the 'WorkerNavigator' external reference.</span><a href="https://html.spec.whatwg.org/multipage/workers.html#workernavigator">https://html.spec.whatwg.org/multipage/workers.html#workernavigator</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-workernavigator">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d815dc723d8b4fe4b1166e2013ec62b7" class="dfn-panel" data-for="d815dc723d8b4fe4b1166e2013ec62b7" id="infopanel-for-d815dc723d8b4fe4b1166e2013ec62b7">
-   <span id="infopaneltitle-for-d815dc723d8b4fe4b1166e2013ec62b7" style="display:none">Info about the 'environment settings object' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-environment-settings-object">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3a2763fcaa6bc82693554cf36780c0dd" class="dfn-panel" data-for="3a2763fcaa6bc82693554cf36780c0dd" id="infopanel-for-3a2763fcaa6bc82693554cf36780c0dd">
-   <span id="infopaneltitle-for-3a2763fcaa6bc82693554cf36780c0dd" style="display:none">Info about the 'in parallel' external reference.</span><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-in-parallel">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-in-parallel①">2.1. Persistence</a>
-    <li><a href="#ref-for-in-parallel②">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-a95cc6f0be910557a60537e0256920b2" class="dfn-panel" data-for="a95cc6f0be910557a60537e0256920b2" id="infopanel-for-a95cc6f0be910557a60537e0256920b2">
-   <span id="infopaneltitle-for-a95cc6f0be910557a60537e0256920b2" style="display:none">Info about the 'origin' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-settings-object-origin">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-da7ed5f190c4eedd375552d6f7876301" class="dfn-panel" data-for="da7ed5f190c4eedd375552d6f7876301" id="infopanel-for-da7ed5f190c4eedd375552d6f7876301">
-   <span id="infopaneltitle-for-da7ed5f190c4eedd375552d6f7876301" style="display:none">Info about the 'queue a task' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-queue-a-task">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-queue-a-task①">2.1. Persistence</a> <a href="#ref-for-queue-a-task②">(2)</a> <a href="#ref-for-queue-a-task③">(3)</a> <a href="#ref-for-queue-a-task④">(4)</a>
-    <li><a href="#ref-for-queue-a-task⑤">2.3. Durability</a> <a href="#ref-for-queue-a-task⑥">(2)</a>
-    <li><a href="#ref-for-queue-a-task⑦">2.4. Expiration</a> <a href="#ref-for-queue-a-task⑧">(2)</a> <a href="#ref-for-queue-a-task⑨">(3)</a> <a href="#ref-for-queue-a-task①⓪">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-bfb9cb6617f81a424ab20212af73bae3" class="dfn-panel" data-for="bfb9cb6617f81a424ab20212af73bae3" id="infopanel-for-bfb9cb6617f81a424ab20212af73bae3">
-   <span id="infopaneltitle-for-bfb9cb6617f81a424ab20212af73bae3" style="display:none">Info about the 'relevant settings object' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-relevant-settings-object">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-relevant-settings-object①">1.1. Creating a bucket</a> <a href="#ref-for-relevant-settings-object②">(2)</a> <a href="#ref-for-relevant-settings-object③">(3)</a>
-    <li><a href="#ref-for-relevant-settings-object④">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-relevant-settings-object⑤">2.1. Persistence</a>
-    <li><a href="#ref-for-relevant-settings-object⑥">2.2. Quota</a>
-    <li><a href="#ref-for-relevant-settings-object⑦">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7ccd3fe71bd97702d40f89879f536d5b" class="dfn-panel" data-for="7ccd3fe71bd97702d40f89879f536d5b" id="infopanel-for-7ccd3fe71bd97702d40f89879f536d5b">
-   <span id="infopaneltitle-for-7ccd3fe71bd97702d40f89879f536d5b" style="display:none">Info about the '"default"' external reference.</span><a href="https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-default">https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-default</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-idbtransactiondurability-default">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-96ffc2f5b033479ebcbe053477983e7a" class="dfn-panel" data-for="96ffc2f5b033479ebcbe053477983e7a" id="infopanel-for-96ffc2f5b033479ebcbe053477983e7a">
-   <span id="infopaneltitle-for-96ffc2f5b033479ebcbe053477983e7a" style="display:none">Info about the '"relaxed"' external reference.</span><a href="https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-relaxed">https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-relaxed</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-idbtransactiondurability-relaxed">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-732cc0cf0e4c9d476383d238a7a5e81d" class="dfn-panel" data-for="732cc0cf0e4c9d476383d238a7a5e81d" id="infopanel-for-732cc0cf0e4c9d476383d238a7a5e81d">
-   <span id="infopaneltitle-for-732cc0cf0e4c9d476383d238a7a5e81d" style="display:none">Info about the '"strict"' external reference.</span><a href="https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-strict">https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-strict</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-idbtransactiondurability-strict">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-56e4bb6f5c5237eda504da1d4b54449a" class="dfn-panel" data-for="56e4bb6f5c5237eda504da1d4b54449a" id="infopanel-for-56e4bb6f5c5237eda504da1d4b54449a">
-   <span id="infopaneltitle-for-56e4bb6f5c5237eda504da1d4b54449a" style="display:none">Info about the 'IDBFactory' external reference.</span><a href="https://w3c.github.io/IndexedDB/#idbfactory">https://w3c.github.io/IndexedDB/#idbfactory</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idbfactory">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-idbfactory①">2.5.1. Using Indexed Database</a> <a href="#ref-for-idbfactory②">(2)</a> <a href="#ref-for-idbfactory③">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-40ee6466c7a60cfbaedb2014bc31a891" class="dfn-panel" data-for="40ee6466c7a60cfbaedb2014bc31a891" id="infopanel-for-40ee6466c7a60cfbaedb2014bc31a891">
-   <span id="infopaneltitle-for-40ee6466c7a60cfbaedb2014bc31a891" style="display:none">Info about the 'IDBTransaction' external reference.</span><a href="https://w3c.github.io/IndexedDB/#idbtransaction">https://w3c.github.io/IndexedDB/#idbtransaction</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idbtransaction">2.3. Durability</a>
-    <li><a href="#ref-for-idbtransaction①">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-6dc0dc2bb5ff87160fa92c9b2bd6c0ea" class="dfn-panel" data-for="6dc0dc2bb5ff87160fa92c9b2bd6c0ea" id="infopanel-for-6dc0dc2bb5ff87160fa92c9b2bd6c0ea">
-   <span id="infopaneltitle-for-6dc0dc2bb5ff87160fa92c9b2bd6c0ea" style="display:none">Info about the 'durability hint' external reference.</span><a href="https://w3c.github.io/IndexedDB/#transaction-durability-hint">https://w3c.github.io/IndexedDB/#transaction-durability-hint</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-transaction-durability-hint">2.5.1. Using Indexed Database</a> <a href="#ref-for-transaction-durability-hint①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fcfc8b0ed220faa237969aed00e2586d" class="dfn-panel" data-for="fcfc8b0ed220faa237969aed00e2586d" id="infopanel-for-fcfc8b0ed220faa237969aed00e2586d">
-   <span id="infopaneltitle-for-fcfc8b0ed220faa237969aed00e2586d" style="display:none">Info about the 'append' external reference.</span><a href="https://infra.spec.whatwg.org/#list-append">https://infra.spec.whatwg.org/#list-append</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-append">1.3. Enumerating buckets</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-c2f5d9b1ced7c40f62782a928198d3a8" class="dfn-panel" data-for="c2f5d9b1ced7c40f62782a928198d3a8" id="infopanel-for-c2f5d9b1ced7c40f62782a928198d3a8">
-   <span id="infopaneltitle-for-c2f5d9b1ced7c40f62782a928198d3a8" style="display:none">Info about the 'ascii digit' external reference.</span><a href="https://infra.spec.whatwg.org/#ascii-digit">https://infra.spec.whatwg.org/#ascii-digit</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-ascii-digit">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f2b877833382750f00e188f032456059" class="dfn-panel" data-for="f2b877833382750f00e188f032456059" id="infopanel-for-f2b877833382750f00e188f032456059">
-   <span id="infopaneltitle-for-f2b877833382750f00e188f032456059" style="display:none">Info about the 'ascii lower alpha' external reference.</span><a href="https://infra.spec.whatwg.org/#ascii-lower-alpha">https://infra.spec.whatwg.org/#ascii-lower-alpha</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-ascii-lower-alpha">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-4103741029595e9e13c67dab91d1e3bd" class="dfn-panel" data-for="4103741029595e9e13c67dab91d1e3bd" id="infopanel-for-4103741029595e9e13c67dab91d1e3bd">
-   <span id="infopaneltitle-for-4103741029595e9e13c67dab91d1e3bd" style="display:none">Info about the 'code point' external reference.</span><a href="https://infra.spec.whatwg.org/#code-point">https://infra.spec.whatwg.org/#code-point</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-code-point">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0c5b8810162108ca42f42ac154072480" class="dfn-panel" data-for="0c5b8810162108ca42f42ac154072480" id="infopanel-for-0c5b8810162108ca42f42ac154072480">
-   <span id="infopaneltitle-for-0c5b8810162108ca42f42ac154072480" style="display:none">Info about the 'code point length' external reference.</span><a href="https://infra.spec.whatwg.org/#string-code-point-length">https://infra.spec.whatwg.org/#string-code-point-length</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-string-code-point-length">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-ea6f005773fd4f991ff2d63239f90613" class="dfn-panel" data-for="ea6f005773fd4f991ff2d63239f90613" id="infopanel-for-ea6f005773fd4f991ff2d63239f90613">
-   <span id="infopaneltitle-for-ea6f005773fd4f991ff2d63239f90613" style="display:none">Info about the 'code unit substring by positions' external reference.</span><a href="https://infra.spec.whatwg.org/#code-unit-substring-by-positions">https://infra.spec.whatwg.org/#code-unit-substring-by-positions</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-code-unit-substring-by-positions">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fd74d8159933c4a74d0b23390bed43e3" class="dfn-panel" data-for="fd74d8159933c4a74d0b23390bed43e3" id="infopanel-for-fd74d8159933c4a74d0b23390bed43e3">
-   <span id="infopaneltitle-for-fd74d8159933c4a74d0b23390bed43e3" style="display:none">Info about the 'implementation-defined' external reference.</span><a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-implementation-defined">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-c38550431b74fa21f9dd8b8680f1105c" class="dfn-panel" data-for="c38550431b74fa21f9dd8b8680f1105c" id="infopanel-for-c38550431b74fa21f9dd8b8680f1105c">
-   <span id="infopaneltitle-for-c38550431b74fa21f9dd8b8680f1105c" style="display:none">Info about the 'key' external reference.</span><a href="https://infra.spec.whatwg.org/#map-key">https://infra.spec.whatwg.org/#map-key</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-map-key">1.2. Deleting a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fafd38d2108e357bcc9a6fd7f3cd04a7" class="dfn-panel" data-for="fafd38d2108e357bcc9a6fd7f3cd04a7" id="infopanel-for-fafd38d2108e357bcc9a6fd7f3cd04a7">
-   <span id="infopaneltitle-for-fafd38d2108e357bcc9a6fd7f3cd04a7" style="display:none">Info about the 'list' external reference.</span><a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list">1.3. Enumerating buckets</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-2d700262fcde3097fbf89ef2496f1f0d" class="dfn-panel" data-for="2d700262fcde3097fbf89ef2496f1f0d" id="infopanel-for-2d700262fcde3097fbf89ef2496f1f0d">
-   <span id="infopaneltitle-for-2d700262fcde3097fbf89ef2496f1f0d" style="display:none">Info about the 'starts with' external reference.</span><a href="https://infra.spec.whatwg.org/#string-starts-with">https://infra.spec.whatwg.org/#string-starts-with</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-string-starts-with">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-decbbd3ee5a73b54e8e8996ce1fddbbc" class="dfn-panel" data-for="decbbd3ee5a73b54e8e8996ce1fddbbc" id="infopanel-for-decbbd3ee5a73b54e8e8996ce1fddbbc">
-   <span id="infopaneltitle-for-decbbd3ee5a73b54e8e8996ce1fddbbc" style="display:none">Info about the 'tuple' external reference.</span><a href="https://infra.spec.whatwg.org/#tuple">https://infra.spec.whatwg.org/#tuple</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-tuple">2.6. Clear Site Data integration</a> <a href="#ref-for-tuple①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7b01ad8c5e8d011946cb54633b172084" class="dfn-panel" data-for="7b01ad8c5e8d011946cb54633b172084" id="infopanel-for-7b01ad8c5e8d011946cb54633b172084">
-   <span id="infopaneltitle-for-7b01ad8c5e8d011946cb54633b172084" style="display:none">Info about the 'getting the current permission state' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-getting-the-current-permission-state">https://w3c.github.io/permissions/#dfn-getting-the-current-permission-state</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-getting-the-current-permission-state">2.1. Persistence</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-180d5479814a4ae3b599e6a1c4e11751" class="dfn-panel" data-for="180d5479814a4ae3b599e6a1c4e11751" id="infopanel-for-180d5479814a4ae3b599e6a1c4e11751">
-   <span id="infopaneltitle-for-180d5479814a4ae3b599e6a1c4e11751" style="display:none">Info about the 'granted' external reference.</span><a href="https://w3c.github.io/permissions/#dom-permissionstate-granted">https://w3c.github.io/permissions/#dom-permissionstate-granted</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-permissionstate-granted">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-dom-permissionstate-granted①">2.1. Persistence</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7761fb406c4d8cdb685b810244d5e5a6" class="dfn-panel" data-for="7761fb406c4d8cdb685b810244d5e5a6" id="infopanel-for-7761fb406c4d8cdb685b810244d5e5a6">
-   <span id="infopaneltitle-for-7761fb406c4d8cdb685b810244d5e5a6" style="display:none">Info about the 'requesting permission to use' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-request-permission-to-use">https://w3c.github.io/permissions/#dfn-request-permission-to-use</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-request-permission-to-use">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-58aed90a8ddd8f180862c716af7d25c6" class="dfn-panel" data-for="58aed90a8ddd8f180862c716af7d25c6" id="infopanel-for-58aed90a8ddd8f180862c716af7d25c6">
-   <span id="infopaneltitle-for-58aed90a8ddd8f180862c716af7d25c6" style="display:none">Info about the 'CacheStorage' external reference.</span><a href="https://w3c.github.io/ServiceWorker/#cachestorage">https://w3c.github.io/ServiceWorker/#cachestorage</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-cachestorage">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-cachestorage①">2.5.2. Using CacheStorage</a> <a href="#ref-for-cachestorage②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0b49a59f74c17df3b05704e7d7552584" class="dfn-panel" data-for="0b49a59f74c17df3b05704e7d7552584" id="infopanel-for-0b49a59f74c17df3b05704e7d7552584">
-   <span id="infopaneltitle-for-0b49a59f74c17df3b05704e7d7552584" style="display:none">Info about the 'relevant name to cache map' external reference.</span><a href="https://w3c.github.io/ServiceWorker/#dfn-relevant-name-to-cache-map">https://w3c.github.io/ServiceWorker/#dfn-relevant-name-to-cache-map</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-relevant-name-to-cache-map">2.5.2. Using CacheStorage</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-907504f20c39c9094e157d0c50797ed3" class="dfn-panel" data-for="907504f20c39c9094e157d0c50797ed3" id="infopanel-for-907504f20c39c9094e157d0c50797ed3">
-   <span id="infopaneltitle-for-907504f20c39c9094e157d0c50797ed3" style="display:none">Info about the 'StorageEstimate' external reference.</span><a href="https://storage.spec.whatwg.org/#dictdef-storageestimate">https://storage.spec.whatwg.org/#dictdef-storageestimate</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dictdef-storageestimate">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-dictdef-storageestimate①">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7bed712fb187b01e9a5fb930d421c3c9" class="dfn-panel" data-for="7bed712fb187b01e9a5fb930d421c3c9" id="infopanel-for-7bed712fb187b01e9a5fb930d421c3c9">
-   <span id="infopaneltitle-for-7bed712fb187b01e9a5fb930d421c3c9" style="display:none">Info about the 'bucket map' external reference.</span><a href="https://storage.spec.whatwg.org/#bucket-map">https://storage.spec.whatwg.org/#bucket-map</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-bucket-map">1.1. Creating a bucket</a> <a href="#ref-for-bucket-map①">(2)</a>
-    <li><a href="#ref-for-bucket-map②">1.2. Deleting a bucket</a> <a href="#ref-for-bucket-map③">(2)</a>
-    <li><a href="#ref-for-bucket-map④">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-bucket-map⑤">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-bucket-map⑥">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-a2029738b4b98c5e9e75d6e1a17c8d5b" class="dfn-panel" data-for="a2029738b4b98c5e9e75d6e1a17c8d5b" id="infopanel-for-a2029738b4b98c5e9e75d6e1a17c8d5b">
-   <span id="infopaneltitle-for-a2029738b4b98c5e9e75d6e1a17c8d5b" style="display:none">Info about the 'bucket mode' external reference.</span><a href="https://storage.spec.whatwg.org/#bucket-mode">https://storage.spec.whatwg.org/#bucket-mode</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-bucket-mode">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-bucket-mode①">2.1. Persistence</a> <a href="#ref-for-bucket-mode②">(2)</a> <a href="#ref-for-bucket-mode③">(3)</a> <a href="#ref-for-bucket-mode④">(4)</a>
-    <li><a href="#ref-for-bucket-mode⑤">2.4. Expiration</a> <a href="#ref-for-bucket-mode⑥">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0dff98041f99c7938aefcb7c640726e6" class="dfn-panel" data-for="0dff98041f99c7938aefcb7c640726e6" id="infopanel-for-0dff98041f99c7938aefcb7c640726e6">
-   <span id="infopaneltitle-for-0dff98041f99c7938aefcb7c640726e6" style="display:none">Info about the 'obtain a local storage bottle map' external reference.</span><a href="https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map">https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-obtain-a-local-storage-bottle-map">2.5.1. Using Indexed Database</a>
-    <li><a href="#ref-for-obtain-a-local-storage-bottle-map①">2.5.2. Using CacheStorage</a>
-    <li><a href="#ref-for-obtain-a-local-storage-bottle-map②">2.5.3. Using an Origin Private File System</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d268e8ee411fa1fd044b01a51a37e88e" class="dfn-panel" data-for="d268e8ee411fa1fd044b01a51a37e88e" id="infopanel-for-d268e8ee411fa1fd044b01a51a37e88e">
-   <span id="infopaneltitle-for-d268e8ee411fa1fd044b01a51a37e88e" style="display:none">Info about the 'obtain a local storage shelf' external reference.</span><a href="https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf">https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-obtain-a-local-storage-shelf">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-obtain-a-local-storage-shelf①">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-obtain-a-local-storage-shelf②">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-obtain-a-local-storage-shelf③">2.2. Quota</a>
-    <li><a href="#ref-for-obtain-a-local-storage-shelf④">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-b678ffee39221ea20e1447cfa42542ff" class="dfn-panel" data-for="b678ffee39221ea20e1447cfa42542ff" id="infopanel-for-b678ffee39221ea20e1447cfa42542ff">
-   <span id="infopaneltitle-for-b678ffee39221ea20e1447cfa42542ff" style="display:none">Info about the 'quota' external reference.</span><a href="https://storage.spec.whatwg.org/#dom-storageestimate-quota">https://storage.spec.whatwg.org/#dom-storageestimate-quota</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storageestimate-quota">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-762beba33f3ad0dfbf19a9c82f4ec357" class="dfn-panel" data-for="762beba33f3ad0dfbf19a9c82f4ec357" id="infopanel-for-762beba33f3ad0dfbf19a9c82f4ec357">
-   <span id="infopaneltitle-for-762beba33f3ad0dfbf19a9c82f4ec357" style="display:none">Info about the 'storage bottle' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-bottle">https://storage.spec.whatwg.org/#storage-bottle</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-bottle">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f39300b06adfbcf11de5475b3c7ebad9" class="dfn-panel" data-for="f39300b06adfbcf11de5475b3c7ebad9" id="infopanel-for-f39300b06adfbcf11de5475b3c7ebad9">
-   <span id="infopaneltitle-for-f39300b06adfbcf11de5475b3c7ebad9" style="display:none">Info about the 'storage bottle map' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-bottle-map">https://storage.spec.whatwg.org/#storage-bottle-map</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-bottle-map">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dcb2985190de22ddc1fac361fc18de5a" class="dfn-panel" data-for="dcb2985190de22ddc1fac361fc18de5a" id="infopanel-for-dcb2985190de22ddc1fac361fc18de5a">
-   <span id="infopaneltitle-for-dcb2985190de22ddc1fac361fc18de5a" style="display:none">Info about the 'storage bucket' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-bucket">https://storage.spec.whatwg.org/#storage-bucket</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-bucket">1.1. Creating a bucket</a> <a href="#ref-for-storage-bucket①">(2)</a>
-    <li><a href="#ref-for-storage-bucket②">2. The StorageBucket interface</a> <a href="#ref-for-storage-bucket③">(2)</a> <a href="#ref-for-storage-bucket④">(3)</a> <a href="#ref-for-storage-bucket⑤">(4)</a>
-    <li><a href="#ref-for-storage-bucket⑥">2.1. Persistence</a> <a href="#ref-for-storage-bucket⑦">(2)</a>
-    <li><a href="#ref-for-storage-bucket⑧">2.2. Quota</a> <a href="#ref-for-storage-bucket⑨">(2)</a> <a href="#ref-for-storage-bucket①⓪">(3)</a>
-    <li><a href="#ref-for-storage-bucket①①">2.3. Durability</a> <a href="#ref-for-storage-bucket①②">(2)</a>
-    <li><a href="#ref-for-storage-bucket①③">2.4. Expiration</a> <a href="#ref-for-storage-bucket①④">(2)</a> <a href="#ref-for-storage-bucket①⑤">(3)</a>
-    <li><a href="#ref-for-storage-bucket①⑥">2.5.1. Using Indexed Database</a>
-    <li><a href="#ref-for-storage-bucket①⑦">2.5.2. Using CacheStorage</a>
-    <li><a href="#ref-for-storage-bucket①⑧">2.5.3. Using an Origin Private File System</a>
-    <li><a href="#ref-for-storage-bucket①⑨">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-02d1b826437e77c1f657e442ab4b6d22" class="dfn-panel" data-for="02d1b826437e77c1f657e442ab4b6d22" id="infopanel-for-02d1b826437e77c1f657e442ab4b6d22">
-   <span id="infopaneltitle-for-02d1b826437e77c1f657e442ab4b6d22" style="display:none">Info about the 'storage quota' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-quota">https://storage.spec.whatwg.org/#storage-quota</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-quota">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-4ae96685c778dd1d6d81ae3c132bce0e" class="dfn-panel" data-for="4ae96685c778dd1d6d81ae3c132bce0e" id="infopanel-for-4ae96685c778dd1d6d81ae3c132bce0e">
-   <span id="infopaneltitle-for-4ae96685c778dd1d6d81ae3c132bce0e" style="display:none">Info about the 'storage shelf' external reference.</span><a href="https://storage.spec.whatwg.org/#storage-shelf">https://storage.spec.whatwg.org/#storage-shelf</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-shelf">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3a8c47fee15b74d34ba67010db288d54" class="dfn-panel" data-for="3a8c47fee15b74d34ba67010db288d54" id="infopanel-for-3a8c47fee15b74d34ba67010db288d54">
-   <span id="infopaneltitle-for-3a8c47fee15b74d34ba67010db288d54" style="display:none">Info about the 'usage' external reference.</span><a href="https://storage.spec.whatwg.org/#dom-storageestimate-usage">https://storage.spec.whatwg.org/#dom-storageestimate-usage</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storageestimate-usage">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d0f238a61de9310f1738a214749fab18" class="dfn-panel" data-for="d0f238a61de9310f1738a214749fab18" id="infopanel-for-d0f238a61de9310f1738a214749fab18">
-   <span id="infopaneltitle-for-d0f238a61de9310f1738a214749fab18" style="display:none">Info about the 'DOMString' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMString">https://webidl.spec.whatwg.org/#idl-DOMString</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-DOMString">1. The StorageBucketManager interface</a> <a href="#ref-for-idl-DOMString①">(2)</a> <a href="#ref-for-idl-DOMString②">(3)</a>
-    <li><a href="#ref-for-idl-DOMString③">2. The StorageBucket interface</a> <a href="#ref-for-idl-DOMString④">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" class="dfn-panel" data-for="dde049eb112f043fc45407ec0d4cb457" id="infopanel-for-dde049eb112f043fc45407ec0d4cb457">
-   <span id="infopaneltitle-for-dde049eb112f043fc45407ec0d4cb457" style="display:none">Info about the 'Exposed' external reference.</span><a href="https://webidl.spec.whatwg.org/#Exposed">https://webidl.spec.whatwg.org/#Exposed</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-Exposed">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-Exposed①">2. The StorageBucket interface</a> <a href="#ref-for-Exposed②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-2047de0127550ba57998a1f13da8412d" class="dfn-panel" data-for="2047de0127550ba57998a1f13da8412d" id="infopanel-for-2047de0127550ba57998a1f13da8412d">
-   <span id="infopaneltitle-for-2047de0127550ba57998a1f13da8412d" style="display:none">Info about the 'InvalidCharacterError' external reference.</span><a href="https://webidl.spec.whatwg.org/#invalidcharactererror">https://webidl.spec.whatwg.org/#invalidcharactererror</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-invalidcharactererror">1.2. Deleting a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-e2a06375a2fb70c61a8b4cd0abe9d4f1" class="dfn-panel" data-for="e2a06375a2fb70c61a8b4cd0abe9d4f1" id="infopanel-for-e2a06375a2fb70c61a8b4cd0abe9d4f1">
-   <span id="infopaneltitle-for-e2a06375a2fb70c61a8b4cd0abe9d4f1" style="display:none">Info about the 'InvalidStateError' external reference.</span><a href="https://webidl.spec.whatwg.org/#invalidstateerror">https://webidl.spec.whatwg.org/#invalidstateerror</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-invalidstateerror">2.1. Persistence</a> <a href="#ref-for-invalidstateerror①">(2)</a>
-    <li><a href="#ref-for-invalidstateerror②">2.2. Quota</a>
-    <li><a href="#ref-for-invalidstateerror③">2.3. Durability</a>
-    <li><a href="#ref-for-invalidstateerror④">2.4. Expiration</a> <a href="#ref-for-invalidstateerror⑤">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" class="dfn-panel" data-for="93669c631ec1ef8e696b4c083bdbe12c" id="infopanel-for-93669c631ec1ef8e696b4c083bdbe12c">
-   <span id="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" style="display:none">Info about the 'Promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-promise">1. The StorageBucketManager interface</a> <a href="#ref-for-idl-promise①">(2)</a> <a href="#ref-for-idl-promise②">(3)</a>
-    <li><a href="#ref-for-idl-promise③">2. The StorageBucket interface</a> <a href="#ref-for-idl-promise④">(2)</a> <a href="#ref-for-idl-promise⑤">(3)</a> <a href="#ref-for-idl-promise⑥">(4)</a> <a href="#ref-for-idl-promise⑦">(5)</a> <a href="#ref-for-idl-promise⑧">(6)</a> <a href="#ref-for-idl-promise⑨">(7)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f572762cd4679aeacd36722d99d2b741" class="dfn-panel" data-for="f572762cd4679aeacd36722d99d2b741" id="infopanel-for-f572762cd4679aeacd36722d99d2b741">
-   <span id="infopaneltitle-for-f572762cd4679aeacd36722d99d2b741" style="display:none">Info about the 'SameObject' external reference.</span><a href="https://webidl.spec.whatwg.org/#SameObject">https://webidl.spec.whatwg.org/#SameObject</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-SameObject">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-SameObject①">2. The StorageBucket interface</a> <a href="#ref-for-SameObject②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-cdf224ec60dc3b08449a2fbdf3a90406" class="dfn-panel" data-for="cdf224ec60dc3b08449a2fbdf3a90406" id="infopanel-for-cdf224ec60dc3b08449a2fbdf3a90406">
-   <span id="infopaneltitle-for-cdf224ec60dc3b08449a2fbdf3a90406" style="display:none">Info about the 'SecureContext' external reference.</span><a href="https://webidl.spec.whatwg.org/#SecureContext">https://webidl.spec.whatwg.org/#SecureContext</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-SecureContext">1. The StorageBucketManager interface</a> <a href="#ref-for-SecureContext①">(2)</a>
-    <li><a href="#ref-for-SecureContext②">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3f9c3eac015894a734faa8068fd8c2a1" class="dfn-panel" data-for="3f9c3eac015894a734faa8068fd8c2a1" id="infopanel-for-3f9c3eac015894a734faa8068fd8c2a1">
-   <span id="infopaneltitle-for-3f9c3eac015894a734faa8068fd8c2a1" style="display:none">Info about the 'TypeError' external reference.</span><a href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror">https://webidl.spec.whatwg.org/#exceptiondef-typeerror</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">1.1. Creating a bucket</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a> <a href="#ref-for-exceptiondef-typeerror②">(3)</a>
-    <li><a href="#ref-for-exceptiondef-typeerror③">1.2. Deleting a bucket</a> <a href="#ref-for-exceptiondef-typeerror④">(2)</a>
-    <li><a href="#ref-for-exceptiondef-typeerror⑤">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-exceptiondef-typeerror⑥">2.2. Quota</a>
-    <li><a href="#ref-for-exceptiondef-typeerror⑦">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" class="dfn-panel" data-for="bbe33fc7ac016834e4aaddbfd1b084a1" id="infopanel-for-bbe33fc7ac016834e4aaddbfd1b084a1">
-   <span id="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" style="display:none">Info about the 'a new promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-a-new-promise">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-a-new-promise①">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-a-new-promise②">2.1. Persistence</a> <a href="#ref-for-a-new-promise③">(2)</a>
-    <li><a href="#ref-for-a-new-promise④">2.2. Quota</a>
-    <li><a href="#ref-for-a-new-promise⑤">2.3. Durability</a>
-    <li><a href="#ref-for-a-new-promise⑥">2.4. Expiration</a> <a href="#ref-for-a-new-promise⑦">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-cf8339c4a39778ea039900ab8a77d2fe" class="dfn-panel" data-for="cf8339c4a39778ea039900ab8a77d2fe" id="infopanel-for-cf8339c4a39778ea039900ab8a77d2fe">
-   <span id="infopaneltitle-for-cf8339c4a39778ea039900ab8a77d2fe" style="display:none">Info about the 'a promise rejected with' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-promise-rejected-with">https://webidl.spec.whatwg.org/#a-promise-rejected-with</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-a-promise-rejected-with">1.1. Creating a bucket</a> <a href="#ref-for-a-promise-rejected-with①">(2)</a> <a href="#ref-for-a-promise-rejected-with②">(3)</a>
-    <li><a href="#ref-for-a-promise-rejected-with③">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-a-promise-rejected-with④">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-a-promise-rejected-with⑤">2.2. Quota</a> <a href="#ref-for-a-promise-rejected-with⑥">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-cb7ce63b39eb2128b9c2cc2cf413299f" class="dfn-panel" data-for="cb7ce63b39eb2128b9c2cc2cf413299f" id="infopanel-for-cb7ce63b39eb2128b9c2cc2cf413299f">
-   <span id="infopaneltitle-for-cb7ce63b39eb2128b9c2cc2cf413299f" style="display:none">Info about the 'a promise resolved with' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-promise-resolved-with">https://webidl.spec.whatwg.org/#a-promise-resolved-with</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-a-promise-resolved-with">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f8062b07e25ed0281f5cbfb9a54070b4" class="dfn-panel" data-for="f8062b07e25ed0281f5cbfb9a54070b4" id="infopanel-for-f8062b07e25ed0281f5cbfb9a54070b4">
-   <span id="infopaneltitle-for-f8062b07e25ed0281f5cbfb9a54070b4" style="display:none">Info about the 'boolean' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-boolean">https://webidl.spec.whatwg.org/#idl-boolean</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-boolean">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-idl-boolean①">2. The StorageBucket interface</a> <a href="#ref-for-idl-boolean②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" class="dfn-panel" data-for="f7204c0306e7ffcb24c31adf6e629e1d" id="infopanel-for-f7204c0306e7ffcb24c31adf6e629e1d">
-   <span id="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" style="display:none">Info about the 'reject' external reference.</span><a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-reject">1.2. Deleting a bucket</a> <a href="#ref-for-reject①">(2)</a>
-    <li><a href="#ref-for-reject②">2.1. Persistence</a> <a href="#ref-for-reject③">(2)</a>
-    <li><a href="#ref-for-reject④">2.3. Durability</a>
-    <li><a href="#ref-for-reject⑤">2.4. Expiration</a> <a href="#ref-for-reject⑥">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-f4f973f92274819781816b033aea1f11" class="dfn-panel" data-for="f4f973f92274819781816b033aea1f11" id="infopanel-for-f4f973f92274819781816b033aea1f11">
-   <span id="infopaneltitle-for-f4f973f92274819781816b033aea1f11" style="display:none">Info about the 'resolve' external reference.</span><a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-resolve">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-resolve①">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-resolve②">2.1. Persistence</a> <a href="#ref-for-resolve③">(2)</a> <a href="#ref-for-resolve④">(3)</a> <a href="#ref-for-resolve⑤">(4)</a> <a href="#ref-for-resolve⑥">(5)</a>
-    <li><a href="#ref-for-resolve⑦">2.2. Quota</a>
-    <li><a href="#ref-for-resolve⑧">2.3. Durability</a>
-    <li><a href="#ref-for-resolve⑨">2.4. Expiration</a> <a href="#ref-for-resolve①⓪">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" class="dfn-panel" data-for="38ab7db52e46bed36993204c29f67202" id="infopanel-for-38ab7db52e46bed36993204c29f67202">
-   <span id="infopaneltitle-for-38ab7db52e46bed36993204c29f67202" style="display:none">Info about the 'sequence' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-sequence">https://webidl.spec.whatwg.org/#idl-sequence</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-sequence">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" class="dfn-panel" data-for="be0933df03cd63338f98de217c4158c7" id="infopanel-for-be0933df03cd63338f98de217c4158c7">
-   <span id="infopaneltitle-for-be0933df03cd63338f98de217c4158c7" style="display:none">Info about the 'this' external reference.</span><a href="https://webidl.spec.whatwg.org/#this">https://webidl.spec.whatwg.org/#this</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-this">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-this①">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-this②">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-this③">2.1. Persistence</a> <a href="#ref-for-this④">(2)</a> <a href="#ref-for-this⑤">(3)</a>
-    <li><a href="#ref-for-this⑥">2.2. Quota</a> <a href="#ref-for-this⑦">(2)</a>
-    <li><a href="#ref-for-this⑧">2.3. Durability</a>
-    <li><a href="#ref-for-this⑨">2.4. Expiration</a> <a href="#ref-for-this①⓪">(2)</a>
-    <li><a href="#ref-for-this①①">2.5.1. Using Indexed Database</a> <a href="#ref-for-this①②">(2)</a> <a href="#ref-for-this①③">(3)</a> <a href="#ref-for-this①④">(4)</a>
-    <li><a href="#ref-for-this①⑤">2.5.2. Using CacheStorage</a> <a href="#ref-for-this①⑥">(2)</a> <a href="#ref-for-this①⑦">(3)</a> <a href="#ref-for-this①⑧">(4)</a>
-    <li><a href="#ref-for-this①⑨">2.5.3. Using an Origin Private File System</a>
-    <li><a href="#ref-for-this②⓪">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-2ffe113543b75964c47c7e6248fef5eb" class="dfn-panel" data-for="2ffe113543b75964c47c7e6248fef5eb" id="infopanel-for-2ffe113543b75964c47c7e6248fef5eb">
-   <span id="infopaneltitle-for-2ffe113543b75964c47c7e6248fef5eb" style="display:none">Info about the 'throw' external reference.</span><a href="https://webidl.spec.whatwg.org/#dfn-throw">https://webidl.spec.whatwg.org/#dfn-throw</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-throw">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" class="dfn-panel" data-for="cee863f1f2ec91066cfb7f5d309d59dc" id="infopanel-for-cee863f1f2ec91066cfb7f5d309d59dc">
-   <span id="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" style="display:none">Info about the 'undefined' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-undefined">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-idl-undefined①">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-db891cb1cc28e2bf626982240ec36b2a" class="dfn-panel" data-for="db891cb1cc28e2bf626982240ec36b2a" id="infopanel-for-db891cb1cc28e2bf626982240ec36b2a">
-   <span id="infopaneltitle-for-db891cb1cc28e2bf626982240ec36b2a" style="display:none">Info about the 'unsigned long long' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long">https://webidl.spec.whatwg.org/#idl-unsigned-long-long</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-idl-unsigned-long-long">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[FS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="9d8e130057dd59bc8cab4f414e390ebf">FileSystemDirectoryHandle</span>
-     <li><span class="dfn-paneled" id="eee674a7b8f683464c60fafdbfa9e8ab">getDirectory()</span>
+     <li><span class="dfn-paneled" id="23e108bd">FileSystemDirectoryHandle</span>
+     <li><span class="dfn-paneled" id="4c10050a">getDirectory()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HR-TIME-3]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="0527034ee7070fda15ffa50c34dbbc63">DOMHighResTimeStamp</span>
-     <li><span class="dfn-paneled" id="1f78bca61233b6a6957119204c181632">current wall time</span>
-     <li><span class="dfn-paneled" id="a33f352de1a9eb5d29cfa3005d40d072">moment</span>
-     <li><span class="dfn-paneled" id="c6a6e18a0bfb0f6727343f416cd90c01">unix epoch</span>
-     <li><span class="dfn-paneled" id="9ce1d97c81991af84a4cfb8251a89c4e">wall clock</span>
+     <li><span class="dfn-paneled" id="0e9f636b">DOMHighResTimeStamp</span>
+     <li><span class="dfn-paneled" id="f16ee824">current wall time</span>
+     <li><span class="dfn-paneled" id="1e2edd5b">moment</span>
+     <li><span class="dfn-paneled" id="be5dbc8c">unix epoch</span>
+     <li><span class="dfn-paneled" id="05de5ae3">wall clock</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="3c82b19be23a00eb4bb6896ec20cd7aa">Navigator</span>
-     <li><span class="dfn-paneled" id="f9c60134d1166b5cbe490d111703a3b0">WorkerNavigator</span>
-     <li><span class="dfn-paneled" id="d815dc723d8b4fe4b1166e2013ec62b7">environment settings object</span>
-     <li><span class="dfn-paneled" id="3a2763fcaa6bc82693554cf36780c0dd">in parallel</span>
-     <li><span class="dfn-paneled" id="a95cc6f0be910557a60537e0256920b2">origin</span>
-     <li><span class="dfn-paneled" id="da7ed5f190c4eedd375552d6f7876301">queue a task</span>
-     <li><span class="dfn-paneled" id="bfb9cb6617f81a424ab20212af73bae3">relevant settings object</span>
+     <li><span class="dfn-paneled" id="be0c27b2">Navigator</span>
+     <li><span class="dfn-paneled" id="a4785085">WorkerNavigator</span>
+     <li><span class="dfn-paneled" id="3e12e042">environment settings object</span>
+     <li><span class="dfn-paneled" id="a72449dd">in parallel</span>
+     <li><span class="dfn-paneled" id="43ac8374">origin</span>
+     <li><span class="dfn-paneled" id="9a517a7d">queue a task</span>
+     <li><span class="dfn-paneled" id="9c4c1e66">relevant settings object</span>
     </ul>
    <li>
     <a data-link-type="biblio">[IndexedDB-3]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="7ccd3fe71bd97702d40f89879f536d5b">"default"</span>
-     <li><span class="dfn-paneled" id="96ffc2f5b033479ebcbe053477983e7a">"relaxed"</span>
-     <li><span class="dfn-paneled" id="732cc0cf0e4c9d476383d238a7a5e81d">"strict"</span>
-     <li><span class="dfn-paneled" id="56e4bb6f5c5237eda504da1d4b54449a">IDBFactory</span>
-     <li><span class="dfn-paneled" id="40ee6466c7a60cfbaedb2014bc31a891">IDBTransaction</span>
-     <li><span class="dfn-paneled" id="6dc0dc2bb5ff87160fa92c9b2bd6c0ea">durability hint</span>
+     <li><span class="dfn-paneled" id="7ca1d370">"default"</span>
+     <li><span class="dfn-paneled" id="e86b5ce4">"relaxed"</span>
+     <li><span class="dfn-paneled" id="5fd5f41c">"strict"</span>
+     <li><span class="dfn-paneled" id="78f41bd1">IDBFactory</span>
+     <li><span class="dfn-paneled" id="668bd53e">IDBTransaction</span>
+     <li><span class="dfn-paneled" id="a5cbd966">durability hint</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="fcfc8b0ed220faa237969aed00e2586d">append</span>
-     <li><span class="dfn-paneled" id="c2f5d9b1ced7c40f62782a928198d3a8">ascii digit</span>
-     <li><span class="dfn-paneled" id="f2b877833382750f00e188f032456059">ascii lower alpha</span>
-     <li><span class="dfn-paneled" id="4103741029595e9e13c67dab91d1e3bd">code point</span>
-     <li><span class="dfn-paneled" id="0c5b8810162108ca42f42ac154072480">code point length</span>
-     <li><span class="dfn-paneled" id="ea6f005773fd4f991ff2d63239f90613">code unit substring by positions</span>
-     <li><span class="dfn-paneled" id="fd74d8159933c4a74d0b23390bed43e3">implementation-defined</span>
-     <li><span class="dfn-paneled" id="c38550431b74fa21f9dd8b8680f1105c">key</span>
-     <li><span class="dfn-paneled" id="fafd38d2108e357bcc9a6fd7f3cd04a7">list</span>
-     <li><span class="dfn-paneled" id="2d700262fcde3097fbf89ef2496f1f0d">starts with</span>
-     <li><span class="dfn-paneled" id="decbbd3ee5a73b54e8e8996ce1fddbbc">tuple</span>
+     <li><span class="dfn-paneled" id="53275e46">append</span>
+     <li><span class="dfn-paneled" id="3b38c2fe">ascii digit</span>
+     <li><span class="dfn-paneled" id="5661d95e">ascii lower alpha</span>
+     <li><span class="dfn-paneled" id="915aff5e">code point</span>
+     <li><span class="dfn-paneled" id="4ef39030">code point length</span>
+     <li><span class="dfn-paneled" id="b8958cfc">code unit substring by positions</span>
+     <li><span class="dfn-paneled" id="860300d4">implementation-defined</span>
+     <li><span class="dfn-paneled" id="d14a6f26">key</span>
+     <li><span class="dfn-paneled" id="649608b9">list</span>
+     <li><span class="dfn-paneled" id="54627f47">starts with</span>
+     <li><span class="dfn-paneled" id="0e8de730">tuple</span>
     </ul>
    <li>
     <a data-link-type="biblio">[PERMISSIONS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="7b01ad8c5e8d011946cb54633b172084">getting the current permission state</span>
-     <li><span class="dfn-paneled" id="180d5479814a4ae3b599e6a1c4e11751">granted</span>
-     <li><span class="dfn-paneled" id="7761fb406c4d8cdb685b810244d5e5a6">requesting permission to use</span>
+     <li><span class="dfn-paneled" id="33438879">getting the current permission state</span>
+     <li><span class="dfn-paneled" id="c6ce3c60">granted</span>
+     <li><span class="dfn-paneled" id="d357c753">requesting permission to use</span>
     </ul>
    <li>
     <a data-link-type="biblio">[Service-Workers]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="58aed90a8ddd8f180862c716af7d25c6">CacheStorage</span>
-     <li><span class="dfn-paneled" id="0b49a59f74c17df3b05704e7d7552584">relevant name to cache map</span>
+     <li><span class="dfn-paneled" id="f747b195">CacheStorage</span>
+     <li><span class="dfn-paneled" id="e7e8a4f7">relevant name to cache map</span>
     </ul>
    <li>
     <a data-link-type="biblio">[Storage]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="907504f20c39c9094e157d0c50797ed3">StorageEstimate</span>
-     <li><span class="dfn-paneled" id="7bed712fb187b01e9a5fb930d421c3c9">bucket map</span>
-     <li><span class="dfn-paneled" id="a2029738b4b98c5e9e75d6e1a17c8d5b">bucket mode</span>
-     <li><span class="dfn-paneled" id="0dff98041f99c7938aefcb7c640726e6">obtain a local storage bottle map</span>
-     <li><span class="dfn-paneled" id="d268e8ee411fa1fd044b01a51a37e88e">obtain a local storage shelf</span>
-     <li><span class="dfn-paneled" id="b678ffee39221ea20e1447cfa42542ff">quota</span>
-     <li><span class="dfn-paneled" id="762beba33f3ad0dfbf19a9c82f4ec357">storage bottle</span>
-     <li><span class="dfn-paneled" id="f39300b06adfbcf11de5475b3c7ebad9">storage bottle map</span>
-     <li><span class="dfn-paneled" id="dcb2985190de22ddc1fac361fc18de5a">storage bucket</span>
-     <li><span class="dfn-paneled" id="02d1b826437e77c1f657e442ab4b6d22">storage quota</span>
-     <li><span class="dfn-paneled" id="4ae96685c778dd1d6d81ae3c132bce0e">storage shelf</span>
-     <li><span class="dfn-paneled" id="3a8c47fee15b74d34ba67010db288d54">usage</span>
+     <li><span class="dfn-paneled" id="48a84355">StorageEstimate</span>
+     <li><span class="dfn-paneled" id="7db4a4b7">bucket map</span>
+     <li><span class="dfn-paneled" id="b9712e0a">bucket mode</span>
+     <li><span class="dfn-paneled" id="6bb9d790">obtain a local storage bottle map</span>
+     <li><span class="dfn-paneled" id="caa5107f">obtain a local storage shelf</span>
+     <li><span class="dfn-paneled" id="cd0c5fbe">quota</span>
+     <li><span class="dfn-paneled" id="67130339">storage bottle</span>
+     <li><span class="dfn-paneled" id="eb592b41">storage bottle map</span>
+     <li><span class="dfn-paneled" id="6148dd37">storage bucket</span>
+     <li><span class="dfn-paneled" id="cac8dd86">storage quota</span>
+     <li><span class="dfn-paneled" id="daed3f4b">storage shelf</span>
+     <li><span class="dfn-paneled" id="cb80877c">usage</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="d0f238a61de9310f1738a214749fab18">DOMString</span>
-     <li><span class="dfn-paneled" id="dde049eb112f043fc45407ec0d4cb457">Exposed</span>
-     <li><span class="dfn-paneled" id="2047de0127550ba57998a1f13da8412d">InvalidCharacterError</span>
-     <li><span class="dfn-paneled" id="e2a06375a2fb70c61a8b4cd0abe9d4f1">InvalidStateError</span>
-     <li><span class="dfn-paneled" id="93669c631ec1ef8e696b4c083bdbe12c">Promise</span>
-     <li><span class="dfn-paneled" id="f572762cd4679aeacd36722d99d2b741">SameObject</span>
-     <li><span class="dfn-paneled" id="cdf224ec60dc3b08449a2fbdf3a90406">SecureContext</span>
-     <li><span class="dfn-paneled" id="3f9c3eac015894a734faa8068fd8c2a1">TypeError</span>
-     <li><span class="dfn-paneled" id="bbe33fc7ac016834e4aaddbfd1b084a1">a new promise</span>
-     <li><span class="dfn-paneled" id="cf8339c4a39778ea039900ab8a77d2fe">a promise rejected with</span>
-     <li><span class="dfn-paneled" id="cb7ce63b39eb2128b9c2cc2cf413299f">a promise resolved with</span>
-     <li><span class="dfn-paneled" id="f8062b07e25ed0281f5cbfb9a54070b4">boolean</span>
-     <li><span class="dfn-paneled" id="f7204c0306e7ffcb24c31adf6e629e1d">reject</span>
-     <li><span class="dfn-paneled" id="f4f973f92274819781816b033aea1f11">resolve</span>
-     <li><span class="dfn-paneled" id="38ab7db52e46bed36993204c29f67202">sequence</span>
-     <li><span class="dfn-paneled" id="be0933df03cd63338f98de217c4158c7">this</span>
-     <li><span class="dfn-paneled" id="2ffe113543b75964c47c7e6248fef5eb">throw</span>
-     <li><span class="dfn-paneled" id="cee863f1f2ec91066cfb7f5d309d59dc">undefined</span>
-     <li><span class="dfn-paneled" id="db891cb1cc28e2bf626982240ec36b2a">unsigned long long</span>
+     <li><span class="dfn-paneled" id="8855a9aa">DOMString</span>
+     <li><span class="dfn-paneled" id="889e932f">Exposed</span>
+     <li><span class="dfn-paneled" id="583654a9">InvalidCharacterError</span>
+     <li><span class="dfn-paneled" id="797018a7">InvalidStateError</span>
+     <li><span class="dfn-paneled" id="bdbd19d1">Promise</span>
+     <li><span class="dfn-paneled" id="a5c91173">SameObject</span>
+     <li><span class="dfn-paneled" id="b75bb3bd">SecureContext</span>
+     <li><span class="dfn-paneled" id="82ca3efc">TypeError</span>
+     <li><span class="dfn-paneled" id="dacde8b5">a new promise</span>
+     <li><span class="dfn-paneled" id="d0b4a948">a promise rejected with</span>
+     <li><span class="dfn-paneled" id="8f5c2179">a promise resolved with</span>
+     <li><span class="dfn-paneled" id="5372cca8">boolean</span>
+     <li><span class="dfn-paneled" id="b262501e">reject</span>
+     <li><span class="dfn-paneled" id="3b90bdcd">resolve</span>
+     <li><span class="dfn-paneled" id="9cce47fd">sequence</span>
+     <li><span class="dfn-paneled" id="4013a022">this</span>
+     <li><span class="dfn-paneled" id="b4cfa5ce">throw</span>
+     <li><span class="dfn-paneled" id="5f90bbfb">undefined</span>
+     <li><span class="dfn-paneled" id="f14b47b8">unsigned long long</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1962,251 +1487,68 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <div class="issue"> add the steps below to the algorithm in <a href="https://w3c.github.io/webappsec-clear-site-data/#parsing"><cite>Clear Site Data</cite> § 4.1 Parsing</a>. <a class="issue-return" href="#issue-99223a67" title="Jump to section">↵</a></div>
    <div class="issue"> add the steps below to the algorithm in <a href="https://w3c.github.io/webappsec-clear-site-data/#clear-response"><cite>Clear Site Data</cite> § 4.2 Clear data for response</a>. <a class="issue-return" href="#issue-99223a67①" title="Jump to section">↵</a></div>
   </div>
-  <aside aria-labelledby="infopaneltitle-for-navigatorstoragebuckets" class="dfn-panel" data-for="navigatorstoragebuckets" id="infopanel-for-navigatorstoragebuckets">
-   <span id="infopaneltitle-for-navigatorstoragebuckets" style="display:none">Info about the 'NavigatorStorageBuckets' definition.</span><b><a href="#navigatorstoragebuckets">#navigatorstoragebuckets</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-navigatorstoragebuckets">1. The StorageBucketManager interface</a> <a href="#ref-for-navigatorstoragebuckets①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-navigatorstoragebuckets-storagebuckets" class="dfn-panel" data-for="dom-navigatorstoragebuckets-storagebuckets" id="infopanel-for-dom-navigatorstoragebuckets-storagebuckets">
-   <span id="infopaneltitle-for-dom-navigatorstoragebuckets-storagebuckets" style="display:none">Info about the 'storageBuckets' definition.</span><b><a href="#dom-navigatorstoragebuckets-storagebuckets">#dom-navigatorstoragebuckets-storagebuckets</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-navigatorstoragebuckets-storagebuckets">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storagebucketmanager" class="dfn-panel" data-for="storagebucketmanager" id="infopanel-for-storagebucketmanager">
-   <span id="infopaneltitle-for-storagebucketmanager" style="display:none">Info about the 'StorageBucketManager' definition.</span><b><a href="#storagebucketmanager">#storagebucketmanager</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storagebucketmanager">1. The StorageBucketManager interface</a> <a href="#ref-for-storagebucketmanager①">(2)</a> <a href="#ref-for-storagebucketmanager②">(3)</a> <a href="#ref-for-storagebucketmanager③">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-enumdef-storagebucketdurability" class="dfn-panel" data-for="enumdef-storagebucketdurability" id="infopanel-for-enumdef-storagebucketdurability">
-   <span id="infopaneltitle-for-enumdef-storagebucketdurability" style="display:none">Info about the 'StorageBucketDurability' definition.</span><b><a href="#enumdef-storagebucketdurability">#enumdef-storagebucketdurability</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-enumdef-storagebucketdurability">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-enumdef-storagebucketdurability①">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-enumdef-storagebucketdurability②">2.3. Durability</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketdurability-strict" class="dfn-panel" data-for="dom-storagebucketdurability-strict" id="infopanel-for-dom-storagebucketdurability-strict">
-   <span id="infopaneltitle-for-dom-storagebucketdurability-strict" style="display:none">Info about the '"strict"' definition.</span><b><a href="#dom-storagebucketdurability-strict">#dom-storagebucketdurability-strict</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketdurability-strict">2.3. Durability</a> <a href="#ref-for-dom-storagebucketdurability-strict①">(2)</a>
-    <li><a href="#ref-for-dom-storagebucketdurability-strict②">2.5.1. Using Indexed Database</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketdurability-relaxed" class="dfn-panel" data-for="dom-storagebucketdurability-relaxed" id="infopanel-for-dom-storagebucketdurability-relaxed">
-   <span id="infopaneltitle-for-dom-storagebucketdurability-relaxed" style="display:none">Info about the '"relaxed"' definition.</span><b><a href="#dom-storagebucketdurability-relaxed">#dom-storagebucketdurability-relaxed</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketdurability-relaxed">2.3. Durability</a> <a href="#ref-for-dom-storagebucketdurability-relaxed①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dictdef-storagebucketoptions" class="dfn-panel" data-for="dictdef-storagebucketoptions" id="infopanel-for-dictdef-storagebucketoptions">
-   <span id="infopaneltitle-for-dictdef-storagebucketoptions" style="display:none">Info about the 'StorageBucketOptions' definition.</span><b><a href="#dictdef-storagebucketoptions">#dictdef-storagebucketoptions</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dictdef-storagebucketoptions">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketoptions-persisted" class="dfn-panel" data-for="dom-storagebucketoptions-persisted" id="infopanel-for-dom-storagebucketoptions-persisted">
-   <span id="infopaneltitle-for-dom-storagebucketoptions-persisted" style="display:none">Info about the 'persisted' definition.</span><b><a href="#dom-storagebucketoptions-persisted">#dom-storagebucketoptions-persisted</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketoptions-persisted">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketoptions-durability" class="dfn-panel" data-for="dom-storagebucketoptions-durability" id="infopanel-for-dom-storagebucketoptions-durability">
-   <span id="infopaneltitle-for-dom-storagebucketoptions-durability" style="display:none">Info about the 'durability' definition.</span><b><a href="#dom-storagebucketoptions-durability">#dom-storagebucketoptions-durability</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketoptions-durability">1.1. Creating a bucket</a> <a href="#ref-for-dom-storagebucketoptions-durability①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketoptions-quota" class="dfn-panel" data-for="dom-storagebucketoptions-quota" id="infopanel-for-dom-storagebucketoptions-quota">
-   <span id="infopaneltitle-for-dom-storagebucketoptions-quota" style="display:none">Info about the 'quota' definition.</span><b><a href="#dom-storagebucketoptions-quota">#dom-storagebucketoptions-quota</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketoptions-quota">1.1. Creating a bucket</a> <a href="#ref-for-dom-storagebucketoptions-quota①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketoptions-expires" class="dfn-panel" data-for="dom-storagebucketoptions-expires" id="infopanel-for-dom-storagebucketoptions-expires">
-   <span id="infopaneltitle-for-dom-storagebucketoptions-expires" style="display:none">Info about the 'expires' definition.</span><b><a href="#dom-storagebucketoptions-expires">#dom-storagebucketoptions-expires</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketoptions-expires">1.1. Creating a bucket</a> <a href="#ref-for-dom-storagebucketoptions-expires①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketmanager-open" class="dfn-panel" data-for="dom-storagebucketmanager-open" id="infopanel-for-dom-storagebucketmanager-open">
-   <span id="infopaneltitle-for-dom-storagebucketmanager-open" style="display:none">Info about the 'open(name, options)' definition.</span><b><a href="#dom-storagebucketmanager-open">#dom-storagebucketmanager-open</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketmanager-open">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-dom-storagebucketmanager-open①">2.4. Expiration</a> <a href="#ref-for-dom-storagebucketmanager-open②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-open-a-bucket" class="dfn-panel" data-for="open-a-bucket" id="infopanel-for-open-a-bucket">
-   <span id="infopaneltitle-for-open-a-bucket" style="display:none">Info about the 'open a bucket' definition.</span><b><a href="#open-a-bucket">#open-a-bucket</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-open-a-bucket">1.1. Creating a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-validate-a-bucket-name" class="dfn-panel" data-for="validate-a-bucket-name" id="infopanel-for-validate-a-bucket-name">
-   <span id="infopaneltitle-for-validate-a-bucket-name" style="display:none">Info about the 'validate a bucket name' definition.</span><b><a href="#validate-a-bucket-name">#validate-a-bucket-name</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-validate-a-bucket-name">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-validate-a-bucket-name①">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-validate-a-bucket-name②">2.6. Clear Site Data integration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-get-or-expire-a-bucket" class="dfn-panel" data-for="get-or-expire-a-bucket" id="infopanel-for-get-or-expire-a-bucket">
-   <span id="infopaneltitle-for-get-or-expire-a-bucket" style="display:none">Info about the 'get or expire a bucket' definition.</span><b><a href="#get-or-expire-a-bucket">#get-or-expire-a-bucket</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-get-or-expire-a-bucket">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-get-or-expire-a-bucket①">1.3. Enumerating buckets</a>
-    <li><a href="#ref-for-get-or-expire-a-bucket②">2.4. Expiration</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketmanager-delete" class="dfn-panel" data-for="dom-storagebucketmanager-delete" id="infopanel-for-dom-storagebucketmanager-delete">
-   <span id="infopaneltitle-for-dom-storagebucketmanager-delete" style="display:none">Info about the 'delete(name)' definition.</span><b><a href="#dom-storagebucketmanager-delete">#dom-storagebucketmanager-delete</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketmanager-delete">1. The StorageBucketManager interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-remove-a-bucket" class="dfn-panel" data-for="remove-a-bucket" id="infopanel-for-remove-a-bucket">
-   <span id="infopaneltitle-for-remove-a-bucket" style="display:none">Info about the 'remove a bucket' definition.</span><b><a href="#remove-a-bucket">#remove-a-bucket</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-remove-a-bucket">1.2. Deleting a bucket</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucketmanager-keys" class="dfn-panel" data-for="dom-storagebucketmanager-keys" id="infopanel-for-dom-storagebucketmanager-keys">
-   <span id="infopaneltitle-for-dom-storagebucketmanager-keys" style="display:none">Info about the 'keys()' definition.</span><b><a href="#dom-storagebucketmanager-keys">#dom-storagebucketmanager-keys</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucketmanager-keys">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-dom-storagebucketmanager-keys①">2.4. Expiration</a> <a href="#ref-for-dom-storagebucketmanager-keys②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storagebucket" class="dfn-panel" data-for="storagebucket" id="infopanel-for-storagebucket">
-   <span id="infopaneltitle-for-storagebucket" style="display:none">Info about the 'StorageBucket' definition.</span><b><a href="#storagebucket">#storagebucket</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storagebucket">1. The StorageBucketManager interface</a>
-    <li><a href="#ref-for-storagebucket①">1.1. Creating a bucket</a> <a href="#ref-for-storagebucket②">(2)</a>
-    <li><a href="#ref-for-storagebucket③">2. The StorageBucket interface</a> <a href="#ref-for-storagebucket④">(2)</a> <a href="#ref-for-storagebucket⑤">(3)</a>
-    <li><a href="#ref-for-storagebucket⑥">2.5.1. Using Indexed Database</a>
-    <li><a href="#ref-for-storagebucket⑦">2.5.2. Using CacheStorage</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storage-bucket-removed" class="dfn-panel" data-for="storage-bucket-removed" id="infopanel-for-storage-bucket-removed">
-   <span id="infopaneltitle-for-storage-bucket-removed" style="display:none">Info about the 'removed' definition.</span><b><a href="#storage-bucket-removed">#storage-bucket-removed</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-bucket-removed">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-storage-bucket-removed①">1.2. Deleting a bucket</a>
-    <li><a href="#ref-for-storage-bucket-removed②">2.1. Persistence</a> <a href="#ref-for-storage-bucket-removed③">(2)</a>
-    <li><a href="#ref-for-storage-bucket-removed④">2.2. Quota</a>
-    <li><a href="#ref-for-storage-bucket-removed⑤">2.3. Durability</a>
-    <li><a href="#ref-for-storage-bucket-removed⑥">2.4. Expiration</a> <a href="#ref-for-storage-bucket-removed⑦">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-name" class="dfn-panel" data-for="dom-storagebucket-name" id="infopanel-for-dom-storagebucket-name">
-   <span id="infopaneltitle-for-dom-storagebucket-name" style="display:none">Info about the 'name' definition.</span><b><a href="#dom-storagebucket-name">#dom-storagebucket-name</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-name">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-persist" class="dfn-panel" data-for="dom-storagebucket-persist" id="infopanel-for-dom-storagebucket-persist">
-   <span id="infopaneltitle-for-dom-storagebucket-persist" style="display:none">Info about the 'persist()' definition.</span><b><a href="#dom-storagebucket-persist">#dom-storagebucket-persist</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-persist">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-persisted" class="dfn-panel" data-for="dom-storagebucket-persisted" id="infopanel-for-dom-storagebucket-persisted">
-   <span id="infopaneltitle-for-dom-storagebucket-persisted" style="display:none">Info about the 'persisted()' definition.</span><b><a href="#dom-storagebucket-persisted">#dom-storagebucket-persisted</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-persisted">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storagebucket-quota-value" class="dfn-panel" data-for="storagebucket-quota-value" id="infopanel-for-storagebucket-quota-value">
-   <span id="infopaneltitle-for-storagebucket-quota-value" style="display:none">Info about the 'quota value' definition.</span><b><a href="#storagebucket-quota-value">#storagebucket-quota-value</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storagebucket-quota-value">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-storagebucket-quota-value①">2.2. Quota</a> <a href="#ref-for-storagebucket-quota-value②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storage-bucket-storage-usage" class="dfn-panel" data-for="storage-bucket-storage-usage" id="infopanel-for-storage-bucket-storage-usage">
-   <span id="infopaneltitle-for-storage-bucket-storage-usage" style="display:none">Info about the 'storage usage' definition.</span><b><a href="#storage-bucket-storage-usage">#storage-bucket-storage-usage</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storage-bucket-storage-usage">2.2. Quota</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-estimate" class="dfn-panel" data-for="dom-storagebucket-estimate" id="infopanel-for-dom-storagebucket-estimate">
-   <span id="infopaneltitle-for-dom-storagebucket-estimate" style="display:none">Info about the 'estimate()' definition.</span><b><a href="#dom-storagebucket-estimate">#dom-storagebucket-estimate</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-estimate">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storagebucket-durability-value" class="dfn-panel" data-for="storagebucket-durability-value" id="infopanel-for-storagebucket-durability-value">
-   <span id="infopaneltitle-for-storagebucket-durability-value" style="display:none">Info about the 'durability value' definition.</span><b><a href="#storagebucket-durability-value">#storagebucket-durability-value</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storagebucket-durability-value">1.1. Creating a bucket</a> <a href="#ref-for-storagebucket-durability-value①">(2)</a> <a href="#ref-for-storagebucket-durability-value②">(3)</a>
-    <li><a href="#ref-for-storagebucket-durability-value③">2.3. Durability</a> <a href="#ref-for-storagebucket-durability-value④">(2)</a> <a href="#ref-for-storagebucket-durability-value⑤">(3)</a> <a href="#ref-for-storagebucket-durability-value⑥">(4)</a>
-    <li><a href="#ref-for-storagebucket-durability-value⑦">2.5.1. Using Indexed Database</a> <a href="#ref-for-storagebucket-durability-value⑧">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-durability" class="dfn-panel" data-for="dom-storagebucket-durability" id="infopanel-for-dom-storagebucket-durability">
-   <span id="infopaneltitle-for-dom-storagebucket-durability" style="display:none">Info about the 'durability()' definition.</span><b><a href="#dom-storagebucket-durability">#dom-storagebucket-durability</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-durability">1.1. Creating a bucket</a>
-    <li><a href="#ref-for-dom-storagebucket-durability①">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-dom-storagebucket-durability②">2.3. Durability</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-storagebucket-expiration-time" class="dfn-panel" data-for="storagebucket-expiration-time" id="infopanel-for-storagebucket-expiration-time">
-   <span id="infopaneltitle-for-storagebucket-expiration-time" style="display:none">Info about the 'expiration time' definition.</span><b><a href="#storagebucket-expiration-time">#storagebucket-expiration-time</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-storagebucket-expiration-time">1.1. Creating a bucket</a> <a href="#ref-for-storagebucket-expiration-time①">(2)</a>
-    <li><a href="#ref-for-storagebucket-expiration-time②">2.4. Expiration</a> <a href="#ref-for-storagebucket-expiration-time③">(2)</a> <a href="#ref-for-storagebucket-expiration-time④">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-setexpires" class="dfn-panel" data-for="dom-storagebucket-setexpires" id="infopanel-for-dom-storagebucket-setexpires">
-   <span id="infopaneltitle-for-dom-storagebucket-setexpires" style="display:none">Info about the 'setExpires(expires)' definition.</span><b><a href="#dom-storagebucket-setexpires">#dom-storagebucket-setexpires</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-setexpires">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-expires" class="dfn-panel" data-for="dom-storagebucket-expires" id="infopanel-for-dom-storagebucket-expires">
-   <span id="infopaneltitle-for-dom-storagebucket-expires" style="display:none">Info about the 'expires()' definition.</span><b><a href="#dom-storagebucket-expires">#dom-storagebucket-expires</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-expires">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-indexeddb" class="dfn-panel" data-for="dom-storagebucket-indexeddb" id="infopanel-for-dom-storagebucket-indexeddb">
-   <span id="infopaneltitle-for-dom-storagebucket-indexeddb" style="display:none">Info about the 'indexedDB' definition.</span><b><a href="#dom-storagebucket-indexeddb">#dom-storagebucket-indexeddb</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-indexeddb">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-dom-storagebucket-indexeddb①">2.5.1. Using Indexed Database</a> <a href="#ref-for-dom-storagebucket-indexeddb②">(2)</a> <a href="#ref-for-dom-storagebucket-indexeddb③">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-caches" class="dfn-panel" data-for="dom-storagebucket-caches" id="infopanel-for-dom-storagebucket-caches">
-   <span id="infopaneltitle-for-dom-storagebucket-caches" style="display:none">Info about the 'caches' definition.</span><b><a href="#dom-storagebucket-caches">#dom-storagebucket-caches</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-caches">2. The StorageBucket interface</a>
-    <li><a href="#ref-for-dom-storagebucket-caches①">2.5.2. Using CacheStorage</a> <a href="#ref-for-dom-storagebucket-caches②">(2)</a> <a href="#ref-for-dom-storagebucket-caches③">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dom-storagebucket-getdirectory" class="dfn-panel" data-for="dom-storagebucket-getdirectory" id="infopanel-for-dom-storagebucket-getdirectory">
-   <span id="infopaneltitle-for-dom-storagebucket-getdirectory" style="display:none">Info about the 'getDirectory()' definition.</span><b><a href="#dom-storagebucket-getdirectory">#dom-storagebucket-getdirectory</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-storagebucket-getdirectory">2. The StorageBucket interface</a>
-   </ul>
-  </aside>
 <script>/* script-dfn-panel */
 "use strict";
 {
-    function queryAll(sel) {
-        return [].slice.call(document.querySelectorAll(sel));
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
     }
 
-    // Add popup behavior to all dfns to show the corresponding dfn-panel.
-    var dfns = document.querySelectorAll('.dfn-paneled');
-    for (let dfn of dfns) { insertDfnPopupAction(dfn); }
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
 
-    document.body.addEventListener("click", (e) => {
-        // If not handled already, just hide all dfn panels.
-        hideAllDfnPanels();
-    });
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
 
     function hideAllDfnPanels() {
         // Turn off any currently "on" or "activated" panels.
@@ -2256,52 +1598,346 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
         }
     }
 
-    function insertDfnPopupAction(dfn) {
+    function insertDfnPopupAction(dfn, dfnPanel) {
         // Find dfn panel
-        const dfnPanel = document.querySelector(`.dfn-panel[data-for='${dfn.id}']`);
-        if (dfnPanel) {
-            const panelWrapper = document.createElement('span');
-            panelWrapper.appendChild(dfnPanel);
-            panelWrapper.style.position = "relative";
-            panelWrapper.style.height = "0px";
-            dfn.insertAdjacentElement("afterend", panelWrapper);
-            dfn.setAttribute('role', 'button');
-            dfn.setAttribute('aria-expanded', 'false')
-            dfn.tabIndex = 0;
-            dfn.classList.add('has-dfn-panel');
-            dfn.addEventListener('click', (event) => {
-                showDfnPanel(dfnPanel, dfn);
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
                 event.stopPropagation();
-            });
-            dfn.addEventListener('keypress', (event) => {
-                const kc = event.keyCode;
-                // 32->Space, 13->Enter
-                if(kc == 32 || kc == 13) {
-                    toggleDfnPanel(dfnPanel, dfn);
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            });
+                event.preventDefault();
+            }
+        });
 
-            dfnPanel.addEventListener('click', (event) => {
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
                 pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
                 event.stopPropagation();
-            });
-
-            dfnPanel.addEventListener('keydown', (event) => {
-                if(event.keyCode == 27) { // Escape key
-                    hideDfnPanel(dfnPanel, dfn);
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            })
-
-        } else {
-            console.log("Couldn't find .dfn-panel[data-for='" + dfn.id + "']");
-        }
+                event.preventDefault();
+            }
+        })
     }
 }
 </script>
+<script>/* script-dfn-panel-json */
+window.dfnpanelData = {};
+window.dfnpanelData['23e108bd'] = {"dfnID": "23e108bd", "url": "https://fs.spec.whatwg.org/#filesystemdirectoryhandle", "dfnText": "FileSystemDirectoryHandle", "refSections": [{"refs": [{"id": "ref-for-filesystemdirectoryhandle"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['4c10050a'] = {"dfnID": "4c10050a", "url": "https://fs.spec.whatwg.org/#dom-storagemanager-getdirectory", "dfnText": "getDirectory()", "refSections": [{"refs": [{"id": "ref-for-dom-storagemanager-getdirectory"}], "title": "2.5.3. Using an Origin Private File System"}], "external": true};
+window.dfnpanelData['0e9f636b'] = {"dfnID": "0e9f636b", "url": "https://w3c.github.io/hr-time/#dom-domhighrestimestamp", "dfnText": "DOMHighResTimeStamp", "refSections": [{"refs": [{"id": "ref-for-dom-domhighrestimestamp"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-dom-domhighrestimestamp\u2460"}, {"id": "ref-for-dom-domhighrestimestamp\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['f16ee824'] = {"dfnID": "f16ee824", "url": "https://w3c.github.io/hr-time/#dfn-eso-current-wall-time", "dfnText": "current wall time", "refSections": [{"refs": [{"id": "ref-for-dfn-eso-current-wall-time"}, {"id": "ref-for-dfn-eso-current-wall-time\u2460"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['1e2edd5b'] = {"dfnID": "1e2edd5b", "url": "https://w3c.github.io/hr-time/#dfn-moment", "dfnText": "moment", "refSections": [{"refs": [{"id": "ref-for-dfn-moment"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['be5dbc8c'] = {"dfnID": "be5dbc8c", "url": "https://w3c.github.io/hr-time/#dfn-unix-epoch", "dfnText": "unix epoch", "refSections": [{"refs": [{"id": "ref-for-dfn-unix-epoch"}, {"id": "ref-for-dfn-unix-epoch\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-dfn-unix-epoch\u2461"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['05de5ae3'] = {"dfnID": "05de5ae3", "url": "https://w3c.github.io/hr-time/#dfn-wall-clock", "dfnText": "wall clock", "refSections": [{"refs": [{"id": "ref-for-dfn-wall-clock"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['be0c27b2'] = {"dfnID": "be0c27b2", "url": "https://html.spec.whatwg.org/multipage/system-state.html#navigator", "dfnText": "Navigator", "refSections": [{"refs": [{"id": "ref-for-navigator"}], "title": "1. The StorageBucketManager interface"}], "external": true};
+window.dfnpanelData['a4785085'] = {"dfnID": "a4785085", "url": "https://html.spec.whatwg.org/multipage/workers.html#workernavigator", "dfnText": "WorkerNavigator", "refSections": [{"refs": [{"id": "ref-for-workernavigator"}], "title": "1. The StorageBucketManager interface"}], "external": true};
+window.dfnpanelData['3e12e042'] = {"dfnID": "3e12e042", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object", "dfnText": "environment settings object", "refSections": [{"refs": [{"id": "ref-for-environment-settings-object"}], "title": "1. The StorageBucketManager interface"}], "external": true};
+window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-in-parallel\u2460"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-in-parallel\u2461"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['43ac8374'] = {"dfnID": "43ac8374", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-origin"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['9a517a7d'] = {"dfnID": "9a517a7d", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task", "dfnText": "queue a task", "refSections": [{"refs": [{"id": "ref-for-queue-a-task"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-queue-a-task\u2460"}, {"id": "ref-for-queue-a-task\u2461"}, {"id": "ref-for-queue-a-task\u2462"}, {"id": "ref-for-queue-a-task\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-queue-a-task\u2464"}, {"id": "ref-for-queue-a-task\u2465"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-queue-a-task\u2466"}, {"id": "ref-for-queue-a-task\u2467"}, {"id": "ref-for-queue-a-task\u2468"}, {"id": "ref-for-queue-a-task\u2460\u24ea"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['9c4c1e66'] = {"dfnID": "9c4c1e66", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object", "dfnText": "relevant settings object", "refSections": [{"refs": [{"id": "ref-for-relevant-settings-object"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2460"}, {"id": "ref-for-relevant-settings-object\u2461"}, {"id": "ref-for-relevant-settings-object\u2462"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2463"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2464"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2465"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2466"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['7ca1d370'] = {"dfnID": "7ca1d370", "url": "https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-default", "dfnText": "\"default\"", "refSections": [{"refs": [{"id": "ref-for-dom-idbtransactiondurability-default"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['e86b5ce4'] = {"dfnID": "e86b5ce4", "url": "https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-relaxed", "dfnText": "\"relaxed\"", "refSections": [{"refs": [{"id": "ref-for-dom-idbtransactiondurability-relaxed"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['5fd5f41c'] = {"dfnID": "5fd5f41c", "url": "https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-strict", "dfnText": "\"strict\"", "refSections": [{"refs": [{"id": "ref-for-dom-idbtransactiondurability-strict"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['78f41bd1'] = {"dfnID": "78f41bd1", "url": "https://w3c.github.io/IndexedDB/#idbfactory", "dfnText": "IDBFactory", "refSections": [{"refs": [{"id": "ref-for-idbfactory"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-idbfactory\u2460"}, {"id": "ref-for-idbfactory\u2461"}, {"id": "ref-for-idbfactory\u2462"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['668bd53e'] = {"dfnID": "668bd53e", "url": "https://w3c.github.io/IndexedDB/#idbtransaction", "dfnText": "IDBTransaction", "refSections": [{"refs": [{"id": "ref-for-idbtransaction"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-idbtransaction\u2460"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['a5cbd966'] = {"dfnID": "a5cbd966", "url": "https://w3c.github.io/IndexedDB/#transaction-durability-hint", "dfnText": "durability hint", "refSections": [{"refs": [{"id": "ref-for-transaction-durability-hint"}, {"id": "ref-for-transaction-durability-hint\u2460"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['53275e46'] = {"dfnID": "53275e46", "url": "https://infra.spec.whatwg.org/#list-append", "dfnText": "append", "refSections": [{"refs": [{"id": "ref-for-list-append"}], "title": "1.3. Enumerating buckets"}], "external": true};
+window.dfnpanelData['3b38c2fe'] = {"dfnID": "3b38c2fe", "url": "https://infra.spec.whatwg.org/#ascii-digit", "dfnText": "ascii digit", "refSections": [{"refs": [{"id": "ref-for-ascii-digit"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['5661d95e'] = {"dfnID": "5661d95e", "url": "https://infra.spec.whatwg.org/#ascii-lower-alpha", "dfnText": "ascii lower alpha", "refSections": [{"refs": [{"id": "ref-for-ascii-lower-alpha"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['915aff5e'] = {"dfnID": "915aff5e", "url": "https://infra.spec.whatwg.org/#code-point", "dfnText": "code point", "refSections": [{"refs": [{"id": "ref-for-code-point"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['4ef39030'] = {"dfnID": "4ef39030", "url": "https://infra.spec.whatwg.org/#string-code-point-length", "dfnText": "code point length", "refSections": [{"refs": [{"id": "ref-for-string-code-point-length"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['b8958cfc'] = {"dfnID": "b8958cfc", "url": "https://infra.spec.whatwg.org/#code-unit-substring-by-positions", "dfnText": "code unit substring by positions", "refSections": [{"refs": [{"id": "ref-for-code-unit-substring-by-positions"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['860300d4'] = {"dfnID": "860300d4", "url": "https://infra.spec.whatwg.org/#implementation-defined", "dfnText": "implementation-defined", "refSections": [{"refs": [{"id": "ref-for-implementation-defined"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['d14a6f26'] = {"dfnID": "d14a6f26", "url": "https://infra.spec.whatwg.org/#map-key", "dfnText": "key", "refSections": [{"refs": [{"id": "ref-for-map-key"}], "title": "1.2. Deleting a bucket"}], "external": true};
+window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}], "title": "1.3. Enumerating buckets"}], "external": true};
+window.dfnpanelData['54627f47'] = {"dfnID": "54627f47", "url": "https://infra.spec.whatwg.org/#string-starts-with", "dfnText": "starts with", "refSections": [{"refs": [{"id": "ref-for-string-starts-with"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['0e8de730'] = {"dfnID": "0e8de730", "url": "https://infra.spec.whatwg.org/#tuple", "dfnText": "tuple", "refSections": [{"refs": [{"id": "ref-for-tuple"}, {"id": "ref-for-tuple\u2460"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['33438879'] = {"dfnID": "33438879", "url": "https://w3c.github.io/permissions/#dfn-getting-the-current-permission-state", "dfnText": "getting the current permission state", "refSections": [{"refs": [{"id": "ref-for-dfn-getting-the-current-permission-state"}], "title": "2.1. Persistence"}], "external": true};
+window.dfnpanelData['c6ce3c60'] = {"dfnID": "c6ce3c60", "url": "https://w3c.github.io/permissions/#dom-permissionstate-granted", "dfnText": "granted", "refSections": [{"refs": [{"id": "ref-for-dom-permissionstate-granted"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-dom-permissionstate-granted\u2460"}], "title": "2.1. Persistence"}], "external": true};
+window.dfnpanelData['d357c753'] = {"dfnID": "d357c753", "url": "https://w3c.github.io/permissions/#dfn-request-permission-to-use", "dfnText": "requesting permission to use", "refSections": [{"refs": [{"id": "ref-for-dfn-request-permission-to-use"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['f747b195'] = {"dfnID": "f747b195", "url": "https://w3c.github.io/ServiceWorker/#cachestorage", "dfnText": "CacheStorage", "refSections": [{"refs": [{"id": "ref-for-cachestorage"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-cachestorage\u2460"}, {"id": "ref-for-cachestorage\u2461"}], "title": "2.5.2. Using CacheStorage"}], "external": true};
+window.dfnpanelData['e7e8a4f7'] = {"dfnID": "e7e8a4f7", "url": "https://w3c.github.io/ServiceWorker/#dfn-relevant-name-to-cache-map", "dfnText": "relevant name to cache map", "refSections": [{"refs": [{"id": "ref-for-dfn-relevant-name-to-cache-map"}], "title": "2.5.2. Using CacheStorage"}], "external": true};
+window.dfnpanelData['48a84355'] = {"dfnID": "48a84355", "url": "https://storage.spec.whatwg.org/#dictdef-storageestimate", "dfnText": "StorageEstimate", "refSections": [{"refs": [{"id": "ref-for-dictdef-storageestimate"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-dictdef-storageestimate\u2460"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['7db4a4b7'] = {"dfnID": "7db4a4b7", "url": "https://storage.spec.whatwg.org/#bucket-map", "dfnText": "bucket map", "refSections": [{"refs": [{"id": "ref-for-bucket-map"}, {"id": "ref-for-bucket-map\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-bucket-map\u2461"}, {"id": "ref-for-bucket-map\u2462"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-bucket-map\u2463"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-bucket-map\u2464"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-bucket-map\u2465"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['b9712e0a'] = {"dfnID": "b9712e0a", "url": "https://storage.spec.whatwg.org/#bucket-mode", "dfnText": "bucket mode", "refSections": [{"refs": [{"id": "ref-for-bucket-mode"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-bucket-mode\u2460"}, {"id": "ref-for-bucket-mode\u2461"}, {"id": "ref-for-bucket-mode\u2462"}, {"id": "ref-for-bucket-mode\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-bucket-mode\u2464"}, {"id": "ref-for-bucket-mode\u2465"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['6bb9d790'] = {"dfnID": "6bb9d790", "url": "https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map", "dfnText": "obtain a local storage bottle map", "refSections": [{"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map"}], "title": "2.5.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map\u2460"}], "title": "2.5.2. Using CacheStorage"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map\u2461"}], "title": "2.5.3. Using an Origin Private File System"}], "external": true};
+window.dfnpanelData['caa5107f'] = {"dfnID": "caa5107f", "url": "https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf", "dfnText": "obtain a local storage shelf", "refSections": [{"refs": [{"id": "ref-for-obtain-a-local-storage-shelf"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2461"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2462"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2463"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['cd0c5fbe'] = {"dfnID": "cd0c5fbe", "url": "https://storage.spec.whatwg.org/#dom-storageestimate-quota", "dfnText": "quota", "refSections": [{"refs": [{"id": "ref-for-dom-storageestimate-quota"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['67130339'] = {"dfnID": "67130339", "url": "https://storage.spec.whatwg.org/#storage-bottle", "dfnText": "storage bottle", "refSections": [{"refs": [{"id": "ref-for-storage-bottle"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['eb592b41'] = {"dfnID": "eb592b41", "url": "https://storage.spec.whatwg.org/#storage-bottle-map", "dfnText": "storage bottle map", "refSections": [{"refs": [{"id": "ref-for-storage-bottle-map"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
+window.dfnpanelData['6148dd37'] = {"dfnID": "6148dd37", "url": "https://storage.spec.whatwg.org/#storage-bucket", "dfnText": "storage bucket", "refSections": [{"refs": [{"id": "ref-for-storage-bucket"}, {"id": "ref-for-storage-bucket\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storage-bucket\u2461"}, {"id": "ref-for-storage-bucket\u2462"}, {"id": "ref-for-storage-bucket\u2463"}, {"id": "ref-for-storage-bucket\u2464"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-storage-bucket\u2465"}, {"id": "ref-for-storage-bucket\u2466"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-storage-bucket\u2467"}, {"id": "ref-for-storage-bucket\u2468"}, {"id": "ref-for-storage-bucket\u2460\u24ea"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-storage-bucket\u2460\u2460"}, {"id": "ref-for-storage-bucket\u2460\u2461"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-storage-bucket\u2460\u2462"}, {"id": "ref-for-storage-bucket\u2460\u2463"}, {"id": "ref-for-storage-bucket\u2460\u2464"}], "title": "2.4. Expiration"}, {"refs": [{"id": "ref-for-storage-bucket\u2460\u2465"}], "title": "2.5.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-storage-bucket\u2460\u2466"}], "title": "2.5.2. Using CacheStorage"}, {"refs": [{"id": "ref-for-storage-bucket\u2460\u2467"}], "title": "2.5.3. Using an Origin Private File System"}, {"refs": [{"id": "ref-for-storage-bucket\u2460\u2468"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['cac8dd86'] = {"dfnID": "cac8dd86", "url": "https://storage.spec.whatwg.org/#storage-quota", "dfnText": "storage quota", "refSections": [{"refs": [{"id": "ref-for-storage-quota"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['daed3f4b'] = {"dfnID": "daed3f4b", "url": "https://storage.spec.whatwg.org/#storage-shelf", "dfnText": "storage shelf", "refSections": [{"refs": [{"id": "ref-for-storage-shelf"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['cb80877c'] = {"dfnID": "cb80877c", "url": "https://storage.spec.whatwg.org/#dom-storageestimate-usage", "dfnText": "usage", "refSections": [{"refs": [{"id": "ref-for-dom-storageestimate-usage"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['8855a9aa'] = {"dfnID": "8855a9aa", "url": "https://webidl.spec.whatwg.org/#idl-DOMString", "dfnText": "DOMString", "refSections": [{"refs": [{"id": "ref-for-idl-DOMString"}, {"id": "ref-for-idl-DOMString\u2460"}, {"id": "ref-for-idl-DOMString\u2461"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-idl-DOMString\u2462"}, {"id": "ref-for-idl-DOMString\u2463"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['889e932f'] = {"dfnID": "889e932f", "url": "https://webidl.spec.whatwg.org/#Exposed", "dfnText": "Exposed", "refSections": [{"refs": [{"id": "ref-for-Exposed"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-Exposed\u2460"}, {"id": "ref-for-Exposed\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['583654a9'] = {"dfnID": "583654a9", "url": "https://webidl.spec.whatwg.org/#invalidcharactererror", "dfnText": "InvalidCharacterError", "refSections": [{"refs": [{"id": "ref-for-invalidcharactererror"}], "title": "1.2. Deleting a bucket"}], "external": true};
+window.dfnpanelData['797018a7'] = {"dfnID": "797018a7", "url": "https://webidl.spec.whatwg.org/#invalidstateerror", "dfnText": "InvalidStateError", "refSections": [{"refs": [{"id": "ref-for-invalidstateerror"}, {"id": "ref-for-invalidstateerror\u2460"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-invalidstateerror\u2461"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-invalidstateerror\u2462"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-invalidstateerror\u2463"}, {"id": "ref-for-invalidstateerror\u2464"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}, {"id": "ref-for-idl-promise\u2460"}, {"id": "ref-for-idl-promise\u2461"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-idl-promise\u2462"}, {"id": "ref-for-idl-promise\u2463"}, {"id": "ref-for-idl-promise\u2464"}, {"id": "ref-for-idl-promise\u2465"}, {"id": "ref-for-idl-promise\u2466"}, {"id": "ref-for-idl-promise\u2467"}, {"id": "ref-for-idl-promise\u2468"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['a5c91173'] = {"dfnID": "a5c91173", "url": "https://webidl.spec.whatwg.org/#SameObject", "dfnText": "SameObject", "refSections": [{"refs": [{"id": "ref-for-SameObject"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-SameObject\u2460"}, {"id": "ref-for-SameObject\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['b75bb3bd'] = {"dfnID": "b75bb3bd", "url": "https://webidl.spec.whatwg.org/#SecureContext", "dfnText": "SecureContext", "refSections": [{"refs": [{"id": "ref-for-SecureContext"}, {"id": "ref-for-SecureContext\u2460"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-SecureContext\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['82ca3efc'] = {"dfnID": "82ca3efc", "url": "https://webidl.spec.whatwg.org/#exceptiondef-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-typeerror"}, {"id": "ref-for-exceptiondef-typeerror\u2460"}, {"id": "ref-for-exceptiondef-typeerror\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2462"}, {"id": "ref-for-exceptiondef-typeerror\u2463"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2464"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2465"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2466"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-a-new-promise\u2460"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-a-new-promise\u2461"}, {"id": "ref-for-a-new-promise\u2462"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-a-new-promise\u2463"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-a-new-promise\u2464"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-a-new-promise\u2465"}, {"id": "ref-for-a-new-promise\u2466"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['d0b4a948'] = {"dfnID": "d0b4a948", "url": "https://webidl.spec.whatwg.org/#a-promise-rejected-with", "dfnText": "a promise rejected with", "refSections": [{"refs": [{"id": "ref-for-a-promise-rejected-with"}, {"id": "ref-for-a-promise-rejected-with\u2460"}, {"id": "ref-for-a-promise-rejected-with\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2462"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2463"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2464"}, {"id": "ref-for-a-promise-rejected-with\u2465"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['8f5c2179'] = {"dfnID": "8f5c2179", "url": "https://webidl.spec.whatwg.org/#a-promise-resolved-with", "dfnText": "a promise resolved with", "refSections": [{"refs": [{"id": "ref-for-a-promise-resolved-with"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['5372cca8'] = {"dfnID": "5372cca8", "url": "https://webidl.spec.whatwg.org/#idl-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-idl-boolean"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2460"}, {"id": "ref-for-idl-boolean\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}, {"id": "ref-for-reject\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-reject\u2463"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-reject\u2464"}, {"id": "ref-for-reject\u2465"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-resolve\u2460"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-resolve\u2461"}, {"id": "ref-for-resolve\u2462"}, {"id": "ref-for-resolve\u2463"}, {"id": "ref-for-resolve\u2464"}, {"id": "ref-for-resolve\u2465"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-resolve\u2466"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-resolve\u2467"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-resolve\u2468"}, {"id": "ref-for-resolve\u2460\u24ea"}], "title": "2.4. Expiration"}], "external": true};
+window.dfnpanelData['9cce47fd'] = {"dfnID": "9cce47fd", "url": "https://webidl.spec.whatwg.org/#idl-sequence", "dfnText": "sequence", "refSections": [{"refs": [{"id": "ref-for-idl-sequence"}], "title": "1. The StorageBucketManager interface"}], "external": true};
+window.dfnpanelData['4013a022'] = {"dfnID": "4013a022", "url": "https://webidl.spec.whatwg.org/#this", "dfnText": "this", "refSections": [{"refs": [{"id": "ref-for-this"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-this\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-this\u2461"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-this\u2462"}, {"id": "ref-for-this\u2463"}, {"id": "ref-for-this\u2464"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-this\u2465"}, {"id": "ref-for-this\u2466"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-this\u2467"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-this\u2468"}, {"id": "ref-for-this\u2460\u24ea"}], "title": "2.4. Expiration"}, {"refs": [{"id": "ref-for-this\u2460\u2460"}, {"id": "ref-for-this\u2460\u2461"}, {"id": "ref-for-this\u2460\u2462"}, {"id": "ref-for-this\u2460\u2463"}], "title": "2.5.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-this\u2460\u2464"}, {"id": "ref-for-this\u2460\u2465"}, {"id": "ref-for-this\u2460\u2466"}, {"id": "ref-for-this\u2460\u2467"}], "title": "2.5.2. Using CacheStorage"}, {"refs": [{"id": "ref-for-this\u2460\u2468"}], "title": "2.5.3. Using an Origin Private File System"}, {"refs": [{"id": "ref-for-this\u2461\u24ea"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['b4cfa5ce'] = {"dfnID": "b4cfa5ce", "url": "https://webidl.spec.whatwg.org/#dfn-throw", "dfnText": "throw", "refSections": [{"refs": [{"id": "ref-for-dfn-throw"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['5f90bbfb'] = {"dfnID": "5f90bbfb", "url": "https://webidl.spec.whatwg.org/#idl-undefined", "dfnText": "undefined", "refSections": [{"refs": [{"id": "ref-for-idl-undefined"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-idl-undefined\u2460"}], "title": "2. The StorageBucket interface"}], "external": true};
+window.dfnpanelData['f14b47b8'] = {"dfnID": "f14b47b8", "url": "https://webidl.spec.whatwg.org/#idl-unsigned-long-long", "dfnText": "unsigned long long", "refSections": [{"refs": [{"id": "ref-for-idl-unsigned-long-long"}], "title": "1. The StorageBucketManager interface"}], "external": true};
+window.dfnpanelData['navigatorstoragebuckets'] = {"dfnID": "navigatorstoragebuckets", "url": "#navigatorstoragebuckets", "dfnText": "NavigatorStorageBuckets", "refSections": [{"refs": [{"id": "ref-for-navigatorstoragebuckets"}, {"id": "ref-for-navigatorstoragebuckets\u2460"}], "title": "1. The StorageBucketManager interface"}], "external": false};
+window.dfnpanelData['dom-navigatorstoragebuckets-storagebuckets'] = {"dfnID": "dom-navigatorstoragebuckets-storagebuckets", "url": "#dom-navigatorstoragebuckets-storagebuckets", "dfnText": "storageBuckets", "refSections": [{"refs": [{"id": "ref-for-dom-navigatorstoragebuckets-storagebuckets"}], "title": "1. The StorageBucketManager interface"}], "external": false};
+window.dfnpanelData['storagebucketmanager'] = {"dfnID": "storagebucketmanager", "url": "#storagebucketmanager", "dfnText": "StorageBucketManager", "refSections": [{"refs": [{"id": "ref-for-storagebucketmanager"}, {"id": "ref-for-storagebucketmanager\u2460"}, {"id": "ref-for-storagebucketmanager\u2461"}, {"id": "ref-for-storagebucketmanager\u2462"}], "title": "1. The StorageBucketManager interface"}], "external": false};
+window.dfnpanelData['enumdef-storagebucketdurability'] = {"dfnID": "enumdef-storagebucketdurability", "url": "#enumdef-storagebucketdurability", "dfnText": "StorageBucketDurability", "refSections": [{"refs": [{"id": "ref-for-enumdef-storagebucketdurability"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-enumdef-storagebucketdurability\u2460"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-enumdef-storagebucketdurability\u2461"}], "title": "2.3. Durability"}], "external": false};
+window.dfnpanelData['dom-storagebucketdurability-strict'] = {"dfnID": "dom-storagebucketdurability-strict", "url": "#dom-storagebucketdurability-strict", "dfnText": "\"strict\"", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketdurability-strict"}, {"id": "ref-for-dom-storagebucketdurability-strict\u2460"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-dom-storagebucketdurability-strict\u2461"}], "title": "2.5.1. Using Indexed Database"}], "external": false};
+window.dfnpanelData['dom-storagebucketdurability-relaxed'] = {"dfnID": "dom-storagebucketdurability-relaxed", "url": "#dom-storagebucketdurability-relaxed", "dfnText": "\"relaxed\"", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketdurability-relaxed"}, {"id": "ref-for-dom-storagebucketdurability-relaxed\u2460"}], "title": "2.3. Durability"}], "external": false};
+window.dfnpanelData['dictdef-storagebucketoptions'] = {"dfnID": "dictdef-storagebucketoptions", "url": "#dictdef-storagebucketoptions", "dfnText": "StorageBucketOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-storagebucketoptions"}], "title": "1. The StorageBucketManager interface"}], "external": false};
+window.dfnpanelData['dom-storagebucketoptions-persisted'] = {"dfnID": "dom-storagebucketoptions-persisted", "url": "#dom-storagebucketoptions-persisted", "dfnText": "persisted", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketoptions-persisted"}], "title": "1.1. Creating a bucket"}], "external": false};
+window.dfnpanelData['dom-storagebucketoptions-durability'] = {"dfnID": "dom-storagebucketoptions-durability", "url": "#dom-storagebucketoptions-durability", "dfnText": "durability", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketoptions-durability"}, {"id": "ref-for-dom-storagebucketoptions-durability\u2460"}], "title": "1.1. Creating a bucket"}], "external": false};
+window.dfnpanelData['dom-storagebucketoptions-quota'] = {"dfnID": "dom-storagebucketoptions-quota", "url": "#dom-storagebucketoptions-quota", "dfnText": "quota", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketoptions-quota"}, {"id": "ref-for-dom-storagebucketoptions-quota\u2460"}], "title": "1.1. Creating a bucket"}], "external": false};
+window.dfnpanelData['dom-storagebucketoptions-expires'] = {"dfnID": "dom-storagebucketoptions-expires", "url": "#dom-storagebucketoptions-expires", "dfnText": "expires", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketoptions-expires"}, {"id": "ref-for-dom-storagebucketoptions-expires\u2460"}], "title": "1.1. Creating a bucket"}], "external": false};
+window.dfnpanelData['dom-storagebucketmanager-open'] = {"dfnID": "dom-storagebucketmanager-open", "url": "#dom-storagebucketmanager-open", "dfnText": "open(name, options)", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketmanager-open"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-dom-storagebucketmanager-open\u2460"}, {"id": "ref-for-dom-storagebucketmanager-open\u2461"}], "title": "2.4. Expiration"}], "external": false};
+window.dfnpanelData['open-a-bucket'] = {"dfnID": "open-a-bucket", "url": "#open-a-bucket", "dfnText": "open a bucket", "refSections": [{"refs": [{"id": "ref-for-open-a-bucket"}], "title": "1.1. Creating a bucket"}], "external": false};
+window.dfnpanelData['validate-a-bucket-name'] = {"dfnID": "validate-a-bucket-name", "url": "#validate-a-bucket-name", "dfnText": "validate a bucket name", "refSections": [{"refs": [{"id": "ref-for-validate-a-bucket-name"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-validate-a-bucket-name\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-validate-a-bucket-name\u2461"}], "title": "2.6. Clear Site Data integration"}], "external": false};
+window.dfnpanelData['get-or-expire-a-bucket'] = {"dfnID": "get-or-expire-a-bucket", "url": "#get-or-expire-a-bucket", "dfnText": "get or expire a bucket", "refSections": [{"refs": [{"id": "ref-for-get-or-expire-a-bucket"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-get-or-expire-a-bucket\u2460"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-get-or-expire-a-bucket\u2461"}], "title": "2.4. Expiration"}], "external": false};
+window.dfnpanelData['dom-storagebucketmanager-delete'] = {"dfnID": "dom-storagebucketmanager-delete", "url": "#dom-storagebucketmanager-delete", "dfnText": "delete(name)", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketmanager-delete"}], "title": "1. The StorageBucketManager interface"}], "external": false};
+window.dfnpanelData['remove-a-bucket'] = {"dfnID": "remove-a-bucket", "url": "#remove-a-bucket", "dfnText": "remove a bucket", "refSections": [{"refs": [{"id": "ref-for-remove-a-bucket"}], "title": "1.2. Deleting a bucket"}], "external": false};
+window.dfnpanelData['dom-storagebucketmanager-keys'] = {"dfnID": "dom-storagebucketmanager-keys", "url": "#dom-storagebucketmanager-keys", "dfnText": "keys()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketmanager-keys"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-dom-storagebucketmanager-keys\u2460"}, {"id": "ref-for-dom-storagebucketmanager-keys\u2461"}], "title": "2.4. Expiration"}], "external": false};
+window.dfnpanelData['storagebucket'] = {"dfnID": "storagebucket", "url": "#storagebucket", "dfnText": "StorageBucket", "refSections": [{"refs": [{"id": "ref-for-storagebucket"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-storagebucket\u2460"}, {"id": "ref-for-storagebucket\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storagebucket\u2462"}, {"id": "ref-for-storagebucket\u2463"}, {"id": "ref-for-storagebucket\u2464"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-storagebucket\u2465"}], "title": "2.5.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-storagebucket\u2466"}], "title": "2.5.2. Using CacheStorage"}], "external": false};
+window.dfnpanelData['storage-bucket-removed'] = {"dfnID": "storage-bucket-removed", "url": "#storage-bucket-removed", "dfnText": "removed", "refSections": [{"refs": [{"id": "ref-for-storage-bucket-removed"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storage-bucket-removed\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-storage-bucket-removed\u2461"}, {"id": "ref-for-storage-bucket-removed\u2462"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-storage-bucket-removed\u2463"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-storage-bucket-removed\u2464"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-storage-bucket-removed\u2465"}, {"id": "ref-for-storage-bucket-removed\u2466"}], "title": "2.4. Expiration"}], "external": false};
+window.dfnpanelData['dom-storagebucket-name'] = {"dfnID": "dom-storagebucket-name", "url": "#dom-storagebucket-name", "dfnText": "name", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-name"}], "title": "2. The StorageBucket interface"}], "external": false};
+window.dfnpanelData['dom-storagebucket-persist'] = {"dfnID": "dom-storagebucket-persist", "url": "#dom-storagebucket-persist", "dfnText": "persist()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-persist"}], "title": "2. The StorageBucket interface"}], "external": false};
+window.dfnpanelData['dom-storagebucket-persisted'] = {"dfnID": "dom-storagebucket-persisted", "url": "#dom-storagebucket-persisted", "dfnText": "persisted()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-persisted"}], "title": "2. The StorageBucket interface"}], "external": false};
+window.dfnpanelData['storagebucket-quota-value'] = {"dfnID": "storagebucket-quota-value", "url": "#storagebucket-quota-value", "dfnText": "quota value", "refSections": [{"refs": [{"id": "ref-for-storagebucket-quota-value"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storagebucket-quota-value\u2460"}, {"id": "ref-for-storagebucket-quota-value\u2461"}], "title": "2.2. Quota"}], "external": false};
+window.dfnpanelData['storage-bucket-storage-usage'] = {"dfnID": "storage-bucket-storage-usage", "url": "#storage-bucket-storage-usage", "dfnText": "storage usage", "refSections": [{"refs": [{"id": "ref-for-storage-bucket-storage-usage"}], "title": "2.2. Quota"}], "external": false};
+window.dfnpanelData['dom-storagebucket-estimate'] = {"dfnID": "dom-storagebucket-estimate", "url": "#dom-storagebucket-estimate", "dfnText": "estimate()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-estimate"}], "title": "2. The StorageBucket interface"}], "external": false};
+window.dfnpanelData['storagebucket-durability-value'] = {"dfnID": "storagebucket-durability-value", "url": "#storagebucket-durability-value", "dfnText": "durability value", "refSections": [{"refs": [{"id": "ref-for-storagebucket-durability-value"}, {"id": "ref-for-storagebucket-durability-value\u2460"}, {"id": "ref-for-storagebucket-durability-value\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storagebucket-durability-value\u2462"}, {"id": "ref-for-storagebucket-durability-value\u2463"}, {"id": "ref-for-storagebucket-durability-value\u2464"}, {"id": "ref-for-storagebucket-durability-value\u2465"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-storagebucket-durability-value\u2466"}, {"id": "ref-for-storagebucket-durability-value\u2467"}], "title": "2.5.1. Using Indexed Database"}], "external": false};
+window.dfnpanelData['dom-storagebucket-durability'] = {"dfnID": "dom-storagebucket-durability", "url": "#dom-storagebucket-durability", "dfnText": "durability()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-durability"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-dom-storagebucket-durability\u2460"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-dom-storagebucket-durability\u2461"}], "title": "2.3. Durability"}], "external": false};
+window.dfnpanelData['storagebucket-expiration-time'] = {"dfnID": "storagebucket-expiration-time", "url": "#storagebucket-expiration-time", "dfnText": "expiration time", "refSections": [{"refs": [{"id": "ref-for-storagebucket-expiration-time"}, {"id": "ref-for-storagebucket-expiration-time\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storagebucket-expiration-time\u2461"}, {"id": "ref-for-storagebucket-expiration-time\u2462"}, {"id": "ref-for-storagebucket-expiration-time\u2463"}], "title": "2.4. Expiration"}], "external": false};
+window.dfnpanelData['dom-storagebucket-setexpires'] = {"dfnID": "dom-storagebucket-setexpires", "url": "#dom-storagebucket-setexpires", "dfnText": "setExpires(expires)", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-setexpires"}], "title": "2. The StorageBucket interface"}], "external": false};
+window.dfnpanelData['dom-storagebucket-expires'] = {"dfnID": "dom-storagebucket-expires", "url": "#dom-storagebucket-expires", "dfnText": "expires()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-expires"}], "title": "2. The StorageBucket interface"}], "external": false};
+window.dfnpanelData['dom-storagebucket-indexeddb'] = {"dfnID": "dom-storagebucket-indexeddb", "url": "#dom-storagebucket-indexeddb", "dfnText": "indexedDB", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-indexeddb"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-dom-storagebucket-indexeddb\u2460"}, {"id": "ref-for-dom-storagebucket-indexeddb\u2461"}, {"id": "ref-for-dom-storagebucket-indexeddb\u2462"}], "title": "2.5.1. Using Indexed Database"}], "external": false};
+window.dfnpanelData['dom-storagebucket-caches'] = {"dfnID": "dom-storagebucket-caches", "url": "#dom-storagebucket-caches", "dfnText": "caches", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-caches"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-dom-storagebucket-caches\u2460"}, {"id": "ref-for-dom-storagebucket-caches\u2461"}, {"id": "ref-for-dom-storagebucket-caches\u2462"}], "title": "2.5.2. Using CacheStorage"}], "external": false};
+window.dfnpanelData['dom-storagebucket-getdirectory'] = {"dfnID": "dom-storagebucket-getdirectory", "url": "#dom-storagebucket-getdirectory", "dfnText": "getDirectory()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-getdirectory"}], "title": "2. The StorageBucket interface"}], "external": false};</script>
+<script>/* script-dom-helper */
+function query(sel) { return document.querySelector(sel); }
+
+function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
+
+function iter(obj) {
+	if(!obj) return [];
+	var it = obj[Symbol.iterator];
+	if(it) return it;
+	return Object.entries(obj);
+}
+
+function mk(tagname, attrs, ...children) {
+	const el = document.createElement(tagname);
+	for(const [k,v] of iter(attrs)) {
+		if(k.slice(0,3) == "_on") {
+			const eventName = k.slice(3);
+			el.addEventListener(eventName, v);
+		} else if(k[0] == "_") {
+			// property, not attribute
+			el[k.slice(1)] = v;
+		} else {
+			if(v === false || v == null) {
+        continue;
+      } else if(v === true) {
+        el.setAttribute(k, "");
+        continue;
+      } else {
+  			el.setAttribute(k, v);
+      }
+		}
+	}
+	append(el, children);
+	return el;
+}
+
+/* Create shortcuts for every known HTML element */
+[
+  "a",
+  "abbr",
+  "acronym",
+  "address",
+  "applet",
+  "area",
+  "article",
+  "aside",
+  "audio",
+  "b",
+  "base",
+  "basefont",
+  "bdo",
+  "big",
+  "blockquote",
+  "body",
+  "br",
+  "button",
+  "canvas",
+  "caption",
+  "center",
+  "cite",
+  "code",
+  "col",
+  "colgroup",
+  "datalist",
+  "dd",
+  "del",
+  "details",
+  "dfn",
+  "dialog",
+  "div",
+  "dl",
+  "dt",
+  "em",
+  "embed",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "font",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "head",
+  "header",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "html",
+  "i",
+  "iframe",
+  "img",
+  "input",
+  "ins",
+  "kbd",
+  "label",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "map",
+  "mark",
+  "meta",
+  "meter",
+  "nav",
+  "nobr",
+  "noscript",
+  "object",
+  "ol",
+  "optgroup",
+  "option",
+  "output",
+  "p",
+  "param",
+  "pre",
+  "progress",
+  "q",
+  "s",
+  "samp",
+  "script",
+  "section",
+  "select",
+  "small",
+  "source",
+  "span",
+  "strike",
+  "strong",
+  "style",
+  "sub",
+  "summary",
+  "sup",
+  "table",
+  "tbody",
+  "td",
+  "template",
+  "textarea",
+  "tfoot",
+  "th",
+  "thead",
+  "time",
+  "title",
+  "tr",
+  "u",
+  "ul",
+  "var",
+  "video",
+  "wbr",
+  "xmp",
+].forEach(tagname=>{
+	mk[tagname] = (...args) => mk(tagname, ...args);
+});
+
+function* nodesFromChildList(children) {
+	for(const child of children.flat(Infinity)) {
+		if(child instanceof Node) {
+			yield child;
+		} else {
+			yield new Text(child);
+		}
+	}
+}
+function append(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		if(el instanceof Node) el.appendChild(child);
+		else el.push(child);
+	}
+	return el;
+}
+
+function insertAfter(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		el.parentNode.insertBefore(child, el.nextSibling);
+	}
+	return el;
+}
+
+function clearContents(el) {
+	el.innerHTML = "";
+	return el;
+}
+
+function parseHTML(markup) {
+	if(markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+		const doc = document.implementation.createHTMLDocument("");
+		doc.documentElement.innerHTML = markup;
+		return doc;
+	} else {
+		const el = mk.template({});
+		el.innerHTML = markup;
+		return el.content;
+	}
+}</script>
 <script>/* script-var-click-highlighting */
 
     "use strict";
@@ -2386,4 +2022,4 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
             return "selected" + index;
         }
     }
-    </script>
+</script>
