@@ -759,6 +759,18 @@ disk space. However, the Chrome team thinks that having anything under
 the use of buckets. The Chrome team thinks developers should be able to use
 all available quota for an origin in one storage bucket.
 
+## Privacy and Security considerations
+
+The Storage Buckets API and its implementation do not introduce any new security concerns. This feature
+does not expose any new sensitive information, and information stored in buckets follows the same-origin
+principle. Data stored in buckets is no more broadly or narrowly accessible than data stored traditionally
+(i.e. in the default bucket). In either case, data is only accessible within the same storage partition.
+
+Storage Buckets give site authors more fine-grained control over data deletion by offering several methods
+for deleting specific buckets (manually, via expiration, Clear-Site-Data). Overall, this encourages sites to
+keep less data. However, buckets do not improve or detract from an end user's ability to manage their own
+data, so the privacy impact is minimal.
+
 ## Considered alternatives
 
 ### Expose the API off of navigator.storage.buckets
