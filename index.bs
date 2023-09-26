@@ -201,9 +201,9 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
     1. Let |r| be the result of running [=remove a bucket=] with |shelf| and |name|.
     
-    1. If |r| is failure, then [=/reject=] |p| with {{TypeError}}.
+    1. If |r| is failure, then [=queue a storage task=] to [=/reject=] |p| with {{TypeError}}.
 
-    1. Otherwise, [=/resolve=] |p|.
+    1. Otherwise, [=queue a storage task=] to [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -325,7 +325,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
         1. If |permission| is "{{PermissionState/granted}}", then set |bucket|'s [=bucket mode=] to `"persistent"` and [=queue a storage task=] to [=/resolve=] |p| with true.
 
-        1. Otherwise, [=/resolve=] |p| with false.
+        1. Otherwise, [=queue a storage task=] to [=/resolve=] |p| with false.
 
 1. Return |p|.
 
@@ -386,7 +386,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
     1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
 
-    1. [=/Resolve=] |p| with |dictionary|.
+    1. [=Queue a storage task=] to [=/resolve=] |p| with |dictionary|.
 
 1. Return |p|.
 
