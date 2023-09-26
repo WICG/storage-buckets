@@ -506,9 +506,9 @@ have not yet but uploaded to the server and are irrecoverable if lost.
 
 In this scenario, the `drafts` bucket is created with `persisted: true` and
 `durability: "strict"` to specify that it should not be evicted upon storage
-pressure, and all data should survive power failures at the cost of more
-battery consumption. The `recent` bucket will be evicted upon storage pressure because
-of its low priority, since it contains data that can be recovered from the server.
+pressure, and to reduce the risk of data loss at the cost of performance and
+power consumption. The `recent` bucket is deemed lower priority, so it can be
+evicted on storage pressure, and thus persistence is not requested.
 
 ```javascript
 const recentBucket = await navigator.storageBuckets.open("recent",
