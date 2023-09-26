@@ -4,10 +4,10 @@
   <title>Storage Buckets API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 3383f409d, updated Fri Apr 28 15:49:22 2023 -0700" name="generator">
+  <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="5ee9fa9d5944e8e45711060057ed0bbe52c4cb39" name="document-revision">
-<style>/* style-autolinks */
+  <meta content="2fca6e7c5ae7ccd005371d871b0a54efcaa53a71" name="document-revision">
+<style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
     font-size: inherit;
@@ -68,8 +68,16 @@ pre .property::before, pre .property::after {
 [data-link-type=biblio] {
     white-space: pre;
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --selflink-text: black;
+        --selflink-bg: silver;
+        --selflink-hover-text: white;
+    }
+}
 </style>
-<style>/* style-colors */
+<style>/* Boilerplate: style-colors */
 
 /* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
 :root {
@@ -178,236 +186,6 @@ pre .property::before, pre .property::after {
 
     --editedrec-bg: darkorange;
 }
-</style>
-<style>/* style-counters */
-body {
-    counter-reset: example figure issue;
-}
-.issue {
-    counter-increment: issue;
-}
-.issue:not(.no-marker)::before {
-    content: "Issue " counter(issue);
-}
-
-.example {
-    counter-increment: example;
-}
-.example:not(.no-marker)::before {
-    content: "Example " counter(example);
-}
-.invalid.example:not(.no-marker)::before,
-.illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
-}
-
-figcaption {
-    counter-increment: figure;
-}
-figcaption:not(.no-marker)::before {
-    content: "Figure " counter(figure) " ";
-}
-</style>
-<style>/* style-dfn-panel */
-:root {
-    --dfnpanel-bg: #ddd;
-    --dfnpanel-text: var(--text);
-}
-.dfn-panel {
-    position: absolute;
-    z-index: 35;
-    width: 20em;
-    width: 300px;
-    height: auto;
-    max-height: 500px;
-    overflow: auto;
-    padding: 0.5em 0.75em;
-    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-    background: var(--dfnpanel-bg);
-    color: var(--dfnpanel-text);
-    border: outset 0.2em;
-    white-space: normal; /* in case it's moved into a pre */
-}
-.dfn-panel:not(.on) { display: none; }
-.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
-.dfn-panel > b { display: block; }
-.dfn-panel a { color: var(--dfnpanel-text); }
-.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
-.dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
-.dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
-    max-width: calc(300px - 1.5em - 1em);
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dfn-panel.activated {
-    display: inline-block;
-    position: fixed;
-    left: .5em;
-    bottom: 2em;
-    margin: 0 auto;
-    max-width: calc(100vw - 1.5em - .4em - .5em);
-    max-height: 30vh;
-}
-
-.dfn-paneled[role="button"] { cursor: pointer; }
-</style>
-<style>/* style-issues */
-a[href].issue-return {
-    float: right;
-    float: inline-end;
-    color: var(--issueheading-text);
-    font-weight: bold;
-    text-decoration: none;
-}
-</style>
-<style>/* style-md-lists */
-/* This is a weird hack for me not yet following the commonmark spec
-   regarding paragraph and lists. */
-[data-md] > :first-child {
-    margin-top: 0;
-}
-[data-md] > :last-child {
-    margin-bottom: 0;
-}
-</style>
-<style>/* style-selflinks */
-
-:root {
-    --selflink-text: white;
-    --selflink-bg: gray;
-    --selflink-hover-text: black;
-}
-.heading, .issue, .note, .example, li, dt {
-    position: relative;
-}
-a.self-link {
-    position: absolute;
-    top: 0;
-    left: calc(-1 * (3.5rem - 26px));
-    width: calc(3.5rem - 26px);
-    height: 2em;
-    text-align: center;
-    border: none;
-    transition: opacity .2s;
-    opacity: .5;
-}
-a.self-link:hover {
-    opacity: 1;
-}
-.heading > a.self-link {
-    font-size: 83%;
-}
-.example > a.self-link,
-.note > a.self-link,
-.issue > a.self-link {
-    /* These blocks are overflow:auto, so positioning outside
-       doesn't work. */
-    left: auto;
-    right: 0;
-}
-li > a.self-link {
-    left: calc(-1 * (3.5rem - 26px) - 2em);
-}
-dfn > a.self-link {
-    top: auto;
-    left: auto;
-    opacity: 0;
-    width: 1.5em;
-    height: 1.5em;
-    background: var(--selflink-bg);
-    color: var(--selflink-text);
-    font-style: normal;
-    transition: opacity .2s, background-color .2s, color .2s;
-}
-dfn:hover > a.self-link {
-    opacity: 1;
-}
-dfn > a.self-link:hover {
-    color: var(--selflink-hover-text);
-}
-
-a.self-link::before            { content: "¶"; }
-.heading > a.self-link::before { content: "§"; }
-dfn > a.self-link::before      { content: "#"; }
-</style>
-<style>/* style-syntax-highlighting */
-
-            pre.idl.highlight {
-                background: var(--borderedblock-bg, var(--def-bg));
-            }
-            
-code.highlight { padding: .1em; border-radius: .3em; }
-pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
-
-.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
-c-[a] { color: #990055 } /* Keyword.Declaration */
-c-[b] { color: #990055 } /* Keyword.Type */
-c-[c] { color: #708090 } /* Comment */
-c-[d] { color: #708090 } /* Comment.Multiline */
-c-[e] { color: #0077aa } /* Name.Attribute */
-c-[f] { color: #669900 } /* Name.Tag */
-c-[g] { color: #222222 } /* Name.Variable */
-c-[k] { color: #990055 } /* Keyword */
-c-[l] { color: #000000 } /* Literal */
-c-[m] { color: #000000 } /* Literal.Number */
-c-[n] { color: #0077aa } /* Name */
-c-[o] { color: #999999 } /* Operator */
-c-[p] { color: #999999 } /* Punctuation */
-c-[s] { color: #a67f59 } /* Literal.String */
-c-[t] { color: #a67f59 } /* Literal.String.Single */
-c-[u] { color: #a67f59 } /* Literal.String.Double */
-c-[cp] { color: #708090 } /* Comment.Preproc */
-c-[c1] { color: #708090 } /* Comment.Single */
-c-[cs] { color: #708090 } /* Comment.Special */
-c-[kc] { color: #990055 } /* Keyword.Constant */
-c-[kn] { color: #990055 } /* Keyword.Namespace */
-c-[kp] { color: #990055 } /* Keyword.Pseudo */
-c-[kr] { color: #990055 } /* Keyword.Reserved */
-c-[ld] { color: #000000 } /* Literal.Date */
-c-[nc] { color: #0077aa } /* Name.Class */
-c-[no] { color: #0077aa } /* Name.Constant */
-c-[nd] { color: #0077aa } /* Name.Decorator */
-c-[ni] { color: #0077aa } /* Name.Entity */
-c-[ne] { color: #0077aa } /* Name.Exception */
-c-[nf] { color: #0077aa } /* Name.Function */
-c-[nl] { color: #0077aa } /* Name.Label */
-c-[nn] { color: #0077aa } /* Name.Namespace */
-c-[py] { color: #0077aa } /* Name.Property */
-c-[ow] { color: #999999 } /* Operator.Word */
-c-[mb] { color: #000000 } /* Literal.Number.Bin */
-c-[mf] { color: #000000 } /* Literal.Number.Float */
-c-[mh] { color: #000000 } /* Literal.Number.Hex */
-c-[mi] { color: #000000 } /* Literal.Number.Integer */
-c-[mo] { color: #000000 } /* Literal.Number.Oct */
-c-[sb] { color: #a67f59 } /* Literal.String.Backtick */
-c-[sc] { color: #a67f59 } /* Literal.String.Char */
-c-[sd] { color: #a67f59 } /* Literal.String.Doc */
-c-[se] { color: #a67f59 } /* Literal.String.Escape */
-c-[sh] { color: #a67f59 } /* Literal.String.Heredoc */
-c-[si] { color: #a67f59 } /* Literal.String.Interpol */
-c-[sx] { color: #a67f59 } /* Literal.String.Other */
-c-[sr] { color: #a67f59 } /* Literal.String.Regex */
-c-[ss] { color: #a67f59 } /* Literal.String.Symbol */
-c-[vc] { color: #0077aa } /* Name.Variable.Class */
-c-[vg] { color: #0077aa } /* Name.Variable.Global */
-c-[vi] { color: #0077aa } /* Name.Variable.Instance */
-c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
-</style>
-<style>/* style-var-click-highlighting */
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
-</style>
-<style>/* style-darkmode */
 
 @media (prefers-color-scheme: dark) {
     :root {
@@ -520,21 +298,287 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
        which is quite common in practice... */
     img { background: white; }
 }
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --selflink-text: black;
-        --selflink-bg: silver;
-        --selflink-hover-text: white;
-    }
+</style>
+<style>/* Boilerplate: style-counters */
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
 }
 
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
+
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}
+</style>
+<style>/* Boilerplate: style-dfn-panel */
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+}
 @media (prefers-color-scheme: dark) {
     :root {
         --dfnpanel-bg: #222;
         --dfnpanel-text: var(--text);
     }
 }
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
+
+.dfn-paneled[role="button"] { cursor: pointer; }
+</style>
+<style>/* Boilerplate: style-dfn-panel */
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+    }
+}
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
+
+.dfn-paneled[role="button"] { cursor: pointer; }
+</style>
+<style>/* Boilerplate: style-issues */
+a[href].issue-return {
+    float: right;
+    float: inline-end;
+    color: var(--issueheading-text);
+    font-weight: bold;
+    text-decoration: none;
+}
+</style>
+<style>/* Boilerplate: style-md-lists */
+/* This is a weird hack for me not yet following the commonmark spec
+   regarding paragraph and lists. */
+[data-md] > :first-child {
+    margin-top: 0;
+}
+[data-md] > :last-child {
+    margin-bottom: 0;
+}
+</style>
+<style>/* Boilerplate: style-selflinks */
+
+:root {
+    --selflink-text: white;
+    --selflink-bg: gray;
+    --selflink-hover-text: black;
+}
+.heading, .issue, .note, .example, li, dt {
+    position: relative;
+}
+a.self-link {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * (3.5rem - 26px));
+    width: calc(3.5rem - 26px);
+    height: 2em;
+    text-align: center;
+    border: none;
+    transition: opacity .2s;
+    opacity: .5;
+}
+a.self-link:hover {
+    opacity: 1;
+}
+.heading > a.self-link {
+    font-size: 83%;
+}
+.example > a.self-link,
+.note > a.self-link,
+.issue > a.self-link {
+    /* These blocks are overflow:auto, so positioning outside
+       doesn't work. */
+    left: auto;
+    right: 0;
+}
+li > a.self-link {
+    left: calc(-1 * (3.5rem - 26px) - 2em);
+}
+dfn > a.self-link {
+    top: auto;
+    left: auto;
+    opacity: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background: var(--selflink-bg);
+    color: var(--selflink-text);
+    font-style: normal;
+    transition: opacity .2s, background-color .2s, color .2s;
+}
+dfn:hover > a.self-link {
+    opacity: 1;
+}
+dfn > a.self-link:hover {
+    color: var(--selflink-hover-text);
+}
+
+a.self-link::before            { content: "¶"; }
+.heading > a.self-link::before { content: "§"; }
+dfn > a.self-link::before      { content: "#"; }
+</style>
+<style>/* Boilerplate: style-syntax-highlighting */
+
+            pre.idl.highlight {
+                background: var(--borderedblock-bg, var(--def-bg));
+            }
+            
+</style>
+<style>/* Boilerplate: style-syntax-highlighting */
+
+code.highlight { padding: .1em; border-radius: .3em; }
+pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+
+.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
+c-[a] { color: #990055 } /* Keyword.Declaration */
+c-[b] { color: #990055 } /* Keyword.Type */
+c-[c] { color: #708090 } /* Comment */
+c-[d] { color: #708090 } /* Comment.Multiline */
+c-[e] { color: #0077aa } /* Name.Attribute */
+c-[f] { color: #669900 } /* Name.Tag */
+c-[g] { color: #222222 } /* Name.Variable */
+c-[k] { color: #990055 } /* Keyword */
+c-[l] { color: #000000 } /* Literal */
+c-[m] { color: #000000 } /* Literal.Number */
+c-[n] { color: #0077aa } /* Name */
+c-[o] { color: #999999 } /* Operator */
+c-[p] { color: #999999 } /* Punctuation */
+c-[s] { color: #a67f59 } /* Literal.String */
+c-[t] { color: #a67f59 } /* Literal.String.Single */
+c-[u] { color: #a67f59 } /* Literal.String.Double */
+c-[cp] { color: #708090 } /* Comment.Preproc */
+c-[c1] { color: #708090 } /* Comment.Single */
+c-[cs] { color: #708090 } /* Comment.Special */
+c-[kc] { color: #990055 } /* Keyword.Constant */
+c-[kn] { color: #990055 } /* Keyword.Namespace */
+c-[kp] { color: #990055 } /* Keyword.Pseudo */
+c-[kr] { color: #990055 } /* Keyword.Reserved */
+c-[ld] { color: #000000 } /* Literal.Date */
+c-[nc] { color: #0077aa } /* Name.Class */
+c-[no] { color: #0077aa } /* Name.Constant */
+c-[nd] { color: #0077aa } /* Name.Decorator */
+c-[ni] { color: #0077aa } /* Name.Entity */
+c-[ne] { color: #0077aa } /* Name.Exception */
+c-[nf] { color: #0077aa } /* Name.Function */
+c-[nl] { color: #0077aa } /* Name.Label */
+c-[nn] { color: #0077aa } /* Name.Namespace */
+c-[py] { color: #0077aa } /* Name.Property */
+c-[ow] { color: #999999 } /* Operator.Word */
+c-[mb] { color: #000000 } /* Literal.Number.Bin */
+c-[mf] { color: #000000 } /* Literal.Number.Float */
+c-[mh] { color: #000000 } /* Literal.Number.Hex */
+c-[mi] { color: #000000 } /* Literal.Number.Integer */
+c-[mo] { color: #000000 } /* Literal.Number.Oct */
+c-[sb] { color: #a67f59 } /* Literal.String.Backtick */
+c-[sc] { color: #a67f59 } /* Literal.String.Char */
+c-[sd] { color: #a67f59 } /* Literal.String.Doc */
+c-[se] { color: #a67f59 } /* Literal.String.Escape */
+c-[sh] { color: #a67f59 } /* Literal.String.Heredoc */
+c-[si] { color: #a67f59 } /* Literal.String.Interpol */
+c-[sx] { color: #a67f59 } /* Literal.String.Other */
+c-[sr] { color: #a67f59 } /* Literal.String.Regex */
+c-[ss] { color: #a67f59 } /* Literal.String.Symbol */
+c-[vc] { color: #0077aa } /* Name.Variable.Class */
+c-[vg] { color: #0077aa } /* Name.Variable.Global */
+c-[vi] { color: #0077aa } /* Name.Variable.Instance */
+c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
+
 
 @media (prefers-color-scheme: dark) {
     .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
@@ -599,11 +643,32 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
 }
 </style>
+<style>/* Boilerplate: style-var-click-highlighting */
+/*
+Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
+D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
+0 = lab(85,0,85)
+1 = lab(85,80,30)
+2 = lab(85,-40,40)
+3 = lab(85,-50,0)
+4 = lab(85,5,15)
+5 = lab(85,-10,-50)
+6 = lab(85,35,-15)
+*/
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Storage Buckets API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-05-02">2 May 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-09-26">26 September 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -898,7 +963,7 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
         <p>If <var>bucket</var> is non-null, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">append</a> <var>key</var> to <var>keys</var>.</p>
       </ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">Queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①">resolve</a> <var>p</var> with <var>keys</var>.</p>
+      <p><a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task">Queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①">resolve</a> <var>p</var> with <var>keys</var>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -956,7 +1021,7 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
          <li data-md>
           <p>Let <var>permission</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-getting-the-current-permission-state" id="ref-for-dfn-getting-the-current-permission-state">getting the current permission state</a> with <code>"persistent-storage"</code> and <var>environment</var>.</p>
          <li data-md>
-          <p>If <var>permission</var> is "<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-granted" id="ref-for-dom-permissionstate-granted①">granted</a></code>", then set <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode③">bucket mode</a> to <code>"persistent"</code> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var> with true.</p>
+          <p>If <var>permission</var> is "<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-granted" id="ref-for-dom-permissionstate-granted①">granted</a></code>", then set <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode③">bucket mode</a> to <code>"persistent"</code> and <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task①">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var> with true.</p>
          <li data-md>
           <p>Otherwise, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve④">resolve</a> <var>p</var> with false.</p>
         </ol>
@@ -973,14 +1038,14 @@ MUST NOT modify the <a data-link-type="dfn" href="#storagebucket-durability-valu
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑦">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed③">removed</a> flag is true, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task②">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror①">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed③">removed</a> flag is true, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task②">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror①">InvalidStateError</a></code>.</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>If <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode④">bucket mode</a> is <code>"persistent"</code>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task③">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑤">resolve</a> <var>p</var> with true.</p>
+        <p>If <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode④">bucket mode</a> is <code>"persistent"</code>, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task③">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑤">resolve</a> <var>p</var> with true.</p>
        <li data-md>
-        <p>Otherwise, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task④">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑥">resolve</a> <var>p</var> with false.</p>
+        <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task④">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑥">resolve</a> <var>p</var> with false.</p>
       </ol>
      <li data-md>
       <p>Return <var>p</var>.</p>
@@ -1041,9 +1106,9 @@ The user agent MAY initialize this value to "<code class="idl"><a data-link-type
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①②">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑤">removed</a> flag is true, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑤">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror③">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑤">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑤">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror③">InvalidStateError</a></code>.</p>
      <li data-md>
-      <p>Otherwise, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑥">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑧">resolve</a> <var>p</var> with <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-durability-value" id="ref-for-storagebucket-durability-value④">durability value</a>.</p>
+      <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑥">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑧">resolve</a> <var>p</var> with <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-durability-value" id="ref-for-storagebucket-durability-value④">durability value</a>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -1075,9 +1140,9 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①④">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑥">removed</a> flag is true, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑦">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror④">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑥">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑦">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror④">InvalidStateError</a></code>.</p>
      <li data-md>
-      <p>Otherwise, set <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time③">expiration time</a> to <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch②">Unix epoch</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑧">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑨">resolve</a> <var>p</var>.</p>
+      <p>Otherwise, set <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time③">expiration time</a> to <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch②">Unix epoch</a> and <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑧">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑨">resolve</a> <var>p</var>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -1090,9 +1155,9 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⑤">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑦">removed</a> flag is true, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task⑨">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑥">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror⑤">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑦">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑨">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑥">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror⑤">InvalidStateError</a></code>.</p>
      <li data-md>
-      <p>Otherwise, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①⓪">queue a task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①⓪">resolve</a> <var>p</var> with <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time④">expiration time</a>.</p>
+      <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task①⓪">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①⓪">resolve</a> <var>p</var> with <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time④">expiration time</a>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -1168,7 +1233,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     </ol>
    </div>
    <aside class="note">
-    <p>See <a href="https://fs.spec.whatwg.org/#sandboxed-filesystem"><cite>File System</cite> § 3 Accessing the Origin Private File System</a>.</p>
+    <p>See <a href="https://fs.spec.whatwg.org/#sandboxed-filesystem"><cite>File System</cite> § 3 Accessing the Bucket File System</a>.</p>
    </aside>
    <h3 class="heading settled" data-level="2.6" id="storage-bucket-clear-site-data"><span class="secno">2.6. </span><span class="content">Clear Site Data integration</span><a class="self-link" href="#storage-bucket-clear-site-data"></a></h3>
    <p class="issue" id="issue-99cfd987"><a class="self-link" href="#issue-99cfd987"></a> Update <a href="https://w3c.github.io/webappsec-clear-site-data/#header"><cite>Clear Site Data</cite> § 3.1 The Clear-Site-Data HTTP Response Header Field</a>.</p>
@@ -1316,7 +1381,6 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li><span class="dfn-paneled" id="3e12e042">environment settings object</span>
      <li><span class="dfn-paneled" id="a72449dd">in parallel</span>
      <li><span class="dfn-paneled" id="43ac8374">origin</span>
-     <li><span class="dfn-paneled" id="9a517a7d">queue a task</span>
      <li><span class="dfn-paneled" id="9c4c1e66">relevant settings object</span>
     </ul>
    <li>
@@ -1365,6 +1429,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li><span class="dfn-paneled" id="b9712e0a">bucket mode</span>
      <li><span class="dfn-paneled" id="6bb9d790">obtain a local storage bottle map</span>
      <li><span class="dfn-paneled" id="caa5107f">obtain a local storage shelf</span>
+     <li><span class="dfn-paneled" id="d7bc2287">queue a storage task</span>
      <li><span class="dfn-paneled" id="cd0c5fbe">quota</span>
      <li><span class="dfn-paneled" id="67130339">storage bottle</span>
      <li><span class="dfn-paneled" id="eb592b41">storage bottle map</span>
@@ -1409,7 +1474,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-indexeddb-3">[IndexedDB-3]
-   <dd>Ali Alabbas; Joshua Bell. <a href="https://w3c.github.io/IndexedDB/"><cite>Indexed Database API 3.0</cite></a>. URL: <a href="https://w3c.github.io/IndexedDB/">https://w3c.github.io/IndexedDB/</a>
+   <dd>Joshua Bell. <a href="https://w3c.github.io/IndexedDB/"><cite>Indexed Database API 3.0</cite></a>. URL: <a href="https://w3c.github.io/IndexedDB/">https://w3c.github.io/IndexedDB/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-permissions">[PERMISSIONS]
@@ -1487,7 +1552,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <div class="issue"> add the steps below to the algorithm in <a href="https://w3c.github.io/webappsec-clear-site-data/#parsing"><cite>Clear Site Data</cite> § 4.1 Parsing</a>. <a class="issue-return" href="#issue-99223a67" title="Jump to section">↵</a></div>
    <div class="issue"> add the steps below to the algorithm in <a href="https://w3c.github.io/webappsec-clear-site-data/#clear-response"><cite>Clear Site Data</cite> § 4.2 Clear data for response</a>. <a class="issue-return" href="#issue-99223a67①" title="Jump to section">↵</a></div>
   </div>
-<script>/* script-dfn-panel */
+<script>/* Boilerplate: script-dfn-panel */
 "use strict";
 {
     const dfnsJson = window.dfnsJson || {};
@@ -1640,7 +1705,160 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     }
 }
 </script>
-<script>/* script-dfn-panel-json */
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
+
+    function hideAllDfnPanels() {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
+    }
+
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn, dfnPanel) {
+        // Find dfn panel
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
+
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
+                pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        })
+    }
+}
+</script>
+<script>/* Boilerplate: script-dfn-panel-json */
 window.dfnpanelData = {};
 window.dfnpanelData['23e108bd'] = {"dfnID": "23e108bd", "url": "https://fs.spec.whatwg.org/#filesystemdirectoryhandle", "dfnText": "FileSystemDirectoryHandle", "refSections": [{"refs": [{"id": "ref-for-filesystemdirectoryhandle"}], "title": "2. The StorageBucket interface"}], "external": true};
 window.dfnpanelData['4c10050a'] = {"dfnID": "4c10050a", "url": "https://fs.spec.whatwg.org/#dom-storagemanager-getdirectory", "dfnText": "getDirectory()", "refSections": [{"refs": [{"id": "ref-for-dom-storagemanager-getdirectory"}], "title": "2.5.3. Using an Origin Private File System"}], "external": true};
@@ -1654,7 +1872,6 @@ window.dfnpanelData['a4785085'] = {"dfnID": "a4785085", "url": "https://html.spe
 window.dfnpanelData['3e12e042'] = {"dfnID": "3e12e042", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object", "dfnText": "environment settings object", "refSections": [{"refs": [{"id": "ref-for-environment-settings-object"}], "title": "1. The StorageBucketManager interface"}], "external": true};
 window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-in-parallel\u2460"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-in-parallel\u2461"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['43ac8374'] = {"dfnID": "43ac8374", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-origin"}], "title": "2.6. Clear Site Data integration"}], "external": true};
-window.dfnpanelData['9a517a7d'] = {"dfnID": "9a517a7d", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task", "dfnText": "queue a task", "refSections": [{"refs": [{"id": "ref-for-queue-a-task"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-queue-a-task\u2460"}, {"id": "ref-for-queue-a-task\u2461"}, {"id": "ref-for-queue-a-task\u2462"}, {"id": "ref-for-queue-a-task\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-queue-a-task\u2464"}, {"id": "ref-for-queue-a-task\u2465"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-queue-a-task\u2466"}, {"id": "ref-for-queue-a-task\u2467"}, {"id": "ref-for-queue-a-task\u2468"}, {"id": "ref-for-queue-a-task\u2460\u24ea"}], "title": "2.4. Expiration"}], "external": true};
 window.dfnpanelData['9c4c1e66'] = {"dfnID": "9c4c1e66", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object", "dfnText": "relevant settings object", "refSections": [{"refs": [{"id": "ref-for-relevant-settings-object"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2460"}, {"id": "ref-for-relevant-settings-object\u2461"}, {"id": "ref-for-relevant-settings-object\u2462"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2463"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2464"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2465"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2466"}], "title": "2.6. Clear Site Data integration"}], "external": true};
 window.dfnpanelData['7ca1d370'] = {"dfnID": "7ca1d370", "url": "https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-default", "dfnText": "\"default\"", "refSections": [{"refs": [{"id": "ref-for-dom-idbtransactiondurability-default"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
 window.dfnpanelData['e86b5ce4'] = {"dfnID": "e86b5ce4", "url": "https://w3c.github.io/IndexedDB/#dom-idbtransactiondurability-relaxed", "dfnText": "\"relaxed\"", "refSections": [{"refs": [{"id": "ref-for-dom-idbtransactiondurability-relaxed"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
@@ -1683,6 +1900,7 @@ window.dfnpanelData['7db4a4b7'] = {"dfnID": "7db4a4b7", "url": "https://storage.
 window.dfnpanelData['b9712e0a'] = {"dfnID": "b9712e0a", "url": "https://storage.spec.whatwg.org/#bucket-mode", "dfnText": "bucket mode", "refSections": [{"refs": [{"id": "ref-for-bucket-mode"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-bucket-mode\u2460"}, {"id": "ref-for-bucket-mode\u2461"}, {"id": "ref-for-bucket-mode\u2462"}, {"id": "ref-for-bucket-mode\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-bucket-mode\u2464"}, {"id": "ref-for-bucket-mode\u2465"}], "title": "2.4. Expiration"}], "external": true};
 window.dfnpanelData['6bb9d790'] = {"dfnID": "6bb9d790", "url": "https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map", "dfnText": "obtain a local storage bottle map", "refSections": [{"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map"}], "title": "2.5.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map\u2460"}], "title": "2.5.2. Using CacheStorage"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map\u2461"}], "title": "2.5.3. Using an Origin Private File System"}], "external": true};
 window.dfnpanelData['caa5107f'] = {"dfnID": "caa5107f", "url": "https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf", "dfnText": "obtain a local storage shelf", "refSections": [{"refs": [{"id": "ref-for-obtain-a-local-storage-shelf"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2461"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2462"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2463"}], "title": "2.6. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['d7bc2287'] = {"dfnID": "d7bc2287", "url": "https://storage.spec.whatwg.org/#queue-a-storage-task", "dfnText": "queue a storage task", "refSections": [{"refs": [{"id": "ref-for-queue-a-storage-task"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2460"}, {"id": "ref-for-queue-a-storage-task\u2461"}, {"id": "ref-for-queue-a-storage-task\u2462"}, {"id": "ref-for-queue-a-storage-task\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2464"}, {"id": "ref-for-queue-a-storage-task\u2465"}], "title": "2.3. Durability"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2466"}, {"id": "ref-for-queue-a-storage-task\u2467"}, {"id": "ref-for-queue-a-storage-task\u2468"}, {"id": "ref-for-queue-a-storage-task\u2460\u24ea"}], "title": "2.4. Expiration"}], "external": true};
 window.dfnpanelData['cd0c5fbe'] = {"dfnID": "cd0c5fbe", "url": "https://storage.spec.whatwg.org/#dom-storageestimate-quota", "dfnText": "quota", "refSections": [{"refs": [{"id": "ref-for-dom-storageestimate-quota"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['67130339'] = {"dfnID": "67130339", "url": "https://storage.spec.whatwg.org/#storage-bottle", "dfnText": "storage bottle", "refSections": [{"refs": [{"id": "ref-for-storage-bottle"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['eb592b41'] = {"dfnID": "eb592b41", "url": "https://storage.spec.whatwg.org/#storage-bottle-map", "dfnText": "storage bottle map", "refSections": [{"refs": [{"id": "ref-for-storage-bottle-map"}], "title": "2.5.1. Using Indexed Database"}], "external": true};
@@ -1742,8 +1960,9 @@ window.dfnpanelData['dom-storagebucket-setexpires'] = {"dfnID": "dom-storagebuck
 window.dfnpanelData['dom-storagebucket-expires'] = {"dfnID": "dom-storagebucket-expires", "url": "#dom-storagebucket-expires", "dfnText": "expires()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-expires"}], "title": "2. The StorageBucket interface"}], "external": false};
 window.dfnpanelData['dom-storagebucket-indexeddb'] = {"dfnID": "dom-storagebucket-indexeddb", "url": "#dom-storagebucket-indexeddb", "dfnText": "indexedDB", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-indexeddb"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-dom-storagebucket-indexeddb\u2460"}, {"id": "ref-for-dom-storagebucket-indexeddb\u2461"}, {"id": "ref-for-dom-storagebucket-indexeddb\u2462"}], "title": "2.5.1. Using Indexed Database"}], "external": false};
 window.dfnpanelData['dom-storagebucket-caches'] = {"dfnID": "dom-storagebucket-caches", "url": "#dom-storagebucket-caches", "dfnText": "caches", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-caches"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-dom-storagebucket-caches\u2460"}, {"id": "ref-for-dom-storagebucket-caches\u2461"}, {"id": "ref-for-dom-storagebucket-caches\u2462"}], "title": "2.5.2. Using CacheStorage"}], "external": false};
-window.dfnpanelData['dom-storagebucket-getdirectory'] = {"dfnID": "dom-storagebucket-getdirectory", "url": "#dom-storagebucket-getdirectory", "dfnText": "getDirectory()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-getdirectory"}], "title": "2. The StorageBucket interface"}], "external": false};</script>
-<script>/* script-dom-helper */
+window.dfnpanelData['dom-storagebucket-getdirectory'] = {"dfnID": "dom-storagebucket-getdirectory", "url": "#dom-storagebucket-getdirectory", "dfnText": "getDirectory()", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucket-getdirectory"}], "title": "2. The StorageBucket interface"}], "external": false};
+</script>
+<script>/* Boilerplate: script-dom-helper */
 function query(sel) { return document.querySelector(sel); }
 
 function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
@@ -1937,89 +2156,103 @@ function parseHTML(markup) {
 		el.innerHTML = markup;
 		return el.content;
 	}
-}</script>
-<script>/* script-var-click-highlighting */
+}
+</script>
+<script>/* Boilerplate: script-var-click-highlighting */
+/*
+Color-choosing design:
 
-    "use strict";
-    {
-        document.addEventListener("click", e=>{
-            if(e.target.nodeName == "VAR") {
-                highlightSameAlgoVars(e.target);
-            }
-        });
-        const indexCounts = new Map();
-        const indexNames = new Map();
-        function highlightSameAlgoVars(v) {
-            // Find the algorithm container.
-            let algoContainer = null;
-            let searchEl = v;
-            while(algoContainer == null && searchEl != document.body) {
-                searchEl = searchEl.parentNode;
-                if(searchEl.hasAttribute("data-algorithm")) {
-                    algoContainer = searchEl;
-                }
-            }
+Colors are ordered by goodness.
+Each color has a usage count (initially zero).
+Each variable has a last-used color.
 
-            // Not highlighting document-global vars,
-            // too likely to be unrelated.
-            if(algoContainer == null) return;
-
-            const algoName = algoContainer.getAttribute("data-algorithm");
-            const varName = getVarName(v);
-            const addClass = !v.classList.contains("selected");
-            let highlightClass = null;
-            if(addClass) {
-                const index = chooseHighlightIndex(algoName, varName);
-                indexCounts.get(algoName)[index] += 1;
-                indexNames.set(algoName+"///"+varName, index);
-                highlightClass = nameFromIndex(index);
-            } else {
-                const index = previousHighlightIndex(algoName, varName);
-                indexCounts.get(algoName)[index] -= 1;
-                highlightClass = nameFromIndex(index);
-            }
-
-            // Find all same-name vars, and toggle their class appropriately.
-            for(const el of algoContainer.querySelectorAll("var")) {
-                if(getVarName(el) == varName) {
-                    el.classList.toggle("selected", addClass);
-                    el.classList.toggle(highlightClass, addClass);
-                }
+* If the var has a last-used color, and that color's usage is 0,
+    return that color.
+* Otherwise, return the lowest-indexed color with the lowest usage.
+    Increment the color's usage and set it as the last-used color
+    for that var.
+* On unclicking, decrement usage of the color.
+*/
+"use strict";
+{
+    document.addEventListener("click", e=>{
+        if(e.target.nodeName == "VAR") {
+            highlightSameAlgoVars(e.target);
+        }
+    });
+    const indexCounts = new Map();
+    const indexNames = new Map();
+    function highlightSameAlgoVars(v) {
+        // Find the algorithm container.
+        let algoContainer = null;
+        let searchEl = v;
+        while(algoContainer == null && searchEl != document.body) {
+            searchEl = searchEl.parentNode;
+            if(searchEl.hasAttribute("data-algorithm")) {
+                algoContainer = searchEl;
             }
         }
-        function getVarName(el) {
-            return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
-        }
-        function chooseHighlightIndex(algoName, varName) {
-            let indexes = null;
-            if(indexCounts.has(algoName)) {
-                indexes = indexCounts.get(algoName);
-            } else {
-                // 7 classes right now
-                indexes = [0,0,0,0,0,0,0];
-                indexCounts.set(algoName, indexes);
-            }
 
-            // If the element was recently unclicked,
-            // *and* that color is still unclaimed,
-            // give it back the same color.
-            const lastIndex = previousHighlightIndex(algoName, varName);
-            if(indexes[lastIndex] === 0) return lastIndex;
+        // Not highlighting document-global vars,
+        // too likely to be unrelated.
+        if(algoContainer == null) return;
 
-            // Find the earliest index with the lowest count.
-            const minCount = Math.min.apply(null, indexes);
-            let index = null;
-            for(var i = 0; i < indexes.length; i++) {
-                if(indexes[i] == minCount) {
-                    return i;
-                }
+        const algoName = algoContainer.getAttribute("data-algorithm");
+        const varName = getVarName(v);
+        const addClass = !v.classList.contains("selected");
+        let highlightClass = null;
+        if(addClass) {
+            const index = chooseHighlightIndex(algoName, varName);
+            indexCounts.get(algoName)[index] += 1;
+            indexNames.set(algoName+"///"+varName, index);
+            highlightClass = nameFromIndex(index);
+        } else {
+            const index = previousHighlightIndex(algoName, varName);
+            indexCounts.get(algoName)[index] -= 1;
+            highlightClass = nameFromIndex(index);
+        }
+
+        // Find all same-name vars, and toggle their class appropriately.
+        for(const el of algoContainer.querySelectorAll("var")) {
+            if(getVarName(el) == varName) {
+                el.classList.toggle("selected", addClass);
+                el.classList.toggle(highlightClass, addClass);
             }
-        }
-        function previousHighlightIndex(algoName, varName) {
-            return indexNames.get(algoName+"///"+varName);
-        }
-        function nameFromIndex(index) {
-            return "selected" + index;
         }
     }
+    function getVarName(el) {
+        return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+    }
+    function chooseHighlightIndex(algoName, varName) {
+        let indexes = null;
+        if(indexCounts.has(algoName)) {
+            indexes = indexCounts.get(algoName);
+        } else {
+            // 7 classes right now
+            indexes = [0,0,0,0,0,0,0];
+            indexCounts.set(algoName, indexes);
+        }
+
+        // If the element was recently unclicked,
+        // *and* that color is still unclaimed,
+        // give it back the same color.
+        const lastIndex = previousHighlightIndex(algoName, varName);
+        if(indexes[lastIndex] === 0) return lastIndex;
+
+        // Find the earliest index with the lowest count.
+        const minCount = Math.min.apply(null, indexes);
+        let index = null;
+        for(var i = 0; i < indexes.length; i++) {
+            if(indexes[i] == minCount) {
+                return i;
+            }
+        }
+    }
+    function previousHighlightIndex(algoName, varName) {
+        return indexNames.get(algoName+"///"+varName);
+    }
+    function nameFromIndex(index) {
+        return "selected" + index;
+    }
+}
 </script>
