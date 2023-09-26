@@ -103,7 +103,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |options|["{{StorageBucketOptions/expires}}"] exists, then:
 
-    1. Let |expires| be |options|["{{StorageBucketOptions/expires}}"].
+    1. Set |expires| be |options|["{{StorageBucketOptions/expires}}"].
 
     1. If |expires| milliseconds after the [=Unix epoch=] is before the [=relevant settings object=]'s [=environment settings object/current wall time=], then return failure.
 
@@ -111,7 +111,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |options|["{{StorageBucketOptions/quota}}"] exists, then:
 
-    1. Let |quota| be |options|["{{StorageBucketOptions/quota}}"].
+    1. Set |quota| be |options|["{{StorageBucketOptions/quota}}"].
 
     1. If |quota| is less than or equal to zero, then return failure.
 
@@ -127,7 +127,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. If |bucket| is null, then:
 
-    1. Let |bucket| be a new [=/storage bucket=] with name |name|.
+    1. Set |bucket| be a new [=/storage bucket=] with name |name|.
 
     1. Set |bucket|'s [=StorageBucket/durability value=] to |options|["{{StorageBucketOptions/durability}}"] if it exists.
 
