@@ -504,18 +504,17 @@ uploaded to the server but have been cached locally for easy user access. The
 `drafts` bucket stores drafts of documents that have been made offline, which
 have not yet but uploaded to the server and are irrecoverable if lost.
 
-In this scenario, the `drafts` bucket is created with `persisted: true` and
-`durability: "strict"` to specify that it should not be evicted upon storage
-pressure, and to reduce the risk of data loss at the cost of performance and
-power consumption. The `recent` bucket is deemed lower priority, so it can be
-evicted on storage pressure, and thus persistence is not requested.
+In this scenario, the `drafts` bucket is created with `persisted: true`
+to specify that it should not be evicted upon storage pressure. The `recent`
+bucket is deemed lower priority, so it can be evicted on storage pressure,
+and thus persistence is not requested.
 
 ```javascript
 const recentBucket = await navigator.storageBuckets.open("recent",
-    { durability: "relaxed", persisted: false });
+    { persisted: false });
 
 const draftsBucket = await navigator.storageBuckets.open("drafts",
-    { durability: "strict", persisted: true });
+    { persisted: true });
 ```
 
 ### Storage Division
