@@ -195,9 +195,9 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 1. Let |p| be [=a new promise=].
 
-1. [=Queue a storage task=] to run these steps:
+1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
 
-    1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
+1. [=Queue a storage task=] to run these steps:
 
     1. Let |r| be the result of running [=remove a bucket=] with |shelf| and |name|.
     
