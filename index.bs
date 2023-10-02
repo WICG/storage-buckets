@@ -52,7 +52,7 @@ Each [=environment settings object=] has an associated {{StorageBucketManager}} 
 The <dfn attribute for=NavigatorStorageBuckets><code>storageBuckets</code></dfn>
 getter steps are to return [=this=]'s [=/relevant settings object=]'s {{StorageBucketManager}} object.
 
-A user agent has an associated `storage bucket manager` which is the result of [=starting a new parallel-queue=].
+A user agent has an associated <dfn for=StorageBucketManager><code>storage bucket manager</code></dfn> which is the result of [=starting a new parallel queue=].
 
 <xmp class="idl">
 [Exposed=(Window,Worker),
@@ -90,11 +90,15 @@ The <dfn method for="StorageBucketManager">open(|name|, |options|)</dfn> method 
 
 1. If the result of [=validate a bucket name=] with |name| is failure,  then return [=a promise rejected with=] a {{TypeError}}.
 
-1. Let |r| be the result of running [=open a bucket=] with |shelf|, |name|, and |options|.
+1. Let |p| be [=a new promise=].
 
-1. If |r| is failure, then return [=a promise rejected with=] a {{TypeError}}.
+1. [=Enqueue the following steps=] to [=StorageBucketManager/storage bucket manager=]:
 
-1. Return [=a promise resolved with=] with |r|.
+    1. Let |r| be the result of running [=open a bucket=] with |shelf|, |name|, and |options|.
+
+    1. [=Queue a storage task=] to [=/resolve=] |p| with |r|.
+
+1. Return |p|.
 
 </div>
 
@@ -195,17 +199,15 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 1. If |shelf| is failure, then return [=a promise rejected with=] a {{TypeError}}.
 
+1. If the result of [=validate a bucket name=] with |name| is failure, then return [=a promise rejected with=] an {{InvalidCharacterError}}.
+
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]:
+1. [=Enqueue the following steps=] to [=StorageBucketManager/storage bucket manager=]:
 
-    1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}} and abort these steps.
-
-    1. Let |r| be the result of running [=remove a bucket=] with |shelf| and |name|.
+    1. Run [=remove a bucket=] with |shelf| and |name|.
     
-    1. If |r| is failure, then [=/reject=] |p| with {{TypeError}}.
-
-    1. Otherwise, [=/resolve=] |p|.
+    1. [=Queue a storage task=] to [=/resolve=] |p|.
 
 1. Return |p|.
 
@@ -251,13 +253,15 @@ The <dfn method for="StorageBucketManager">keys()</dfn> method steps are:
 
 1. Let |keys| be a new [=/list=].
 
-1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
+1. [=Enqueue the following steps=] to [=StorageBucketManager/storage bucket manager=]:
 
-    1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |key|. 
+    1. For each |key| in |shelf|'s [=bucket map=], run the following steps:
 
-    1. If |bucket| is non-null, [=list/append=] |key| to |keys|.
+        1. Let |bucket| be the result of running [=get or expire a bucket=] with |shelf| and |key|. 
 
-1. [=Queue a storage task=] to [=/resolve=] |p| with |keys|.
+        1. If |bucket| is non-null, [=list/append=] |key| to |keys|.
+
+    1. [=Queue a storage task=] to [=/resolve=] |p| with |keys|.
 
 1. Return |p|.
 
