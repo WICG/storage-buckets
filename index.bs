@@ -62,7 +62,7 @@ interface StorageBucketManager {
 };
 
 dictionary StorageBucketOptions {
-  boolean? persisted = null;
+  boolean persisted = false;
   unsigned long long? quota = null;
   DOMHighResTimeStamp? expires = null;
 };
@@ -112,7 +112,7 @@ To <dfn>open a bucket</dfn> for a |shelf| given a bucket |name| and optional |op
 
 1. Let |persisted| be false.
 
-1. If |options|["{{StorageBucketOptions/persisted}}"] exists and is true, then:
+1. If |options|["{{StorageBucketOptions/persisted}}"] is true, then:
 
     1. Let |permission| be the result of [=/requesting permission to use=] `"persistent-storage"`.
 
