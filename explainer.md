@@ -154,7 +154,7 @@ without major impact to the user. The policies introduced by this proposal will 
 described in future sections.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.open("log_cache", {
+const logsBucket = await navigator.storageBuckets.open("log_cache", {
     persisted: false, quota: 1024 * 1024 * 10 });
 ```
 
