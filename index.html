@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="2f26bf4f909bb51208d507f9100ea1799fd0a000" name="document-revision">
+  <meta content="41486d8200f3330d396fa44dccd352aaf219a336" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -813,7 +813,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-expires" id="ref-for-dom-storagebucketoptions-expires">expires</a></code>"] exists, then:</p>
       <ol>
        <li data-md>
-        <p>Let <var>expires</var> be <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-expires" id="ref-for-dom-storagebucketoptions-expires①">expires</a></code>"].</p>
+        <p>Set <var>expires</var> to <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-expires" id="ref-for-dom-storagebucketoptions-expires①">expires</a></code>"].</p>
        <li data-md>
         <p>If <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch">Unix epoch</a> is before the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>'s <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-eso-current-wall-time" id="ref-for-dfn-eso-current-wall-time">current wall time</a>, then return failure.</p>
       </ol>
@@ -823,7 +823,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-quota" id="ref-for-dom-storagebucketoptions-quota">quota</a></code>"] exists, then:</p>
       <ol>
        <li data-md>
-        <p>Let <var>quota</var> be <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-quota" id="ref-for-dom-storagebucketoptions-quota①">quota</a></code>"].</p>
+        <p>Set <var>quota</var> to <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-quota" id="ref-for-dom-storagebucketoptions-quota①">quota</a></code>"].</p>
        <li data-md>
         <p>If <var>quota</var> is less than or equal to zero, then return failure.</p>
       </ol>
@@ -843,7 +843,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>bucket</var> is null, then:</p>
       <ol>
        <li data-md>
-        <p>Let <var>bucket</var> be a new <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket">storage bucket</a> with name <var>name</var>.</p>
+        <p>Set <var>bucket</var> to a new <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket">storage bucket</a> with name <var>name</var>.</p>
        <li data-md>
         <p>Set <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-durability-value" id="ref-for-storagebucket-durability-value">durability value</a> to <var>options</var>["<code class="idl"><a data-link-type="idl" href="#dom-storagebucketoptions-durability" id="ref-for-dom-storagebucketoptions-durability">durability</a></code>"] if it exists.</p>
        <li data-md>
