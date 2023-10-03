@@ -31,7 +31,6 @@
 - [Enumerating buckets](#enumerating-buckets)
 - [Getting a bucket's quota usage](#getting-a-buckets-quota-usage)
 - [Storage policy: Persistence](#storage-policy-persistence)
-- [Storage policy: Durability](#storage-policy-durability)
 - [Storage policy: Quota](#storage-policy-quota)
 - [Storage policy: Expiration](#storage-policy-expiration)
 - [The default bucket](#the-default-bucket)
@@ -44,7 +43,6 @@
 - [Detailed design discussion](#detailed-design-discussion)
   - [Bucket names](#bucket-names)
   - [Storage policy naming](#storage-policy-naming)
-  - [Durability guarantees](#durability-guarantees)
   - [Default bucket quota](#default-bucket-quota)
 - [Considered alternatives](#considered-alternatives)
   - [Expose the API off of navigator.storage.buckets](#expose-the-api-off-of-navigatorstoragebuckets)
@@ -55,10 +53,11 @@
   - [Relaxed length restrictions for bucket names](#relaxed-length-restrictions-for-bucket-names)
   - [Bucket titles](#bucket-titles)
   - [Enumerate all buckets using an async iterator](#enumerate-all-buckets-using-an-async-iterator)
-  - [Separate durability options for flushing to the storage device vs media](#separate-durability-options-for-flushing-to-the-storage-device-vs-media)
-  - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
-  - [Default to strict durability](#default-to-strict-durability)
-  - [Support changing a bucket's durability policy](#support-changing-a-buckets-durability-policy)
+  - [Storage policy: Durability](#storage-policy-durability)
+    - [Separate durability options for flushing to the storage device vs media](#separate-durability-options-for-flushing-to-the-storage-device-vs-media)
+    - [Separate durability option for application-level buffers](#separate-durability-option-for-application-level-buffers)
+    - [Default to strict durability](#default-to-strict-durability)
+    - [Support changing a bucket's durability policy](#support-changing-a-buckets-durability-policy)
   - [Express bucket expiration using a different type or convention](#express-bucket-expiration-using-a-different-type-or-convention)
   - [Synchronous access to a bucket's storage policies](#synchronous-access-to-a-buckets-storage-policies)
   - [Keep deleted buckets alive while there are references to them](#keep-deleted-buckets-alive-while-there-are-references-to-them)
@@ -91,15 +90,9 @@ for specifying the policies for each individual API.
 
 ## Goals
 
-* Allow web applications to evict slices of data
+* Improve developer ergonomics for management of stored data that counts against site quota, e.g. by deleting slices of data and specifying priority for automated eviction
 
-* Allow web applications to specify eviction prioritization
-
-* Allow web applications to easily evict service workers without clearing data
-  for the entire domain
-
-* Allow web applications to express performance, durability and other trade-off
-  decisions on slices of data
+* Serve as a centralized surface for future enhancements to storage APIs
 
 ## Non-goals
 
@@ -156,13 +149,13 @@ const inboxBucket = await navigator.storageBuckets.open("inbox");
 ```
 
 Buckets can be assigned different storage policies at creation time. The example
-below demonstrates some policies appropriate for data that is not (yet)
-synchronized with a server. The policies introduced by this proposal will be
+below demonstrates some policies appropriate for data that can be safely discarded
+without major impact to the user. The policies introduced by this proposal will be
 described in future sections.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.open("drafts", {
-    durability: "strict", persisted: true });
+const logsBucket = await navigator.storageBuckets.open("log_cache", {
+    persisted: false, quota: 1024 * 1024 * 10 });
 ```
 
 
@@ -175,8 +168,8 @@ can check a bucket's policies and take appropriate action when a vital policy
 does not match the desired value.
 
 ```javascript
-const draftsBucket = await navigator.storageBuckets.open("drafts", {
-    durability: "strict", persisted: true });
+const draftsBucket = await navigator.storageBuckets.open("drafts",
+                                                         { persisted: true });
 
 if (await draftsBucket.persisted() !== true) {
   showWarningButterBar("Your drafts may be lost if you run out of disk space!");
@@ -335,50 +328,6 @@ if (await draftsBucket.persisted() !== true) {
   }
 }
 ```
-
-
-## Storage policy: Durability
-
-A bucket's durability policy is a hint that helps the user agent trade off
-write performance against a reduced risk of data loss in the event of power
-failures.
-
-The policy has the following values.
-
-* `"strict"` buckets attempt to minimize the risk of data loss on power failure.
-  This may come at the cost of reduced performance, meaning that writes may take
-  longer to complete, might impact overall system performance, may consume more
-  battery power, and may wear out the storage device faster.
-
-* `"relaxed"` buckets may "forget" writes that were completed in the last few
-  seconds, when a power loss occurs. In return, writing data to these buckets
-  may have better performance characteristics, and may allow a battery charge
-  to last longer, and may result in longer storage device lifetime. Also,
-  power failures will *not* lead to data corruption at a higher rate than for
-  `"strict"` buckets.
-
-In general, `"strict"` buckets are intended to store data created by the user
-that has not been synchronized with the application's server. In this case, the
-application would not be able to recover from power loss. By contrast,
-`"relaxed"` buckets are most suitable for caches that can be repopulated easily.
-
-A bucket's durability policy is specified at bucket creation time.
-
-```javascript
-const draftsBucket = await navigator.storageBuckets.open("drafts", {
-    durability: "strict" });
-```
-
-The durability policy can be queried at any time. The user agent may not
-honor the policy requested by the `open()` call.
-
-```javascript
-if (await draftsBucket.durability() !== "strict") {
-  showWarningButterBar("Your email drafts may be lost if you run out of power");
-}
-```
-
-A bucket's durability policy cannot be changed once the bucket is created.
 
 ## Storage policy: Quota
 
@@ -575,7 +524,7 @@ TODO: Add image.
 ```javascript
 const offlineVideosBucket = await navigator.storageBuckets.open(
     "offline_videos",
-    { durability: "strict", persisted: false });
+    { persisted: true });
 
 const recommendationBucket = await navigator.storageBuckets.open(
    "recommendations", {
@@ -646,102 +595,6 @@ Here are the considerations used for storage policy naming.
 in the Storage specification. The true / false values are also consistent with
 the definitions in the Storage specification.
 
-`durability` was chosen for consistency with
-[IDBTransaction.durability](https://w3c.github.io/IndexedDB/#dom-idbtransaction-durability)
-in IndexedDB. The values `"strict"` and `"relaxed"` have the same significance
-as the corresponding
-[IndexedDB transaction hints](https://w3c.github.io/IndexedDB/#transaction-durability-hint).
-
-
-### Durability guarantees
-
-Data "written" by a storage API conceptually goes through the following four
-stages.
-
-1) The data starts out cached in an application-level buffer. If the current tab
-   or the entire user agent crashes (due to a bug or resource exhaustion), the
-   data is lost.
-
-2) The data is flushed to an OS-level (usually kernel) buffer. At this point,
-   the data will survive a tab or user agent crash. However, the data is lost
-   if the entire operating system crashes ([blue screen of
-   death](https://en.wikipedia.org/wiki/Blue_screen_of_death) on Windows,
-   [kernel panic](https://en.wikipedia.org/wiki/Kernel_panic) on UNIX
-   systems).
-
-3) The data is flushed to a storage device (HDD / SSD) buffer. At this point,
-   the data will survive an OS crash. However, if the computer experiences a
-   power failure, the data may be lost. Some storage devices have batteries with
-   sufficient capacity to write the data in the buffers in case of power
-   failure, but this is not generally guaranteed. Furthermore, most modern
-   portable computers (laptops, tablets, mobile phones) have firmware / OS logic
-   that mitigates power failures by suspending the computer's activity and
-   writing all the data in volatile buffers.
-
-4) The data is persisted to the storage medium (disk platters for HDDs,
-   non-volatile memory cells for SSDs). At this point, the data will surive a
-   computer power failure.
-
-Storage systems may differ in how they handle a write operation, such as
-commiting an
-[IndexedDB transaction](https://w3c.github.io/IndexedDB/#transaction-construct),
-along the following axes.
-
-1) The stage at which the system reports that the write has completed. For
-   example, many database systems offer the option of considering that a
-   transaction has committed when the data is flushed to OS-level buffers.
-
-2) The stage to which the data is pushed after the write has completed. In the
-   example above, after a database system considers a transaction to have
-   completed, it may ask the OS to flush the data to the storage
-   device, or it can let the data stay in OS-level buffers until the OS decides
-   to evict the data to the storage device.
-
-Combining the stage at which a write is reported as completed with the stage to
-which the data is pushed results in 12 possibile behaviors for storing data. The
-behaviors with a higher risk of data loss result in better performance along a
-few axes such as write speed, battery usage, and storage medium wear.
-
-The storage buckets API narrows down this complex space to only two options,
-which are packaged as possible values for the `durability` policy.
-
-* The `strict` durability policy requires that the data is persisted to the
-  storage medium before writes are considered to have completed. This policy
-  results in lower performance, but guarantees that data will survive power
-  losses. Therefore, this policy is  the right choice for user data that cannot
-  be recovered from an alternative source in the event of a power failure.
-
-* The `relaxed` durability policy requires that the data is flushed to OS-level
-  buffers below writes are considered to have completed, and allows the data to
-  remain in OS-level buffers for an indefinite amount of time. This policy
-  results in better performance, at the cost of risking data loss. For this
-  reason, this policy is intended for data that can be easily obtained from an
-  alternative source, such as cached versions of data stored on the
-  application's server.
-
-We drew inspiration from [SQLite](https://www.sqlite.org/) and
-[LevelDB](https://github.com/google/leveldb), which are the two libraries used
-by the browsers that are popular at the time of this writing. The following
-facts were considered by our decision process.
-
-* SQLite allows choosing between flushing data to the operating system
-  (similarly to the `relaxed` policy), and flushing it to the storage device or
-  media (similarly to the `strict` policy) via the
-  [synchronous PRAGMA](https://www.sqlite.org/pragma.html#pragma_synchronous).
-  This setting's behavior is closely connected to whether a database uses
-  [Write-Ahead Logging (WAL)](https://www.sqlite.org/wal.html) or not, which
-  must be decided when the database is open via the
-  [journal_mode PRAGMA](https://www.sqlite.org/pragma.html#pragma_journal_mode).
-
-* SQLite allows choosing between flushing to the storage device and flushing to
-  the media via the
-  [fullfsync PRAGMA](https://www.sqlite.org/pragma.html#pragma_fullfsync) and
-  the
-  [checkpoint_fullfsync PRAGMA](https://www.sqlite.org/pragma.html#pragma_checkpoint_fullfsync).
-
-* LevelDB allows choosing between the `relaxed` policy and the `strict` policy
-  at transaction level via the
-  [WriteOptions.sync option](https://github.com/google/leveldb/blob/master/doc/index.md#synchronous-writes).
 
 
 ### Default Bucket Quota
@@ -781,7 +634,7 @@ illustrate this alternative.
 ```javascript
 const inboxBucket = await navigator.storage.buckets.open("inbox");
 const draftsBucket = await navigator.storage.buckets.open("drafts", {
-  durability: "strict", persisted: true });
+  persisted: true });
 
 await navigator.storage.buckets.delete("inbox");
 await navigator.storage.buckets.delete("drafts");
@@ -1031,7 +884,7 @@ and values are localized user-facing strings.
 
 ```javascript
 const draftsBucket = await navigator.storageBuckets.open("drafts", {
-  durability: "strict", persisted: true,
+  persisted: true,
   title: { en: "Drafts", es: "Borradoers", jp: "下書き" }});
 ```
 
@@ -1055,8 +908,159 @@ This alternative was rejected because we expect that the number of buckets
 created by origins will not be large enough to run into memory limitations. In
 order to support per-bucket eviction, user agents will likely need
 
+### Storage policy: Durability
 
-### Separate durability options for flushing to the storage device vs media
+In previous versions of this explainer, we proposed a fourth policy, `durability`.
+It has been cautiously removed from the first version of the proposed API, although
+it may be added back in a later version. It is removed because:
+
+ - It only applied to IndexedDB, which limits its utility and could be a source of
+ confusion/false expectations.
+ - High risk of being used "just in case" for "important data" without understanding
+the performance implications, many of which are [detailed below](#separate-durability-options-for-flushing-to-the-storage-device-vs-media).
+ - We struggled to come up with compelling [example usage](https://github.com/WICG/storage-buckets/issues/108).
+ - Behavior still [available in IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/durability), therefore no loss of functionality.
+
+The previous proposal is replicated for posterity:
+
+> A bucket's durability policy is a hint that helps the user agent trade off
+write performance against a reduced risk of data loss in the event of power
+failures.
+>
+> The policy has the following values.
+>
+> * `"strict"` buckets attempt to minimize the risk of data loss on power failure.
+  This may come at the cost of reduced performance, meaning that writes may take
+  longer to complete, might impact overall system performance, may consume more
+  battery power, and may wear out the storage device faster.
+> * `"relaxed"` buckets may "forget" writes that were completed in the last few
+  seconds, when a power loss occurs. In return, writing data to these buckets
+  may have better performance characteristics, and may allow a battery charge
+  to last longer, and may result in longer storage device lifetime. Also,
+  power failures will *not* lead to data corruption at a higher rate than for
+  `"strict"` buckets.
+>
+> In general, `"strict"` buckets are intended to store data created by the user
+that has not been synchronized with the application's server. In this case, the
+application would not be able to recover from power loss. By contrast,
+`"relaxed"` buckets are most suitable for caches that can be repopulated easily.
+>
+> A bucket's durability policy is specified at bucket creation time.
+>
+> ```javascript
+> const draftsBucket = await navigator.storageBuckets.open("drafts", {
+>     durability: "strict" });
+> ```
+>
+> The durability policy can be queried at any time. The user agent may not
+honor the policy requested by the `open()` call.
+>
+> ```javascript
+> if (await draftsBucket.durability() !== "strict") {
+>   showWarningButterBar("Your email drafts may be lost if you run out of power");
+>}
+> ```
+>
+> A bucket's durability policy cannot be changed once the bucket is created.
+
+The proposal went on to describe the values in detail:
+
+> ### Durability guarantees
+> Data "written" by a storage API conceptually goes through the following four
+stages.
+>
+>1. The data starts out cached in an application-level buffer. If the current tab
+   or the entire user agent crashes (due to a bug or resource exhaustion), the
+   data is lost.
+>   
+>1. The data is flushed to an OS-level (usually kernel) buffer. At this point,
+the data will survive a tab or user agent crash. However, the data is lost
+if the entire operating system crashes ([blue screen of
+death](https://en.wikipedia.org/wiki/Blue_screen_of_death) on Windows,
+[kernel panic](https://en.wikipedia.org/wiki/Kernel_panic) on UNIX
+systems).
+>
+>1. The data is flushed to a storage device (HDD / SSD) buffer. At this point,
+   the data will survive an OS crash. However, if the computer experiences a
+   power failure, the data may be lost. Some storage devices have batteries with
+   sufficient capacity to write the data in the buffers in case of power
+   failure, but this is not generally guaranteed. Furthermore, most modern
+   portable computers (laptops, tablets, mobile phones) have firmware / OS logic
+   that mitigates power failures by suspending the computer's activity and
+   writing all the data in volatile buffers.
+>
+>1. The data is persisted to the storage medium (disk platters for HDDs,
+   non-volatile memory cells for SSDs). At this point, the data will surive a
+   computer power failure.
+>
+>Storage systems may differ in how they handle a write operation, such as
+commiting an
+[IndexedDB transaction](https://w3c.github.io/IndexedDB/#transaction-construct),
+along the following axes.
+>
+>1) The stage at which the system reports that the write has completed. For
+   example, many database systems offer the option of considering that a
+   transaction has committed when the data is flushed to OS-level buffers.
+>
+>2) The stage to which the data is pushed after the write has completed. In the
+   example above, after a database system considers a transaction to have
+   completed, it may ask the OS to flush the data to the storage
+   device, or it can let the data stay in OS-level buffers until the OS decides
+   to evict the data to the storage device.
+>
+>Combining the stage at which a write is reported as completed with the stage to
+which the data is pushed results in 12 possibile behaviors for storing data. The
+behaviors with a higher risk of data loss result in better performance along a
+few axes such as write speed, battery usage, and storage medium wear.
+>
+>The storage buckets API narrows down this complex space to only two options,
+which are packaged as possible values for the `durability` policy.
+>
+>* The `strict` durability policy requires that the data is persisted to the
+  storage medium before writes are considered to have completed. This policy
+  results in lower performance, but guarantees that data will survive power
+  losses. Therefore, this policy is  the right choice for user data that cannot
+  be recovered from an alternative source in the event of a power failure.
+>
+>* The `relaxed` durability policy requires that the data is flushed to OS-level
+  buffers below writes are considered to have completed, and allows the data to
+  remain in OS-level buffers for an indefinite amount of time. This policy
+  results in better performance, at the cost of risking data loss. For this
+  reason, this policy is intended for data that can be easily obtained from an
+  alternative source, such as cached versions of data stored on the
+  application's server.
+>
+>We drew inspiration from [SQLite](https://www.sqlite.org/) and
+[LevelDB](https://github.com/google/leveldb), which are the two libraries used
+by the browsers that are popular at the time of this writing. The following
+facts were considered by our decision process.
+>
+>* SQLite allows choosing between flushing data to the operating system
+  (similarly to the `relaxed` policy), and flushing it to the storage device or
+  media (similarly to the `strict` policy) via the
+  [synchronous PRAGMA](https://www.sqlite.org/pragma.html#pragma_synchronous).
+  This setting's behavior is closely connected to whether a database uses
+  [Write-Ahead Logging (WAL)](https://www.sqlite.org/wal.html) or not, which
+  must be decided when the database is open via the
+  [journal_mode PRAGMA](https://www.sqlite.org/pragma.html#pragma_journal_mode).
+>
+>* SQLite allows choosing between flushing to the storage device and flushing to
+  the media via the
+  [fullfsync PRAGMA](https://www.sqlite.org/pragma.html#pragma_fullfsync) and
+  the
+  [checkpoint_fullfsync PRAGMA](https://www.sqlite.org/pragma.html#pragma_checkpoint_fullfsync).
+>
+>* LevelDB allows choosing between the `relaxed` policy and the `strict` policy
+  at transaction level via the
+  [WriteOptions.sync option](https://github.com/google/leveldb/blob/master/doc/index.md#synchronous-writes).
+
+Unfortunately, OS libraries do not actually enable any strong guarantees about data loss.
+  * POSIX [fsync()](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fsync.html) "might or might not actually cause data to be written where it is safe from a power failure". Practically speaking, it depends on both the device and the file system. Mac [docs](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/fcntl.2.html#//apple_ref/doc/man/2/fcntl) point out that "Certain FireWire drives have also been known to ignore the request to flush their buffered data."
+  * Windows `FlushFileBuffers()` at best [slightly narrows the window for data loss to occur](https://devblogs.microsoft.com/oldnewthing/20100909-00/?p=12913).
+
+So while the above is informative, implementations are not able to deliver on a proposed "guarantee". Additional alternatives to the durability proposal follow.
+
+#### Separate durability options for flushing to the storage device vs media
 
 The `durability` bucket property currently supports the storage policies
 `"relaxed"` and `"strict"`. Instead of the `"strict"` policy, we could have
@@ -1196,7 +1200,7 @@ policies. The points below outline the current state of OS support.
   flag to `fcntl()`.
 
 
-### Separate durability option for application-level buffers
+#### Separate durability option for application-level buffers
 
 The `durability` bucket property currently supports the storage policies
 `"relaxed"` and `"strict"`. Instead of the `"relaxed"` policy, we could have
@@ -1254,7 +1258,7 @@ may be flushed to an OS-level buffer using
 [fflush()](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fflush.html).
 
 
-### Default to strict durability
+#### Default to strict durability
 
 Newly created buckets receive the `"relaxed"` storage policy, unless a different
 `durability` option is passed to `open()`. The default storage policy
@@ -1297,7 +1301,7 @@ Storage and IndexedDB). We don't offer two-phase commit across storage APIs.
   anyway, might as well make them be explicit about the "strict" option.
 
 
-### Support changing a bucket's durability policy
+#### Support changing a bucket's durability policy
 
 Once a bucket is created, the value of its `durability` policy is fixed. This is
 inconsistent with the `persisted` policy, which can be changed after the bucket
