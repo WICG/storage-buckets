@@ -315,7 +315,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
 1. Run the following steps [=in parallel=]: 
 
-    1. If |bucket|'s [=storage bucket/removed=] flag is true, [=queue a storage task=] to [=reject=] |p| with {{InvalidStateError}}.
+    1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=queue a storage task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
     1. Let |persisted| be true if |bucket|'s [=bucket mode=] is `"persistent"`.
 
@@ -460,7 +460,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=queue a storage task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. Set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=].
+    1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=].
 
     1. [=Queue a storage task=] to [=/resolve=] |p|. 
 
@@ -480,7 +480,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=queue a storage task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
-    1. Let |expiration| be |bucket|'s [=StorageBucket/expiration time=].
+    1. Otherwise, let |expiration| be |bucket|'s [=StorageBucket/expiration time=].
 
     1. [=Queue a storage task=] to [=/resolve=] |p| with |expiration|. 
 
