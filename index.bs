@@ -203,7 +203,7 @@ The <dfn method for="StorageBucketManager">delete(|name|)</dfn> method steps are
 
 1. Let |p| be [=a new promise=].
 
-1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with a {{InvalidCharacterError}}.
+1. If the result of [=validate a bucket name=] with |name| is failure, then [=/reject=] |p| with an {{InvalidCharacterError}}.
 
 1. Otherwise, [=enqueue the following steps=] to [=StorageBucketManager/storage bucket manager=]:
 
