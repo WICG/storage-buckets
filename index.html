@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="2260720edbc317b8467d1afe10b6d4e7ffecd4f6" name="document-revision">
+  <meta content="21a6caf0cb0e5a0933a8f1ac16696d4ee9c8119b" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -668,7 +668,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Storage Buckets API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-10-03">3 October 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-10-09">9 October 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -763,6 +763,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 </pre>
    <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object" id="ref-for-environment-settings-object">environment settings object</a> has an associated <code class="idl"><a data-link-type="idl" href="#storagebucketmanager" id="ref-for-storagebucketmanager②">StorageBucketManager</a></code> object.</p>
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="NavigatorStorageBuckets" data-dfn-type="attribute" data-export id="dom-navigatorstoragebuckets-storagebuckets"><code>storageBuckets</code></dfn> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>'s <code class="idl"><a data-link-type="idl" href="#storagebucketmanager" id="ref-for-storagebucketmanager③">StorageBucketManager</a></code> object.</p>
+   <p>A user agent has an associated <dfn class="dfn-paneled" data-dfn-for="StorageBucketManager" data-dfn-type="dfn" data-noexport id="storagebucketmanager-storage-bucket-manager"><code>storage bucket manager</code></dfn> which is the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#starting-a-new-parallel-queue" id="ref-for-starting-a-new-parallel-queue">starting a new parallel queue</a>.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->),
  <a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext" id="ref-for-SecureContext①"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="storagebucketmanager"><code><c- g>StorageBucketManager</c-></code></dfn> {
@@ -790,11 +791,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If the result of <a data-link-type="dfn" href="#validate-a-bucket-name" id="ref-for-validate-a-bucket-name">validate a bucket name</a> with <var>name</var> is failure,  then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>r</var> be the result of running <a data-link-type="dfn" href="#open-a-bucket" id="ref-for-open-a-bucket">open a bucket</a> with <var>shelf</var>, <var>name</var>, and <var>options</var>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
      <li data-md>
-      <p>If <var>r</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#enqueue-the-following-steps" id="ref-for-enqueue-the-following-steps">Enqueue the following steps</a> to <a data-link-type="dfn" href="#storagebucketmanager-storage-bucket-manager" id="ref-for-storagebucketmanager-storage-bucket-manager">storage bucket manager</a>:</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>r</var> be the result of running <a data-link-type="dfn" href="#open-a-bucket" id="ref-for-open-a-bucket">open a bucket</a> with <var>shelf</var>, <var>name</var>, and <var>options</var>.</p>
+       <li data-md>
+        <p>If <var>r</var> is failure, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>p</var> with a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+       <li data-md>
+        <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task①">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> <var>p</var> with <var>r</var>.</p>
+      </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-resolved-with" id="ref-for-a-promise-resolved-with">a promise resolved with</a> with <var>r</var>.</p>
+      <p>Return <var>p</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="open a bucket">
@@ -891,20 +900,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>shelf</var> be the result of running <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf" id="ref-for-obtain-a-local-storage-shelf①">obtain a local storage shelf</a> given <var>environment</var>.</p>
      <li data-md>
-      <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>.</p>
+      <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise①">a new promise</a>.</p>
      <li data-md>
-      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
+      <p>If the result of <a data-link-type="dfn" href="#validate-a-bucket-name" id="ref-for-validate-a-bucket-name①">validate a bucket name</a> with <var>name</var> is failure, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidcharactererror" id="ref-for-invalidcharactererror">InvalidCharacterError</a></code>.</p>
+     <li data-md>
+      <p>Otherwise, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#enqueue-the-following-steps" id="ref-for-enqueue-the-following-steps①">enqueue the following steps</a> to <a data-link-type="dfn" href="#storagebucketmanager-storage-bucket-manager" id="ref-for-storagebucketmanager-storage-bucket-manager①">storage bucket manager</a>:</p>
       <ol>
        <li data-md>
-        <p>If the result of <a data-link-type="dfn" href="#validate-a-bucket-name" id="ref-for-validate-a-bucket-name①">validate a bucket name</a> with <var>name</var> is failure, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidcharactererror" id="ref-for-invalidcharactererror">InvalidCharacterError</a></code> and abort these steps.</p>
+        <p>Run <a data-link-type="dfn" href="#remove-a-bucket" id="ref-for-remove-a-bucket">remove a bucket</a> with <var>shelf</var> and <var>name</var>.</p>
        <li data-md>
-        <p>Let <var>r</var> be the result of running <a data-link-type="dfn" href="#remove-a-bucket" id="ref-for-remove-a-bucket">remove a bucket</a> with <var>shelf</var> and <var>name</var>.</p>
-       <li data-md>
-        <p>If <var>r</var> is failure, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>p</var> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code>.</p>
-       <li data-md>
-        <p>Otherwise, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> <var>p</var>.</p>
+        <p><a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task②">Queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①">resolve</a> <var>p</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>p</var>.</p>
@@ -936,21 +943,25 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>shelf</var> be the result of running <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf" id="ref-for-obtain-a-local-storage-shelf②">obtain a local storage shelf</a>.</p>
      <li data-md>
-      <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑤">TypeError</a></code>.</p>
+      <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise①">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
      <li data-md>
       <p>Let <var>keys</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a>.</p>
      <li data-md>
-      <p>For each <var>key</var> in <var>shelf</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-map" id="ref-for-bucket-map④">bucket map</a>, run the following steps:</p>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#enqueue-the-following-steps" id="ref-for-enqueue-the-following-steps②">Enqueue the following steps</a> to <a data-link-type="dfn" href="#storagebucketmanager-storage-bucket-manager" id="ref-for-storagebucketmanager-storage-bucket-manager②">storage bucket manager</a>:</p>
       <ol>
        <li data-md>
-        <p>Let <var>bucket</var> be the result of running <a data-link-type="dfn" href="#get-or-expire-a-bucket" id="ref-for-get-or-expire-a-bucket①">get or expire a bucket</a> with <var>shelf</var> and <var>key</var>.</p>
+        <p>For each <var>key</var> in <var>shelf</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-map" id="ref-for-bucket-map④">bucket map</a>, run the following steps:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>bucket</var> be the result of running <a data-link-type="dfn" href="#get-or-expire-a-bucket" id="ref-for-get-or-expire-a-bucket①">get or expire a bucket</a> with <var>shelf</var> and <var>key</var>.</p>
+         <li data-md>
+          <p>If <var>bucket</var> is non-null, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">append</a> <var>key</var> to <var>keys</var>.</p>
+        </ol>
        <li data-md>
-        <p>If <var>bucket</var> is non-null, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">append</a> <var>key</var> to <var>keys</var>.</p>
+        <p><a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task③">Queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve②">resolve</a> <var>p</var> with <var>keys</var>.</p>
       </ol>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task">Queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①">resolve</a> <var>p</var> with <var>keys</var>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -992,23 +1003,23 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>environment</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑤">relevant settings object</a>.</p>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise②">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise③">a new promise</a>.</p>
      <li data-md>
-      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
+      <p>Run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed②">removed</a> flag is true, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>p</var> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror">InvalidStateError</a></code>.</p>
        <li data-md>
-        <p>If <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode②">bucket mode</a> is <code>"persistent"</code>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve②">resolve</a> <var>p</var> with true.</p>
+        <p>If <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode②">bucket mode</a> is <code>"persistent"</code>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var> with true.</p>
        <li data-md>
         <p>Otherwise,</p>
         <ol>
          <li data-md>
           <p>Let <var>permission</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-getting-the-current-permission-state" id="ref-for-dfn-getting-the-current-permission-state">getting the current permission state</a> with <code>"persistent-storage"</code> and <var>environment</var>.</p>
          <li data-md>
-          <p>If <var>permission</var> is "<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-granted" id="ref-for-dom-permissionstate-granted①">granted</a></code>", then set <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode③">bucket mode</a> to <code>"persistent"</code> and <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task①">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var> with true.</p>
+          <p>If <var>permission</var> is "<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissionstate-granted" id="ref-for-dom-permissionstate-granted①">granted</a></code>", then set <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode③">bucket mode</a> to <code>"persistent"</code> and <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task④">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve④">resolve</a> <var>p</var> with true.</p>
          <li data-md>
-          <p>Otherwise, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve④">resolve</a> <var>p</var> with false.</p>
+          <p>Otherwise, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑤">resolve</a> <var>p</var> with false.</p>
         </ol>
       </ol>
      <li data-md>
@@ -1019,18 +1030,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="method" data-export id="dom-storagebucket-persisted"><code>persisted()</code></dfn> method steps are:</p>
     <ol>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise③">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket⑦">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed③">removed</a> flag is true, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task②">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror①">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed③">removed</a> flag is true, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑤">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror①">InvalidStateError</a></code>.</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>If <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode④">bucket mode</a> is <code>"persistent"</code>, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task③">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑤">resolve</a> <var>p</var> with true.</p>
+        <p>If <var>bucket</var>’s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#bucket-mode" id="ref-for-bucket-mode④">bucket mode</a> is <code>"persistent"</code>, then <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑥">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑥">resolve</a> <var>p</var> with true.</p>
        <li data-md>
-        <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task④">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑥">resolve</a> <var>p</var> with false.</p>
+        <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑦">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑦">resolve</a> <var>p</var> with false.</p>
       </ol>
      <li data-md>
       <p>Return <var>p</var>.</p>
@@ -1050,15 +1061,15 @@ of the number of bytes used by all of its <a data-link-type="dfn" href="https://
      <li data-md>
       <p>Let <var>shelf</var> be the result of running <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf" id="ref-for-obtain-a-local-storage-shelf③">obtain a local storage shelf</a> with <var>environment</var>.</p>
      <li data-md>
-      <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑤">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑥">TypeError</a></code>.</p>
+      <p>If <var>shelf</var> is failure, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑤">TypeError</a></code>.</p>
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①⓪">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed④">removed</a> flag is true, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑥">a promise rejected with</a> an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror②">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed④">removed</a> flag is true, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑤">a promise rejected with</a> an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror②">InvalidStateError</a></code>.</p>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
      <li data-md>
-      <p>Otherwise, run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel②">in parallel</a>:</p>
+      <p>Otherwise, run the following steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
       <ol>
        <li data-md>
         <p>Let <var>quota</var> be <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-quota" id="ref-for-storage-quota">storage quota</a> for <var>shelf</var>.</p>
@@ -1069,7 +1080,7 @@ of the number of bytes used by all of its <a data-link-type="dfn" href="https://
        <li data-md>
         <p>Let <var>dictionary</var> be a new <code class="idl"><a data-link-type="idl" href="https://storage.spec.whatwg.org/#dictdef-storageestimate" id="ref-for-dictdef-storageestimate①">StorageEstimate</a></code> dictionary whose <code class="idl"><a data-link-type="idl" href="https://storage.spec.whatwg.org/#dom-storageestimate-usage" id="ref-for-dom-storageestimate-usage">usage</a></code> member is <var>usage</var> and <code class="idl"><a data-link-type="idl" href="https://storage.spec.whatwg.org/#dom-storageestimate-quota" id="ref-for-dom-storageestimate-quota">quota</a></code> member is <var>quota</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑦">Resolve</a> <var>p</var> with <var>dictionary</var>.</p>
+        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑧">Resolve</a> <var>p</var> with <var>dictionary</var>.</p>
       </ol>
      <li data-md>
       <p>Return <var>p</var>.</p>
@@ -1089,13 +1100,13 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="method" data-export id="dom-storagebucket-setexpires"><code>setExpires(<var>expires</var>)</code></dfn> method steps are:</p>
     <ol>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①②">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑤">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑤">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror③">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑤">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑧">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject④">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror③">InvalidStateError</a></code>.</p>
      <li data-md>
-      <p>Otherwise, set <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time③">expiration time</a> to <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch②">Unix epoch</a> and <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑥">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑧">resolve</a> <var>p</var>.</p>
+      <p>Otherwise, set <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time③">expiration time</a> to <var>expires</var> milliseconds after the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch②">Unix epoch</a> and <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑨">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑨">resolve</a> <var>p</var>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -1104,13 +1115,13 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucket" data-dfn-type="method" data-export id="dom-storagebucket-expires"><code>expires()</code></dfn> method steps are:</p>
     <ol>
      <li data-md>
-      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
+      <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise⑦">a new promise</a>.</p>
      <li data-md>
       <p>Let <var>bucket</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#storage-bucket" id="ref-for-storage-bucket①③">storage bucket</a>.</p>
      <li data-md>
-      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑥">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑦">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror④">InvalidStateError</a></code>.</p>
+      <p>If <var>bucket</var>’s <a data-link-type="dfn" href="#storage-bucket-removed" id="ref-for-storage-bucket-removed⑥">removed</a> flag is true, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task①⓪">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror④">InvalidStateError</a></code>.</p>
      <li data-md>
-      <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task⑧">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve⑨">resolve</a> <var>p</var> with <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time④">expiration time</a>.</p>
+      <p>Otherwise, <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#queue-a-storage-task" id="ref-for-queue-a-storage-task①①">queue a storage task</a> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve①⓪">resolve</a> <var>p</var> with <var>bucket</var>’s <a data-link-type="dfn" href="#storagebucket-expiration-time" id="ref-for-storagebucket-expiration-time④">expiration time</a>.</p>
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
@@ -1212,7 +1223,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li data-md>
       <p>Let <var>shelf</var> be the result of running <a data-link-type="dfn" href="https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf" id="ref-for-obtain-a-local-storage-shelf④">obtain a local storage shelf</a> given <var>environment</var>.</p>
      <li data-md>
-      <p>If <var>shelf</var> is failure, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw">throw</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑦">TypeError</a></code> and abort these steps.</p>
+      <p>If <var>shelf</var> is failure, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw">throw</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑥">TypeError</a></code> and abort these steps.</p>
      <li data-md>
       <p>For each <var>type</var> in <var>types</var>, execute the following steps:</p>
       <ol>
@@ -1284,6 +1295,7 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
    <li><a href="#storage-bucket-removed">removed</a><span>, in § 2</span>
    <li><a href="#dom-storagebucket-setexpires">setExpires(expires)</a><span>, in § 2.3</span>
    <li><a href="#storagebucket">StorageBucket</a><span>, in § 2</span>
+   <li><a href="#storagebucketmanager-storage-bucket-manager">storage bucket manager</a><span>, in § 1</span>
    <li><a href="#storagebucketmanager">StorageBucketManager</a><span>, in § 1</span>
    <li><a href="#grammardef-storagebucket-name">storage:bucket-name</a><span>, in § 2.5</span>
    <li><a href="#dictdef-storagebucketoptions">StorageBucketOptions</a><span>, in § 1</span>
@@ -1313,10 +1325,12 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
     <ul>
      <li><span class="dfn-paneled" id="be0c27b2">Navigator</span>
      <li><span class="dfn-paneled" id="a4785085">WorkerNavigator</span>
+     <li><span class="dfn-paneled" id="102df61f">enqueue the following steps</span>
      <li><span class="dfn-paneled" id="3e12e042">environment settings object</span>
      <li><span class="dfn-paneled" id="a72449dd">in parallel</span>
      <li><span class="dfn-paneled" id="43ac8374">origin</span>
      <li><span class="dfn-paneled" id="9c4c1e66">relevant settings object</span>
+     <li><span class="dfn-paneled" id="8219d486">starting a new parallel queue</span>
     </ul>
    <li>
     <a data-link-type="biblio">[IndexedDB-3]</a> defines the following terms:
@@ -1381,7 +1395,6 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
      <li><span class="dfn-paneled" id="82ca3efc">TypeError</span>
      <li><span class="dfn-paneled" id="dacde8b5">a new promise</span>
      <li><span class="dfn-paneled" id="d0b4a948">a promise rejected with</span>
-     <li><span class="dfn-paneled" id="8f5c2179">a promise resolved with</span>
      <li><span class="dfn-paneled" id="5372cca8">boolean</span>
      <li><span class="dfn-paneled" id="b262501e">reject</span>
      <li><span class="dfn-paneled" id="3b90bdcd">resolve</span>
@@ -1791,10 +1804,12 @@ window.dfnpanelData['be5dbc8c'] = {"dfnID": "be5dbc8c", "url": "https://w3c.gith
 window.dfnpanelData['05de5ae3'] = {"dfnID": "05de5ae3", "url": "https://w3c.github.io/hr-time/#dfn-wall-clock", "dfnText": "wall clock", "refSections": [{"refs": [{"id": "ref-for-dfn-wall-clock"}], "title": "2.3. Expiration"}], "external": true};
 window.dfnpanelData['be0c27b2'] = {"dfnID": "be0c27b2", "url": "https://html.spec.whatwg.org/multipage/system-state.html#navigator", "dfnText": "Navigator", "refSections": [{"refs": [{"id": "ref-for-navigator"}], "title": "1. The StorageBucketManager interface"}], "external": true};
 window.dfnpanelData['a4785085'] = {"dfnID": "a4785085", "url": "https://html.spec.whatwg.org/multipage/workers.html#workernavigator", "dfnText": "WorkerNavigator", "refSections": [{"refs": [{"id": "ref-for-workernavigator"}], "title": "1. The StorageBucketManager interface"}], "external": true};
+window.dfnpanelData['102df61f'] = {"dfnID": "102df61f", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#enqueue-the-following-steps", "dfnText": "enqueue the following steps", "refSections": [{"refs": [{"id": "ref-for-enqueue-the-following-steps"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-enqueue-the-following-steps\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-enqueue-the-following-steps\u2461"}], "title": "1.3. Enumerating buckets"}], "external": true};
 window.dfnpanelData['3e12e042'] = {"dfnID": "3e12e042", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object", "dfnText": "environment settings object", "refSections": [{"refs": [{"id": "ref-for-environment-settings-object"}], "title": "1. The StorageBucketManager interface"}], "external": true};
-window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-in-parallel\u2460"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-in-parallel\u2461"}], "title": "2.2. Quota"}], "external": true};
+window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-in-parallel\u2460"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['43ac8374'] = {"dfnID": "43ac8374", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-origin"}], "title": "2.5. Clear Site Data integration"}], "external": true};
 window.dfnpanelData['9c4c1e66'] = {"dfnID": "9c4c1e66", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object", "dfnText": "relevant settings object", "refSections": [{"refs": [{"id": "ref-for-relevant-settings-object"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2460"}, {"id": "ref-for-relevant-settings-object\u2461"}, {"id": "ref-for-relevant-settings-object\u2462"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2463"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2464"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2465"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2466"}], "title": "2.5. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['8219d486'] = {"dfnID": "8219d486", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#starting-a-new-parallel-queue", "dfnText": "starting a new parallel queue", "refSections": [{"refs": [{"id": "ref-for-starting-a-new-parallel-queue"}], "title": "1. The StorageBucketManager interface"}], "external": true};
 window.dfnpanelData['78f41bd1'] = {"dfnID": "78f41bd1", "url": "https://w3c.github.io/IndexedDB/#idbfactory", "dfnText": "IDBFactory", "refSections": [{"refs": [{"id": "ref-for-idbfactory"}], "title": "2. The StorageBucket interface"}, {"refs": [{"id": "ref-for-idbfactory\u2460"}, {"id": "ref-for-idbfactory\u2461"}, {"id": "ref-for-idbfactory\u2462"}], "title": "2.4.1. Using Indexed Database"}], "external": true};
 window.dfnpanelData['53275e46'] = {"dfnID": "53275e46", "url": "https://infra.spec.whatwg.org/#list-append", "dfnText": "append", "refSections": [{"refs": [{"id": "ref-for-list-append"}], "title": "1.3. Enumerating buckets"}], "external": true};
 window.dfnpanelData['3b38c2fe'] = {"dfnID": "3b38c2fe", "url": "https://infra.spec.whatwg.org/#ascii-digit", "dfnText": "ascii digit", "refSections": [{"refs": [{"id": "ref-for-ascii-digit"}], "title": "1.1. Creating a bucket"}], "external": true};
@@ -1817,7 +1832,7 @@ window.dfnpanelData['7db4a4b7'] = {"dfnID": "7db4a4b7", "url": "https://storage.
 window.dfnpanelData['b9712e0a'] = {"dfnID": "b9712e0a", "url": "https://storage.spec.whatwg.org/#bucket-mode", "dfnText": "bucket mode", "refSections": [{"refs": [{"id": "ref-for-bucket-mode"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-bucket-mode\u2460"}, {"id": "ref-for-bucket-mode\u2461"}, {"id": "ref-for-bucket-mode\u2462"}, {"id": "ref-for-bucket-mode\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-bucket-mode\u2464"}, {"id": "ref-for-bucket-mode\u2465"}], "title": "2.3. Expiration"}], "external": true};
 window.dfnpanelData['6bb9d790'] = {"dfnID": "6bb9d790", "url": "https://storage.spec.whatwg.org/#obtain-a-local-storage-bottle-map", "dfnText": "obtain a local storage bottle map", "refSections": [{"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map"}], "title": "2.4.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map\u2460"}], "title": "2.4.2. Using CacheStorage"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-bottle-map\u2461"}], "title": "2.4.3. Using an Origin Private File System"}], "external": true};
 window.dfnpanelData['caa5107f'] = {"dfnID": "caa5107f", "url": "https://storage.spec.whatwg.org/#obtain-a-local-storage-shelf", "dfnText": "obtain a local storage shelf", "refSections": [{"refs": [{"id": "ref-for-obtain-a-local-storage-shelf"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2461"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2462"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-obtain-a-local-storage-shelf\u2463"}], "title": "2.5. Clear Site Data integration"}], "external": true};
-window.dfnpanelData['d7bc2287'] = {"dfnID": "d7bc2287", "url": "https://storage.spec.whatwg.org/#queue-a-storage-task", "dfnText": "queue a storage task", "refSections": [{"refs": [{"id": "ref-for-queue-a-storage-task"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2460"}, {"id": "ref-for-queue-a-storage-task\u2461"}, {"id": "ref-for-queue-a-storage-task\u2462"}, {"id": "ref-for-queue-a-storage-task\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2464"}, {"id": "ref-for-queue-a-storage-task\u2465"}, {"id": "ref-for-queue-a-storage-task\u2466"}, {"id": "ref-for-queue-a-storage-task\u2467"}], "title": "2.3. Expiration"}], "external": true};
+window.dfnpanelData['d7bc2287'] = {"dfnID": "d7bc2287", "url": "https://storage.spec.whatwg.org/#queue-a-storage-task", "dfnText": "queue a storage task", "refSections": [{"refs": [{"id": "ref-for-queue-a-storage-task"}, {"id": "ref-for-queue-a-storage-task\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2461"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2462"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2463"}, {"id": "ref-for-queue-a-storage-task\u2464"}, {"id": "ref-for-queue-a-storage-task\u2465"}, {"id": "ref-for-queue-a-storage-task\u2466"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-queue-a-storage-task\u2467"}, {"id": "ref-for-queue-a-storage-task\u2468"}, {"id": "ref-for-queue-a-storage-task\u2460\u24ea"}, {"id": "ref-for-queue-a-storage-task\u2460\u2460"}], "title": "2.3. Expiration"}], "external": true};
 window.dfnpanelData['cd0c5fbe'] = {"dfnID": "cd0c5fbe", "url": "https://storage.spec.whatwg.org/#dom-storageestimate-quota", "dfnText": "quota", "refSections": [{"refs": [{"id": "ref-for-dom-storageestimate-quota"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['67130339'] = {"dfnID": "67130339", "url": "https://storage.spec.whatwg.org/#storage-bottle", "dfnText": "storage bottle", "refSections": [{"refs": [{"id": "ref-for-storage-bottle"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['eb592b41'] = {"dfnID": "eb592b41", "url": "https://storage.spec.whatwg.org/#storage-bottle-map", "dfnText": "storage bottle map", "refSections": [{"refs": [{"id": "ref-for-storage-bottle-map"}], "title": "2.4.1. Using Indexed Database"}], "external": true};
@@ -1832,13 +1847,12 @@ window.dfnpanelData['797018a7'] = {"dfnID": "797018a7", "url": "https://webidl.s
 window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}, {"id": "ref-for-idl-promise\u2460"}, {"id": "ref-for-idl-promise\u2461"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-idl-promise\u2462"}, {"id": "ref-for-idl-promise\u2463"}, {"id": "ref-for-idl-promise\u2464"}, {"id": "ref-for-idl-promise\u2465"}, {"id": "ref-for-idl-promise\u2466"}, {"id": "ref-for-idl-promise\u2467"}], "title": "2. The StorageBucket interface"}], "external": true};
 window.dfnpanelData['a5c91173'] = {"dfnID": "a5c91173", "url": "https://webidl.spec.whatwg.org/#SameObject", "dfnText": "SameObject", "refSections": [{"refs": [{"id": "ref-for-SameObject"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-SameObject\u2460"}, {"id": "ref-for-SameObject\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
 window.dfnpanelData['b75bb3bd'] = {"dfnID": "b75bb3bd", "url": "https://webidl.spec.whatwg.org/#SecureContext", "dfnText": "SecureContext", "refSections": [{"refs": [{"id": "ref-for-SecureContext"}, {"id": "ref-for-SecureContext\u2460"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-SecureContext\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
-window.dfnpanelData['82ca3efc'] = {"dfnID": "82ca3efc", "url": "https://webidl.spec.whatwg.org/#exceptiondef-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-typeerror"}, {"id": "ref-for-exceptiondef-typeerror\u2460"}, {"id": "ref-for-exceptiondef-typeerror\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2462"}, {"id": "ref-for-exceptiondef-typeerror\u2463"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2464"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2465"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2466"}], "title": "2.5. Clear Site Data integration"}], "external": true};
-window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-a-new-promise\u2460"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-a-new-promise\u2461"}, {"id": "ref-for-a-new-promise\u2462"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-a-new-promise\u2463"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-a-new-promise\u2464"}, {"id": "ref-for-a-new-promise\u2465"}], "title": "2.3. Expiration"}], "external": true};
-window.dfnpanelData['d0b4a948'] = {"dfnID": "d0b4a948", "url": "https://webidl.spec.whatwg.org/#a-promise-rejected-with", "dfnText": "a promise rejected with", "refSections": [{"refs": [{"id": "ref-for-a-promise-rejected-with"}, {"id": "ref-for-a-promise-rejected-with\u2460"}, {"id": "ref-for-a-promise-rejected-with\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2462"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2463"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2464"}, {"id": "ref-for-a-promise-rejected-with\u2465"}], "title": "2.2. Quota"}], "external": true};
-window.dfnpanelData['8f5c2179'] = {"dfnID": "8f5c2179", "url": "https://webidl.spec.whatwg.org/#a-promise-resolved-with", "dfnText": "a promise resolved with", "refSections": [{"refs": [{"id": "ref-for-a-promise-resolved-with"}], "title": "1.1. Creating a bucket"}], "external": true};
+window.dfnpanelData['82ca3efc'] = {"dfnID": "82ca3efc", "url": "https://webidl.spec.whatwg.org/#exceptiondef-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-typeerror"}, {"id": "ref-for-exceptiondef-typeerror\u2460"}, {"id": "ref-for-exceptiondef-typeerror\u2461"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2462"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2463"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2464"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-exceptiondef-typeerror\u2465"}], "title": "2.5. Clear Site Data integration"}], "external": true};
+window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-a-new-promise\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-a-new-promise\u2461"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-a-new-promise\u2462"}, {"id": "ref-for-a-new-promise\u2463"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-a-new-promise\u2464"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-a-new-promise\u2465"}, {"id": "ref-for-a-new-promise\u2466"}], "title": "2.3. Expiration"}], "external": true};
+window.dfnpanelData['d0b4a948'] = {"dfnID": "d0b4a948", "url": "https://webidl.spec.whatwg.org/#a-promise-rejected-with", "dfnText": "a promise rejected with", "refSections": [{"refs": [{"id": "ref-for-a-promise-rejected-with"}, {"id": "ref-for-a-promise-rejected-with\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2461"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2462"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-a-promise-rejected-with\u2463"}, {"id": "ref-for-a-promise-rejected-with\u2464"}], "title": "2.2. Quota"}], "external": true};
 window.dfnpanelData['5372cca8'] = {"dfnID": "5372cca8", "url": "https://webidl.spec.whatwg.org/#idl-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-idl-boolean"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2460"}, {"id": "ref-for-idl-boolean\u2461"}], "title": "2. The StorageBucket interface"}], "external": true};
-window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}, {"id": "ref-for-reject\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-reject\u2463"}, {"id": "ref-for-reject\u2464"}], "title": "2.3. Expiration"}], "external": true};
-window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-resolve\u2460"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-resolve\u2461"}, {"id": "ref-for-resolve\u2462"}, {"id": "ref-for-resolve\u2463"}, {"id": "ref-for-resolve\u2464"}, {"id": "ref-for-resolve\u2465"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-resolve\u2466"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-resolve\u2467"}, {"id": "ref-for-resolve\u2468"}], "title": "2.3. Expiration"}], "external": true};
+window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-reject\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-reject\u2463"}, {"id": "ref-for-reject\u2464"}], "title": "2.3. Expiration"}], "external": true};
+window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-resolve\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-resolve\u2461"}], "title": "1.3. Enumerating buckets"}, {"refs": [{"id": "ref-for-resolve\u2462"}, {"id": "ref-for-resolve\u2463"}, {"id": "ref-for-resolve\u2464"}, {"id": "ref-for-resolve\u2465"}, {"id": "ref-for-resolve\u2466"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-resolve\u2467"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-resolve\u2468"}, {"id": "ref-for-resolve\u2460\u24ea"}], "title": "2.3. Expiration"}], "external": true};
 window.dfnpanelData['9cce47fd'] = {"dfnID": "9cce47fd", "url": "https://webidl.spec.whatwg.org/#idl-sequence", "dfnText": "sequence", "refSections": [{"refs": [{"id": "ref-for-idl-sequence"}], "title": "1. The StorageBucketManager interface"}], "external": true};
 window.dfnpanelData['4013a022'] = {"dfnID": "4013a022", "url": "https://webidl.spec.whatwg.org/#this", "dfnText": "this", "refSections": [{"refs": [{"id": "ref-for-this"}], "title": "1. The StorageBucketManager interface"}, {"refs": [{"id": "ref-for-this\u2460"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-this\u2461"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-this\u2462"}, {"id": "ref-for-this\u2463"}, {"id": "ref-for-this\u2464"}], "title": "2.1. Persistence"}, {"refs": [{"id": "ref-for-this\u2465"}, {"id": "ref-for-this\u2466"}], "title": "2.2. Quota"}, {"refs": [{"id": "ref-for-this\u2467"}, {"id": "ref-for-this\u2468"}], "title": "2.3. Expiration"}, {"refs": [{"id": "ref-for-this\u2460\u24ea"}, {"id": "ref-for-this\u2460\u2460"}, {"id": "ref-for-this\u2460\u2461"}, {"id": "ref-for-this\u2460\u2462"}], "title": "2.4.1. Using Indexed Database"}, {"refs": [{"id": "ref-for-this\u2460\u2463"}, {"id": "ref-for-this\u2460\u2464"}, {"id": "ref-for-this\u2460\u2465"}, {"id": "ref-for-this\u2460\u2466"}], "title": "2.4.2. Using CacheStorage"}, {"refs": [{"id": "ref-for-this\u2460\u2467"}], "title": "2.4.3. Using an Origin Private File System"}, {"refs": [{"id": "ref-for-this\u2460\u2468"}], "title": "2.5. Clear Site Data integration"}], "external": true};
 window.dfnpanelData['b4cfa5ce'] = {"dfnID": "b4cfa5ce", "url": "https://webidl.spec.whatwg.org/#dfn-throw", "dfnText": "throw", "refSections": [{"refs": [{"id": "ref-for-dfn-throw"}], "title": "2.5. Clear Site Data integration"}], "external": true};
@@ -1846,6 +1860,7 @@ window.dfnpanelData['5f90bbfb'] = {"dfnID": "5f90bbfb", "url": "https://webidl.s
 window.dfnpanelData['f14b47b8'] = {"dfnID": "f14b47b8", "url": "https://webidl.spec.whatwg.org/#idl-unsigned-long-long", "dfnText": "unsigned long long", "refSections": [{"refs": [{"id": "ref-for-idl-unsigned-long-long"}], "title": "1. The StorageBucketManager interface"}], "external": true};
 window.dfnpanelData['navigatorstoragebuckets'] = {"dfnID": "navigatorstoragebuckets", "url": "#navigatorstoragebuckets", "dfnText": "NavigatorStorageBuckets", "refSections": [{"refs": [{"id": "ref-for-navigatorstoragebuckets"}, {"id": "ref-for-navigatorstoragebuckets\u2460"}], "title": "1. The StorageBucketManager interface"}], "external": false};
 window.dfnpanelData['dom-navigatorstoragebuckets-storagebuckets'] = {"dfnID": "dom-navigatorstoragebuckets-storagebuckets", "url": "#dom-navigatorstoragebuckets-storagebuckets", "dfnText": "storageBuckets", "refSections": [{"refs": [{"id": "ref-for-dom-navigatorstoragebuckets-storagebuckets"}], "title": "1. The StorageBucketManager interface"}], "external": false};
+window.dfnpanelData['storagebucketmanager-storage-bucket-manager'] = {"dfnID": "storagebucketmanager-storage-bucket-manager", "url": "#storagebucketmanager-storage-bucket-manager", "dfnText": "storage bucket manager", "refSections": [{"refs": [{"id": "ref-for-storagebucketmanager-storage-bucket-manager"}], "title": "1.1. Creating a bucket"}, {"refs": [{"id": "ref-for-storagebucketmanager-storage-bucket-manager\u2460"}], "title": "1.2. Deleting a bucket"}, {"refs": [{"id": "ref-for-storagebucketmanager-storage-bucket-manager\u2461"}], "title": "1.3. Enumerating buckets"}], "external": false};
 window.dfnpanelData['storagebucketmanager'] = {"dfnID": "storagebucketmanager", "url": "#storagebucketmanager", "dfnText": "StorageBucketManager", "refSections": [{"refs": [{"id": "ref-for-storagebucketmanager"}, {"id": "ref-for-storagebucketmanager\u2460"}, {"id": "ref-for-storagebucketmanager\u2461"}, {"id": "ref-for-storagebucketmanager\u2462"}], "title": "1. The StorageBucketManager interface"}], "external": false};
 window.dfnpanelData['dictdef-storagebucketoptions'] = {"dfnID": "dictdef-storagebucketoptions", "url": "#dictdef-storagebucketoptions", "dfnText": "StorageBucketOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-storagebucketoptions"}], "title": "1. The StorageBucketManager interface"}], "external": false};
 window.dfnpanelData['dom-storagebucketoptions-persisted'] = {"dfnID": "dom-storagebucketoptions-persisted", "url": "#dom-storagebucketoptions-persisted", "dfnText": "persisted", "refSections": [{"refs": [{"id": "ref-for-dom-storagebucketoptions-persisted"}], "title": "1.1. Creating a bucket"}], "external": false};
