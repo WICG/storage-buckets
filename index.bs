@@ -327,7 +327,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
         1. Otherwise, set |persisted| to false.
 
-    1. [=Queue a storage task=] to [=/resolve=] |p| with |persisted|
+    1. [=Queue a storage task=] to [=resolve=] |p| with |persisted|
 
 1. Return |p|.
 
@@ -347,7 +347,7 @@ The <dfn method for="StorageBucket">persisted()</dfn> method steps are:
 
     1. Let |persistent| be true if |bucket|'s [=bucket mode=] is `"persistent"`, otherwise false.
 
-    1. [=Queue a storage task=] to [=/resolve=] |p| with |persistent|.
+    1. [=Queue a storage task=] to [=resolve=] |p| with |persistent|.
 
 1. Return |p|.
 
@@ -388,7 +388,7 @@ The <dfn method for="StorageBucket">estimate()</dfn> method steps are:
 
     1. Let |dictionary| be a new {{StorageEstimate}} dictionary whose {{StorageEstimate/usage}} member is |usage| and {{StorageEstimate/quota}} member is |quota|.
 
-    1. [=Queue a storage task=] to [=/resolve=] |p| with |dictionary|.
+    1. [=Queue a storage task=] to [=resolve=] |p| with |dictionary|.
 
 1. Return |p|.
 
@@ -462,7 +462,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=].
 
-    1. [=Queue a storage task=] to [=/resolve=] |p|. 
+    1. [=Queue a storage task=] to [=resolve=] |p|. 
 
 1. Return |p|.
 
@@ -482,7 +482,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. Otherwise, let |expiration| be |bucket|'s [=StorageBucket/expiration time=].
 
-    1. [=Queue a storage task=] to [=/resolve=] |p| with |expiration|. 
+    1. [=Queue a storage task=] to [=resolve=] |p| with |expiration|. 
 
 1. Return |p|.
 
