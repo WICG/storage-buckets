@@ -327,7 +327,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
         1. Otherwise, set |persisted| to false.
 
-    1. [=Queue a storage task=] to [=resolve=] |p| with |persisted|
+    1. [=Queue a storage task=] to [=resolve=] |p| with |persisted|.
 
 1. Return |p|.
 
@@ -462,7 +462,7 @@ The <dfn method for="StorageBucket">setExpires(|expires|)</dfn> method steps are
 
     1. Otherwise, set |bucket|'s [=StorageBucket/expiration time=] to |expires| milliseconds after the [=Unix epoch=].
 
-    1. [=Queue a storage task=] to [=resolve=] |p|. 
+    1. [=Queue a storage task=] to [=resolve=] |p|.
 
 1. Return |p|.
 
