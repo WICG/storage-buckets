@@ -313,7 +313,7 @@ The <dfn method for="StorageBucket">persist()</dfn> method steps are:
 
 1. Let |p| be [=a new promise=].
 
-1. Run the following steps [=in parallel=]: 
+1. Run the following steps [=in parallel=]:
 
     1. If |bucket|'s [=storage bucket/removed=] flag is true, then [=queue a storage task=] to [=reject=] |p| with an {{InvalidStateError}}.
 
@@ -482,7 +482,7 @@ The <dfn method for="StorageBucket">expires()</dfn> method steps are:
 
     1. Otherwise, let |expiration| be |bucket|'s [=StorageBucket/expiration time=].
 
-    1. [=Queue a storage task=] to [=resolve=] |p| with |expiration|. 
+    1. [=Queue a storage task=] to [=resolve=] |p| with |expiration|.
 
 1. Return |p|.
 
