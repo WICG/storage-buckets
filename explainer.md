@@ -44,6 +44,7 @@
   - [Bucket names](#bucket-names)
   - [Storage policy naming](#storage-policy-naming)
   - [Default bucket quota](#default-bucket-quota)
+  - [Limit on number of buckets](#limit-on-number-of-buckets) 
 - [Considered alternatives](#considered-alternatives)
   - [Expose the API off of navigator.storage.buckets](#expose-the-api-off-of-navigatorstoragebuckets)
   - [Opening and creating buckets](#opening-and-creating-buckets)
@@ -610,6 +611,14 @@ disk space. However, the Chrome team thinks that having anything under
 100% of the origin quota will become a constraint to developers, disincentivizing
 the use of buckets. The Chrome team thinks developers should be able to use
 all available quota for an origin in one storage bucket.
+
+
+### Limit on Number of Buckets
+
+Bucket limits will be dynamically calculated by the amount of quota available for the origin
+and the minimum bucket size defined by the user agent. User agents are expected to support
+a minumum of 10 buckets, and have a hard limit of 10,000 buckets.
+
 
 ## Privacy and Security considerations
 
