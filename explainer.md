@@ -615,10 +615,10 @@ all available quota for an origin in one storage bucket.
 
 ### Limit on Number of Buckets
 
-Bucket limits will be dynamically calculated by the amount of quota available for the origin
-and the minimum bucket size defined by the user agent. User agents are expected to support
-a minumum of 10 buckets for each origin, and allow at least 1 additional bucket for every
-10 MiB of quota provided with a hard limit of 10,000 buckets.
+Bucket limits will be dynamically calculated base on the amount of quota available for the origin.
+User agents are expected to support a minumum of 10 buckets for each origin, and allow at least 1
+additional bucket for every 10 MiB of quota provided with a hard limit of 10,000 buckets.
+Attempting to create buckets in excess of this limit will result in a `QuotaExceededError`. 
 
 
 ## Privacy and Security considerations
