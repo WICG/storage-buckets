@@ -65,8 +65,8 @@ interface StorageBucketManager {
 
 dictionary StorageBucketOptions {
   boolean persisted = false;
-  unsigned long long? quota = null;
-  DOMHighResTimeStamp? expires = null;
+  unsigned long long? quota;
+  DOMHighResTimeStamp? expires;
 };
 </xmp>
 
