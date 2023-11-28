@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/storage-buckets/" rel="canonical">
-  <meta content="f06bd4927a03191552a7ac785700d54407806508" name="document-revision">
+  <meta content="fc359a18bc6308180bc72a5e6c1860dbbf09d1a4" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -668,7 +668,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Storage Buckets API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-10-18">18 October 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-11-28">28 November 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -686,7 +686,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2023 the Contributors to the Storage Buckets API Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2023 the Contributors to the Storage Buckets API Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
 A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
    <hr title="Separator for header">
   </div>
@@ -774,8 +774,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-storagebucketoptions"><code><c- g>StorageBucketOptions</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-default="false" data-dfn-for="StorageBucketOptions" data-dfn-type="dict-member" data-export data-type="boolean " id="dom-storagebucketoptions-persisted"><code><c- g>persisted</c-></code></dfn> = <c- b>false</c->;
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a>? <dfn class="dfn-paneled idl-code" data-default="null" data-dfn-for="StorageBucketOptions" data-dfn-type="dict-member" data-export data-type="unsigned long long? " id="dom-storagebucketoptions-quota"><code><c- g>quota</c-></code></dfn> = <c- b>null</c->;
-  <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a>? <dfn class="dfn-paneled idl-code" data-default="null" data-dfn-for="StorageBucketOptions" data-dfn-type="dict-member" data-export data-type="DOMHighResTimeStamp? " id="dom-storagebucketoptions-expires"><code><c- g>expires</c-></code></dfn> = <c- b>null</c->;
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucketOptions" data-dfn-type="dict-member" data-export data-type="unsigned long long? " id="dom-storagebucketoptions-quota"><code><c- g>quota</c-></code></dfn>;
+  <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="StorageBucketOptions" data-dfn-type="dict-member" data-export data-type="DOMHighResTimeStamp? " id="dom-storagebucketoptions-expires"><code><c- g>expires</c-></code></dfn>;
 };
 </pre>
    <h3 class="heading settled" data-level="1.1" id="storage-bucket-open"><span class="secno">1.1. </span><span class="content">Creating a bucket</span><a class="self-link" href="#storage-bucket-open"></a></h3>
@@ -1463,8 +1463,8 @@ User agents MAY remove any buckets before <code class="idl"><a data-link-type="i
 
 <c- b>dictionary</c-> <a href="#dictdef-storagebucketoptions"><code><c- g>StorageBucketOptions</c-></code></a> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean " href="#dom-storagebucketoptions-persisted"><code><c- g>persisted</c-></code></a> = <c- b>false</c->;
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a>? <a data-default="null" data-type="unsigned long long? " href="#dom-storagebucketoptions-quota"><code><c- g>quota</c-></code></a> = <c- b>null</c->;
-  <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a>? <a data-default="null" data-type="DOMHighResTimeStamp? " href="#dom-storagebucketoptions-expires"><code><c- g>expires</c-></code></a> = <c- b>null</c->;
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a>? <a data-type="unsigned long long? " href="#dom-storagebucketoptions-quota"><code><c- g>quota</c-></code></a>;
+  <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a>? <a data-type="DOMHighResTimeStamp? " href="#dom-storagebucketoptions-expires"><code><c- g>expires</c-></code></a>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->),
