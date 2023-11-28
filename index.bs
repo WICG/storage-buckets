@@ -222,7 +222,7 @@ Specific storage endpoints may need to run additional actions to remove data whe
 
 Issue: [[IndexedDB-3]] needs to define how deletion occurs when data is evicted by quota.
 
-Issue: [[FS]] needs to define how deletion occurs for Origin Private File System when data is evicted by quota.
+Issue: [[FS]] needs to define how deletion occurs for Bucket File System when data is evicted by quota.
 
 Issue: [[Service-Workers]] needs to define how deletion occurs for CacheStorage and Service Workers when data is evicted by quota.
 
@@ -494,7 +494,7 @@ A {{StorageBucket}} has a {{CacheStorage}} object, initially null. The <dfn attr
 
 </div>
 
-<h4 id="storage-bucket-getdirectory">Using an Origin Private File System</h4>
+<h4 id="storage-bucket-getdirectory">Using a Bucket File System</h4>
 
 Issue: [[Storage]] needs to define helpers to retrieve the bottle map for a given (non-default) bucket.
 
