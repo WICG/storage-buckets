@@ -413,6 +413,11 @@ default bucket on-demand.
   [File System Access](https://wicg.github.io/file-system-access/#sandboxed-filesystem)
 * `NavigatorLocks.locks` in
   [Web Locks](https://wicg.github.io/web-locks/#lockmanager)
+* `File` constructor in [File API](https://w3c.github.io/FileAPI/#dfn-file)
+* Methods that construct a `Blob`
+  * `Blob` constructor in [File API](https://w3c.github.io/FileAPI/#dom-blob-blob)
+  * `URL.createObjectURL` method in [File API](https://w3c.github.io/FileAPI/#dfn-createObjectURL)
+  * `Body.blob()` method in [Fetch API](https://fetch.spec.whatwg.org/#dom-body-blob)
 
 > The default bucket is not currently directly accessible via `navigator.storageBuckets.open()`.
 > See [discussion](https://github.com/WICG/storage-buckets/issues/91).
